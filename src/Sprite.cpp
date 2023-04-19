@@ -1,14 +1,14 @@
 #include "Sprite.hpp"
 #include "Game.hpp"
+#include "GameObject.hpp"
 
-Sprite::Sprite()
+Sprite::Sprite(GameObject &associated) : Component(associated)
 {
     texture = nullptr;
 }
 
-Sprite::Sprite(std::string file)
+Sprite::Sprite(GameObject &associated, std::string file) : Sprite(associated)
 {
-    texture = nullptr;
     Open(file);
 }
 
@@ -18,6 +18,19 @@ Sprite::~Sprite()
     {
         SDL_DestroyTexture(texture);
     }
+}
+
+void Sprite::Update(float dt)
+{
+    if (associated.IsDead())
+    {
+        associated.RemoveComponent(this);
+    }
+}
+
+bool Sprite::Is(std::string type)
+{
+    return type == "Sprite";
 }
 
 void Sprite::Open(std::string file)
@@ -38,7 +51,12 @@ void Sprite::Open(std::string file)
 
     SDL_QueryTexture(this->texture, nullptr, nullptr, &width, &height);
 
-    std::cerr << "width: " << width << " Height: " << height << std::endl;
+    // std::cerr << "width: " << width << " Height: " << height << std::endl;
+
+    associated.box.x = 0;
+    associated.box.y = 0;
+    associated.box.w = width;
+    associated.box.h = height;
 
     SetClip(0, 0, width, height);
 }
@@ -51,16 +69,16 @@ void Sprite::SetClip(int x, int y, int w, int h)
     clipRect.h = h;
 }
 
-void Sprite::Render(int x, int y)
+void Sprite::Render()
 {
     SDL_Rect dstRect = SDL_Rect();
-    dstRect.x = x;
-    dstRect.y = y;
+    dstRect.x = associated.box.x;
+    dstRect.y = associated.box.y;
     dstRect.w = clipRect.w;
     dstRect.h = clipRect.h;
 
     int result = 0;
- 
+
     result = SDL_RenderCopy(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstRect);
     if (result != 0)
     {

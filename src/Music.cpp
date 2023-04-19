@@ -30,8 +30,8 @@ void Music::Play(int times)
 
 void Music::Stop(int msToStop)
 {
-    int result = 0;
-    result = Mix_FadeOutMusic(msToStop);
+    // int result = 0;
+     Mix_FadeOutMusic(msToStop);
 }
 
 void Music::Open(std::string file)
