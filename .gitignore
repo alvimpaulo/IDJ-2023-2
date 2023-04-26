@@ -47,4 +47,12 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+
+#executable
 jogo
+
+#Regex auxiliary scripts
+regex/**
+
+#Cmake VSCode build files.
+build/**
