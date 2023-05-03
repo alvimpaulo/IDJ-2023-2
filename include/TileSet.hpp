@@ -1,9 +1,11 @@
 #include <string>
 #include "Sprite.hpp"
+#include "GameObject.hpp"
 
 class TileSet
 {
 private:
+    GameObject* go;
     Sprite tileSet;
     int rows;
     int columns;

@@ -20,6 +20,7 @@ public:
 
     void Open(std::string file);
     void SetClip(int x, int y, int w, int h);
+    void Render(float x, float y, float w, float h);
     void Render();
     int GetWidth();
     int getHeight();

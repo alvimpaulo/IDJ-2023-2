@@ -5,6 +5,7 @@
 #include "Sound.hpp"
 #include <memory>
 #include "my_utility.hpp"
+#include "TileMap.hpp"
 
 #define PI 3.14159265358979323846
 
@@ -14,12 +15,21 @@ State::State()
 
 	this->music = Music();
 
-	auto bgObject = new GameObject();
-	this->bg = std::unique_ptr<Sprite>(new Sprite(*bgObject));
+	auto mapObject = new GameObject();
+	mapObject->box.x = 0;
+	mapObject->box.y = 0;
+	auto tileset = new TileSet(64, 64, "assets/img/tileset.png");
+
+	mapObject->AddComponent(new TileMap(*mapObject, "assets/map/tileMap.txt", tileset));
+
+	this->objectArray.emplace_back(mapObject);
+
+	this->bg = std::unique_ptr<Sprite>(new Sprite(*mapObject));
 }
 
 State::~State()
 {
+
 	this->objectArray.clear();
 }
 
@@ -27,7 +37,7 @@ void State::LoadAssets()
 {
 	this->music.Open("assets/audio/stageState.ogg");
 	this->music.Play();
-	this->bg->Open("assets/img/ocean.jpg");
+	// this->bg->Open("assets/img/ocean.jpg");
 }
 
 void State::Update(float dt)
@@ -42,8 +52,8 @@ void State::Update(float dt)
 	{
 		if (objectArray[i]->IsDead())
 		{
-			if(objectArray[i]->IsEmpty())
-			objectArray.erase(objectArray.begin() + i);
+			if (objectArray[i]->IsEmpty())
+				objectArray.erase(objectArray.begin() + i);
 		}
 	}
 }

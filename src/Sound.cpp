@@ -16,7 +16,8 @@ Sound::~Sound()
     if (chunk != nullptr)
     {
         int haltResult = 0;
-        haltResult = Mix_HaltChannel(channel);
+        if (channel > 0)
+            haltResult = Mix_HaltChannel(channel);
         if (haltResult != 0)
         {
             std::cerr << "Erro no halt dentro do destrutor de sound" << std::endl;

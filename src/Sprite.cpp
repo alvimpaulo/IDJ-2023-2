@@ -35,7 +35,7 @@ bool Sprite::Is(std::string type)
 
 void Sprite::Open(std::string file)
 {
-    if (this->texture != nullptr)
+   if (this->texture != nullptr)
     {
         SDL_DestroyTexture(texture);
     }
@@ -69,13 +69,14 @@ void Sprite::SetClip(int x, int y, int w, int h)
     clipRect.h = h;
 }
 
-void Sprite::Render()
-{
+void Sprite::Render(float x, float y, float w, float h){
+    if(this->texture == NULL) return;
+
     SDL_Rect dstRect = SDL_Rect();
-    dstRect.x = associated.box.x;
-    dstRect.y = associated.box.y;
-    dstRect.w = clipRect.w;
-    dstRect.h = clipRect.h;
+    dstRect.x = static_cast<int>(round(x));
+    dstRect.y = static_cast<int>(round(y));
+    dstRect.w = static_cast<int>(round(w));
+    dstRect.h = static_cast<int>(round(h));
 
     int result = 0;
 
@@ -86,6 +87,11 @@ void Sprite::Render()
         std::cerr << SDL_GetError() << std::endl;
         exit(0);
     }
+}
+
+void Sprite::Render()
+{
+    Render(associated.box.x, associated.box.y, associated.box.w, associated.box.h);
 }
 
 int Sprite::getHeight()
