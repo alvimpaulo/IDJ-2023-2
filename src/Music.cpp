@@ -1,4 +1,5 @@
 #include "Music.hpp"
+#include "Resources.hpp"
 
 Music::Music()
 {
@@ -31,18 +32,13 @@ void Music::Play(int times)
 void Music::Stop(int msToStop)
 {
     // int result = 0;
-     Mix_FadeOutMusic(msToStop);
+    Mix_FadeOutMusic(msToStop);
 }
 
 void Music::Open(std::string file)
 {
 
-    music = Mix_LoadMUS(file.c_str());
-    if (music == nullptr)
-    {
-        std::cerr << "Não conseguiu carregar a musica do arquivo " << file << std::endl;
-        exit(0);
-    }
+    music = Resources::GetMusic(file);
 }
 
 bool Music::IsOpen()

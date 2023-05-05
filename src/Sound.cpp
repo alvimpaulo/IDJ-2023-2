@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "Face.hpp"
+#include "Resources.hpp"
 
 Sound::Sound(GameObject &associated) : Component(associated)
 {
@@ -53,13 +54,7 @@ void Sound::Stop()
 void Sound::Open(std::string file)
 {
 
-    chunk = Mix_LoadWAV(file.c_str());
-
-    if (chunk == nullptr)
-    {
-        std::cerr << "Erro tentando abrir o arquivo " << file << std::endl;
-        exit(0);
-    }
+    chunk = Resources::GetSound(file);
 }
 bool Sound::IsOpen()
 {
@@ -69,7 +64,7 @@ void Sound::Update(float dt)
 {
     if (associated.IsDead() && Mix_Playing(channel) == 0)
     {
-        associated.RemoveComponent(associated.GetComponent("Sound"));
+        // associated.RemoveComponent(associated.GetComponent("Sound"));
     }
 }
 void Sound::Render()

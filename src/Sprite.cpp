@@ -1,6 +1,7 @@
 #include "Sprite.hpp"
 #include "Game.hpp"
 #include "GameObject.hpp"
+#include "Resources.hpp"
 
 Sprite::Sprite(GameObject &associated) : Component(associated)
 {
@@ -14,10 +15,6 @@ Sprite::Sprite(GameObject &associated, std::string file) : Sprite(associated)
 
 Sprite::~Sprite()
 {
-    if (texture != nullptr)
-    {
-        SDL_DestroyTexture(texture);
-    }
 }
 
 void Sprite::Update(float dt)
@@ -35,19 +32,8 @@ bool Sprite::Is(std::string type)
 
 void Sprite::Open(std::string file)
 {
-   if (this->texture != nullptr)
-    {
-        SDL_DestroyTexture(texture);
-    }
 
-    this->texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
-
-    if (this->texture == NULL)
-    {
-        std::cerr << "Erro abrindo a textura " << file << std::endl;
-        std::cerr << SDL_GetError() << std::endl;
-        exit(0);
-    }
+    this->texture = Resources::GetImage(file);
 
     SDL_QueryTexture(this->texture, nullptr, nullptr, &width, &height);
 
@@ -69,8 +55,10 @@ void Sprite::SetClip(int x, int y, int w, int h)
     clipRect.h = h;
 }
 
-void Sprite::Render(float x, float y, float w, float h){
-    if(this->texture == NULL) return;
+void Sprite::Render(float x, float y, float w, float h)
+{
+    if (this->texture == NULL)
+        return;
 
     SDL_Rect dstRect = SDL_Rect();
     dstRect.x = static_cast<int>(round(x));

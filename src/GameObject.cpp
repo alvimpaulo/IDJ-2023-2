@@ -53,7 +53,7 @@ void GameObject::RemoveComponent(Component *cpt)
                              { return vecCpt.get() == cpt; });
     if (item != components.end())
     {
-        components.erase(item);
+        components.erase(std::remove(components.begin(), components.end(), item));
     }
 }
 Component *GameObject::GetComponent(std::string type)

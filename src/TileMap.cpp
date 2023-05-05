@@ -98,7 +98,7 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY)
 {
     for(int y = 0; y < mapHeight; y++) {
         for(int x = 0; x < mapWidth; x++) {
-            auto dstX = float(x*tileSet->GetTileWidth()-cameraX);
+            auto dstX = float(x*tileSet->GetTileWidth());
             auto dstY = float(y*tileSet->GetTileHeight()-cameraY);
 
             int tile = At(x, y, layer);

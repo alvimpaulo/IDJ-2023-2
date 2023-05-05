@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "Resources.hpp"
 
 Game &Game::GetInstance()
 {
@@ -124,4 +125,8 @@ void Game::Run()
 
         SDL_Delay(33);
     }
+
+    Resources::ClearImages();   
+    Resources::ClearMusics();
+    Resources::ClearSounds();
 }
