@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "Resources.hpp"
+#include "InputManager.hpp"
 
 Game &Game::GetInstance()
 {
@@ -118,6 +119,8 @@ void Game::Run()
 {
     while (state->QuitRequested() == false)
     {
+        InputManager::GetInstance().Update();
+
         state->Update(33);
         state->Render();
 
@@ -126,7 +129,7 @@ void Game::Run()
         SDL_Delay(33);
     }
 
-    Resources::ClearImages();   
+    Resources::ClearImages();
     Resources::ClearMusics();
     Resources::ClearSounds();
 }

@@ -49,11 +49,14 @@ void GameObject::AddComponent(Component *cpt)
 }
 void GameObject::RemoveComponent(Component *cpt)
 {
-    auto item = std::find_if(components.begin(), components.end(), [cpt = cpt](std::unique_ptr<Component> &vecCpt)
-                             { return vecCpt.get() == cpt; });
-    if (item != components.end())
-    {
-        components.erase(std::remove(components.begin(), components.end(), item));
+    for(auto it = components.begin(); it != components.end(); ) {
+        if(it->get() == cpt) {
+            it = components.erase(it);
+            break;  // * Each component should have just 1 pointer.
+        }
+        else {
+            it++;
+        }
     }
 }
 Component *GameObject::GetComponent(std::string type)

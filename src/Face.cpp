@@ -4,6 +4,7 @@
 #include "GameObject.hpp"
 #include <SDL2/SDL.h>
 #include "Sprite.hpp"
+#include "InputManager.hpp"
 
 Face::Face(GameObject &associated) : Component(associated)
 {
@@ -28,6 +29,16 @@ void Face::Damage(int damage)
 }
 void Face::Update(float dt)
 {
+    if (InputManager::GetInstance().MousePress(SDL_BUTTON_LEFT))
+    {
+        auto mouseX = InputManager::GetInstance().GetMouseX();
+        auto mouseY = InputManager::GetInstance().GetMouseY();
+
+        if (this->associated.box.Contains({(float)mouseX, (float)mouseY}))
+        {
+            this->Damage(std::rand() % 10 + 10);
+        }
+    }
     if (associated.IsDead())
     {
         associated.RemoveComponent(this);
