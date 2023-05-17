@@ -15,7 +15,7 @@ public:
     static Vec2 Norm(const Vec2 &p);
     static float Mag(const Vec2 &p);
     
-    Vec2 getRotated(const float rad);
+    Vec2 GetRotated(const float rad);
 
     const Vec2 operator+(const Vec2 &rhs);
     const Vec2 operator-(const Vec2 &rhs);

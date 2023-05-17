@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>
+#include "Vec2.hpp"
 
 class Rect
 {
@@ -11,4 +12,5 @@ public:
     float h;
 
     bool Contains(std::pair<float, float> pair);
+    Vec2 GetCenter();
 };

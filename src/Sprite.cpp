@@ -2,6 +2,7 @@
 #include "Game.hpp"
 #include "GameObject.hpp"
 #include "Resources.hpp"
+#include "Camera.hpp"
 
 Sprite::Sprite(GameObject &associated) : Component(associated)
 {
@@ -41,8 +42,8 @@ void Sprite::Open(std::string file)
 
     associated.box.x = 0;
     associated.box.y = 0;
-    associated.box.w = width;
-    associated.box.h = height;
+    associated.box.w = static_cast<float>(width);
+    associated.box.h = static_cast<float>(height);
 
     SetClip(0, 0, width, height);
 }
@@ -79,7 +80,11 @@ void Sprite::Render(float x, float y, float w, float h)
 
 void Sprite::Render()
 {
-    Render(associated.box.x, associated.box.y, associated.box.w, associated.box.h);
+
+    float renderX = associated.box.x - Camera::pos.x;
+    float renderY = associated.box.y - Camera::pos.y;
+
+    Render(renderX, renderY, associated.box.w, associated.box.h);
 }
 
 int Sprite::getHeight()

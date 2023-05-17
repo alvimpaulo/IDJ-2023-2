@@ -36,7 +36,7 @@ float Vec2::Mag(const Vec2 &p){
     return std::sqrt(p.x * p.x + p.y * p.y);
 }
 
-Vec2 Vec2::getRotated(const float rad){
+Vec2 Vec2::GetRotated(const float rad){
    float cs = std::cos(rad), sn = std::sin(rad);
     return Vec2(x * cs - y * sn, x * sn + y * cs);
 }

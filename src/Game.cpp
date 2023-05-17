@@ -6,7 +6,7 @@ Game &Game::GetInstance()
 {
     if (Game::instance == nullptr)
     {
-        Game::instance = new Game("Paulo Alvim - 170153657", 1024, 600);
+        Game::instance = new Game("Paulo Alvim - 170153657", SCREEN_WIDTH, SCREEN_HEIGHT);
         return *Game::instance;
     }
     else
@@ -87,6 +87,10 @@ Game::Game(std::string title, int width, int height)
     }
 
     this->state = new State();
+
+    // Init timing
+    frameStart = SDL_GetTicks();
+    this->dt = 0.0;
 }
 
 Game::~Game()
@@ -119,6 +123,7 @@ void Game::Run()
 {
     while (state->QuitRequested() == false)
     {
+        this->CalculateDeltaTime();
         InputManager::GetInstance().Update();
 
         state->Update(33);
@@ -132,4 +137,19 @@ void Game::Run()
     Resources::ClearImages();
     Resources::ClearMusics();
     Resources::ClearSounds();
+}
+
+void Game::CalculateDeltaTime()
+{
+    int currentTicks = SDL_GetTicks();
+    auto deltaTicks = static_cast<float>(currentTicks) - this->dt;
+
+    this->dt = deltaTicks / 1000;
+
+    frameStart = currentTicks;
+}
+
+float Game::GetDeltaTime()
+{
+    return this->dt;
 }

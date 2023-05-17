@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include "Sprite.hpp"
 #include "InputManager.hpp"
+#include "Camera.hpp"
 
 Face::Face(GameObject &associated) : Component(associated)
 {
@@ -31,10 +32,13 @@ void Face::Update(float dt)
 {
     if (InputManager::GetInstance().MousePress(SDL_BUTTON_LEFT))
     {
-        auto mouseX = InputManager::GetInstance().GetMouseX();
-        auto mouseY = InputManager::GetInstance().GetMouseY();
+        auto mouseScreenX = InputManager::GetInstance().GetMouseX();
+        auto mouseScreenY = InputManager::GetInstance().GetMouseY();
 
-        if (this->associated.box.Contains({(float)mouseX, (float)mouseY}))
+        auto mouseRealX = static_cast<float>(mouseScreenX) + Camera::pos.x;
+        auto mouseRealY = static_cast<float>(mouseScreenY) + Camera::pos.y;
+
+        if (this->associated.box.Contains({(float)mouseRealX, (float)mouseRealY}))
         {
             this->Damage(std::rand() % 10 + 10);
         }

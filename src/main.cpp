@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "Resources.hpp"
+#include "Camera.hpp"
 #include <unordered_map>
 
 Game* Game::instance = nullptr;

@@ -7,6 +7,8 @@
 #include "my_utility.hpp"
 #include "TileMap.hpp"
 #include "InputManager.hpp"
+#include "Camera.hpp"
+#include "CameraFollower.hpp"
 
 #define PI 3.14159265358979323846
 
@@ -16,16 +18,22 @@ State::State()
 
 	this->music = Music();
 
+	auto bgObject = new GameObject();
+	auto bgFollower = new CameraFollower(*bgObject);
+	auto bgSprite = new Sprite(*bgObject);
+
+	bgObject->AddComponent(bgFollower);
+	bgObject->AddComponent(bgSprite);
+
+	objectArray.emplace_back(bgObject);
+
+	this->bg = std::unique_ptr<Sprite>(bgSprite);
+
 	auto mapObject = new GameObject();
-	mapObject->box.x = 0;
-	mapObject->box.y = 0;
+
 	auto tileset = new TileSet(64, 64, "assets/img/tileset.png");
-
 	mapObject->AddComponent(new TileMap(*mapObject, "assets/map/tileMap.txt", tileset));
-
 	this->objectArray.emplace_back(mapObject);
-
-	this->bg = std::unique_ptr<Sprite>(new Sprite(*mapObject));
 }
 
 State::~State()
@@ -38,11 +46,15 @@ void State::LoadAssets()
 {
 	this->music.Open("assets/audio/stageState.ogg");
 	this->music.Play();
-	// this->bg->Open("assets/img/ocean.jpg");
+	this->bg->Open("assets/img/ocean.jpg");
 }
 
 void State::Update(float dt)
 {
+
+	// camera update
+	Camera::Update(dt);
+
 	if (InputManager::GetInstance().QuitRequested() || InputManager::GetInstance().KeyPress(SDLK_ESCAPE))
 	{
 		this->quitRequested = true;
@@ -50,7 +62,7 @@ void State::Update(float dt)
 
 	if (InputManager::GetInstance().KeyPress(SDLK_SPACE))
 	{
-		Vec2 objPos = Vec2(200, 0).getRotated(static_cast<float>(-PI + PI * (rand() % 1001) / static_cast<float>(500.0))) + Vec2((InputManager::GetInstance().GetMouseX()), (InputManager::GetInstance().GetMouseY()));
+		Vec2 objPos = Vec2(200, 0).GetRotated(static_cast<float>(-PI + PI * (rand() % 1001) / static_cast<float>(500.0))) + Vec2(static_cast<float>(InputManager::GetInstance().GetMouseX()), static_cast<float>(InputManager::GetInstance().GetMouseY()));
 		AddObject((int)objPos.x, (int)objPos.y);
 	}
 
@@ -89,8 +101,8 @@ void State::AddObject(int mouseX, int mouseY)
 	auto newObject = new GameObject();
 
 	auto faceSprite = new Sprite(*newObject, "assets/img/penguinface.png");
-	newObject->box.x = static_cast<float>(mouseX) + (static_cast<float>(faceSprite->GetWidth()) / 2);
-	newObject->box.y = static_cast<float>(mouseY) + (static_cast<float>(faceSprite->getHeight()) / 2);
+	newObject->box.x = static_cast<float>((static_cast<float>(mouseX) + static_cast<float>(Camera::pos.x)) + (static_cast<float>(faceSprite->GetWidth()) / 2));
+	newObject->box.y = (static_cast<float>(mouseY) + static_cast<float>(Camera::pos.y)) + (static_cast<float>(faceSprite->getHeight()) / 2);
 	newObject->AddComponent(faceSprite);
 
 	newObject->AddComponent(new Sound(*newObject, "assets/audio/boom.wav"));

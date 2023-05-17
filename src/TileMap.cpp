@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include "Camera.hpp"
 
 TileMap::TileMap(GameObject &associated,
                  std::string file,
@@ -75,6 +76,9 @@ void TileMap::Load(std::string file)
     this->mapDepth = tilesetDepth;
 
     mapFile.close();
+
+    associated.box.w = float(mapWidth * tileSet->GetTileWidth());
+    associated.box.h = float(mapHeight * tileSet->GetTileHeight());
 }
 
 void TileMap::SetTileSet(TileSet *tileSet)
@@ -96,14 +100,17 @@ int &TileMap::At(int x, int y, int z)
 
 void TileMap::RenderLayer(int layer, int cameraX, int cameraY)
 {
-    for(int y = 0; y < mapHeight; y++) {
-        for(int x = 0; x < mapWidth; x++) {
-            auto dstX = float(x*tileSet->GetTileWidth());
-            auto dstY = float(y*tileSet->GetTileHeight()-cameraY);
+    for (int y = 0; y < mapHeight; y++)
+    {
+        for (int x = 0; x < mapWidth; x++)
+        {
+            auto dstX = float(x * tileSet->GetTileWidth() - cameraX);
+            auto dstY = float(y * tileSet->GetTileHeight() - cameraY);
 
             int tile = At(x, y, layer);
-            
-            if(tile >= 0) {
+
+            if (tile >= 0)
+            {
                 tileSet->RenderTile(unsigned(tile), dstX, dstY);
             }
         }
@@ -112,9 +119,10 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY)
 
 void TileMap::Render()
 {
+    const auto &cameraPos = Camera::pos;
     for (int i = 0; i < this->GetDepth(); i++)
     {
-        RenderLayer(i, associated.box.x, associated.box.y);
+        RenderLayer(i, int(cameraPos.x) * ((i + 1)), int(cameraPos.y) * ((i + 1))); //Layers start at zero
     }
 }
 
