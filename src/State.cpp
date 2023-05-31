@@ -26,7 +26,7 @@ State::State()
 	bgObject->AddComponent(bgFollower);
 	bgObject->AddComponent(bgSprite);
 
-	objectArray.emplace_back(bgObject);
+	this->AddObject(bgObject);
 
 	this->bg = std::unique_ptr<Sprite>(bgSprite);
 
@@ -34,14 +34,14 @@ State::State()
 
 	auto tileset = new TileSet(64, 64, "assets/img/tileset.png");
 	mapObject->AddComponent(new TileMap(*mapObject, "assets/map/tileMap.txt", tileset));
-	this->objectArray.emplace_back(mapObject);
+	this->AddObject(mapObject);
 
 	auto alienObject = new GameObject();
-	auto alien = new Alien(*alienObject, 0);
+	auto alien = new Alien(*alienObject, 2);
 	alienObject->box.SetCenter(Vec2(512, 300));
 	alienObject->AddComponent(alien);
 
-	this->objectArray.emplace_back(alienObject);
+	this->AddObject(alienObject);
 }
 
 State::~State()

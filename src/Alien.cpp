@@ -2,13 +2,15 @@
 #include "Alien.hpp"
 #include "InputManager.hpp"
 #include "Camera.hpp"
+#include "Game.hpp"
+#include "Minion.hpp"
 #include <cstdlib>
 
-Alien::Alien(GameObject &associated, int nMinions) : Component(associated)
+Alien::Alien(GameObject &associated, int nMinions = 0) : Component(associated)
 {
     this->hp = 10;
     this->speed = Vec2(0, 0);
-    this->minionArray = std::vector<std::weak_ptr<GameObject>>(nMinions);
+    this->nMinions = nMinions;
 
     auto alienSprite = new Sprite(associated, "assets/img/alien.png");
     this->associated.AddComponent(alienSprite);
@@ -21,13 +23,33 @@ Alien::~Alien()
 
 void Alien::Start()
 {
+    float arcStep = 360.0f / nMinions;
+    float arc = 0.0f;
+
+    std::weak_ptr<GameObject> alienPtr = Game::GetInstance().GetState().GetObjectPtr(&associated);
+
+    if (alienPtr.lock() != nullptr)
+    {
+        for (int i = 0; i < nMinions; i++)
+        {
+            auto minionObject = new GameObject();
+            auto minion = new Minion(*minionObject, alienPtr, arc);
+            minionObject->AddComponent(minion);
+            auto wpMinionGO = Game::GetInstance().GetState().AddObject(minionObject);
+            minionArray.push_back(wpMinionGO);
+
+            arc += arcStep;
+        }
+    } else {
+        std::cout << "Erro ao tentar dar lock no ponteiro de alien." << std::endl;
+    }
 }
 
 void Alien::Update(float dt)
 {
     InputManager &inputManager = InputManager::GetInstance();
     auto mouseX = inputManager.GetMouseX();
-    auto mouseY = inputManager.GetMouseY(); 
+    auto mouseY = inputManager.GetMouseY();
 
     auto mouseRealX = (float)mouseX + Camera::pos.x;
     auto mouseRealY = (float)mouseY + Camera::pos.y;
@@ -63,24 +85,25 @@ void Alien::Update(float dt)
             this->speed.y = std::max(std::min(maxSpeed, speed.y), -maxSpeed);
 
             auto stepPos = srcPos + this->speed;
-            
+
             auto distance = Vec2::GetDistance(stepPos, task.pos);
 
             auto dstThreshold = 15.0f;
 
-            if(abs(distance) < dstThreshold){
-                //Alien chegou no lugar nesse update
+            if (abs(distance) < dstThreshold)
+            {
+                // Alien chegou no lugar nesse update
                 this->speed.x = 0;
                 this->speed.y = 0;
 
                 this->associated.box.SetCenter(task.pos);
                 taskQueue.pop();
-            } else {
+            }
+            else
+            {
                 this->associated.box.x += this->speed.x;
                 this->associated.box.y += this->speed.y;
             }
-
-            
         }
         else if (task.type == Action::SHOOT)
         {
@@ -89,13 +112,15 @@ void Alien::Update(float dt)
     }
 }
 
-void Alien::Render(){}
+void Alien::Render() {}
 
-bool Alien::Is(std::string type){
+bool Alien::Is(std::string type)
+{
     return type == "Alien";
 }
 
-Alien::Action::Action(ActionType type, float x, float y) {
+Alien::Action::Action(ActionType type, float x, float y)
+{
     this->type = type;
     this->pos = Vec2(x, y);
 }

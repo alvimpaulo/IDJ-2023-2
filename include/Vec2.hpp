@@ -17,7 +17,7 @@ public:
 
     static float GetAngle(const Vec2 &a, const Vec2 &b);
     static float GetDistance(const Vec2 &a, const Vec2 &b);
-    Vec2 GetRotated(const float rad);
+    const Vec2 GetRotated(const float rad);
 
     const Vec2 operator+(const Vec2 &rhs);
     const Vec2 operator-(const Vec2 &rhs);

@@ -62,7 +62,7 @@ Vec2 Vec2::Norm(const Vec2 &p){
     return Vec2(p.x/(pow(p.x, 2) + pow(p.y, 2)), p.y/(pow(p.x, 2) + pow(p.y, 2)));
 }
 
-Vec2 Vec2::GetRotated(const float rad)
+const Vec2 Vec2::GetRotated(const float rad)
 {
     float cs = std::cos(rad), sn = std::sin(rad);
     return Vec2(x * cs - y * sn, x * sn + y * cs);
