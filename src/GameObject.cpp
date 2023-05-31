@@ -4,11 +4,11 @@
 #include "Component.hpp"
 #include "Rect.hpp"
 #include "Sprite.hpp"
-#include "Face.hpp"
 
 GameObject::GameObject()
 {
     this->isDead = false;
+    this->started = false;
     this->box = Rect();
     this->components = std::vector<std::unique_ptr<Component>>();
 }
@@ -20,6 +20,16 @@ GameObject::~GameObject()
     }
 
     components.clear();
+}
+
+void GameObject::Start()
+{
+    for (auto &it : this->components)
+    {
+        it->Start();
+    }
+
+    this->started = true;
 }
 
 void GameObject::Update(float dt)
@@ -45,16 +55,23 @@ void GameObject::RequestDelete()
 }
 void GameObject::AddComponent(Component *cpt)
 {
+    if (started)
+    {
+        cpt->Start();
+    }
     components.emplace_back(std::unique_ptr<Component>(cpt));
 }
 void GameObject::RemoveComponent(Component *cpt)
 {
-    for(auto it = components.begin(); it != components.end(); ) {
-        if(it->get() == cpt) {
+    for (auto it = components.begin(); it != components.end();)
+    {
+        if (it->get() == cpt)
+        {
             it = components.erase(it);
-            break;  // * Each component should have just 1 pointer.
+            break; // * Each component should have just 1 pointer.
         }
-        else {
+        else
+        {
             it++;
         }
     }

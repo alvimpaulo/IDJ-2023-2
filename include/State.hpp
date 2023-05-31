@@ -10,9 +10,8 @@ private:
     std::unique_ptr<Sprite> bg;
     Music music;
     bool quitRequested;
-    std::vector<std::unique_ptr<GameObject>> objectArray;
-
-    void AddObject(int mouseX, int mouseY);
+    std::vector<std::shared_ptr<GameObject>> objectArray;
+    bool started;
 
 public:
     State();
@@ -21,4 +20,8 @@ public:
     void LoadAssets();
     void Update(float dt);
     void Render();
+    void Start();
+
+    std::weak_ptr<GameObject> AddObject(GameObject *go);
+    std::weak_ptr<GameObject> GetObjectPtr(GameObject *go);
 };

@@ -1,6 +1,5 @@
 
 #include "State.hpp"
-#include "Face.hpp"
 #include "Vec2.hpp"
 #include "Sound.hpp"
 #include <memory>
@@ -9,12 +8,14 @@
 #include "InputManager.hpp"
 #include "Camera.hpp"
 #include "CameraFollower.hpp"
+#include "Alien.hpp"
 
 #define PI 3.14159265358979323846
 
 State::State()
 {
 	this->quitRequested = false;
+	this->started = false;
 
 	this->music = Music();
 
@@ -34,6 +35,13 @@ State::State()
 	auto tileset = new TileSet(64, 64, "assets/img/tileset.png");
 	mapObject->AddComponent(new TileMap(*mapObject, "assets/map/tileMap.txt", tileset));
 	this->objectArray.emplace_back(mapObject);
+
+	auto alienObject = new GameObject();
+	auto alien = new Alien(*alienObject, 0);
+	alienObject->box.SetCenter(Vec2(512, 300));
+	alienObject->AddComponent(alien);
+
+	this->objectArray.emplace_back(alienObject);
 }
 
 State::~State()
@@ -49,6 +57,18 @@ void State::LoadAssets()
 	this->bg->Open("assets/img/ocean.jpg");
 }
 
+void State::Start()
+{
+	this->LoadAssets();
+
+	for (auto &it : objectArray)
+	{
+		it->Start();
+	}
+
+	started = true;
+}
+
 void State::Update(float dt)
 {
 
@@ -62,8 +82,6 @@ void State::Update(float dt)
 
 	if (InputManager::GetInstance().KeyPress(SDLK_SPACE))
 	{
-		Vec2 objPos = Vec2(200, 0).GetRotated(static_cast<float>(-PI + PI * (rand() % 1001) / static_cast<float>(500.0))) + Vec2(static_cast<float>(InputManager::GetInstance().GetMouseX()), static_cast<float>(InputManager::GetInstance().GetMouseY()));
-		AddObject((int)objPos.x, (int)objPos.y);
 	}
 
 	for (auto &it : this->objectArray)
@@ -96,19 +114,29 @@ bool State::QuitRequested()
 	return quitRequested;
 }
 
-void State::AddObject(int mouseX, int mouseY)
+std::weak_ptr<GameObject> State::AddObject(GameObject *go)
 {
-	auto newObject = new GameObject();
+	if (started)
+	{
+		go->Start();
+	}
 
-	auto faceSprite = new Sprite(*newObject, "assets/img/penguinface.png");
-	newObject->box.x = static_cast<float>((static_cast<float>(mouseX) + static_cast<float>(Camera::pos.x)) + (static_cast<float>(faceSprite->GetWidth()) / 2));
-	newObject->box.y = (static_cast<float>(mouseY) + static_cast<float>(Camera::pos.y)) + (static_cast<float>(faceSprite->getHeight()) / 2);
-	newObject->AddComponent(faceSprite);
+	auto ptr = std::shared_ptr<GameObject>(go);
 
-	newObject->AddComponent(new Sound(*newObject, "assets/audio/boom.wav"));
+	objectArray.emplace_back(ptr);
 
-	auto face = new Face(*newObject);
-	newObject->AddComponent(face);
+	return std::weak_ptr<GameObject>(ptr);
+}
 
-	objectArray.emplace_back(newObject);
+std::weak_ptr<GameObject> State::GetObjectPtr(GameObject *go)
+{
+	for (auto &it : objectArray)
+	{
+		if ((it).get() == go)
+		{
+			return std::weak_ptr<GameObject>(it);
+		}
+	}
+
+	return std::weak_ptr<GameObject>();
 }

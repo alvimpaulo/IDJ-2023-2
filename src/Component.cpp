@@ -2,9 +2,12 @@
 #include "Component.hpp"
 #include "GameObject.hpp"
 
-Component::Component(GameObject& associated) : associated(associated){
+Component::Component(GameObject &associated) : associated(associated)
+{
 }
 
-Component::~Component(){
-
+Component::~Component()
+{
 }
+
+void Component::Start() {}

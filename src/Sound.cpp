@@ -1,7 +1,6 @@
 #include "Sound.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "Face.hpp"
 #include "Resources.hpp"
 
 Sound::Sound(GameObject &associated) : Component(associated)

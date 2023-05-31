@@ -13,4 +13,6 @@ public:
 
     bool Contains(std::pair<float, float> pair);
     Vec2 GetCenter();
+    void SetCenter(Rect r);
+    void SetCenter(Vec2 r);
 };

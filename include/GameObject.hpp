@@ -16,6 +16,7 @@ public:
     GameObject();
     ~GameObject();
 
+    void Start();
     void Update(float dt);
     void Render();
     bool IsDead();
@@ -26,4 +27,5 @@ public:
     Component *GetComponent(std::string type);
 
     Rect box;
+    bool started;
 };

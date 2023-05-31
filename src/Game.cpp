@@ -121,6 +121,8 @@ SDL_Renderer *Game::GetRenderer()
 
 void Game::Run()
 {
+
+    this->state->Start();
     while (state->QuitRequested() == false)
     {
         this->CalculateDeltaTime();
