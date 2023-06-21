@@ -5,6 +5,7 @@
 #include "Game.hpp"
 #include "Minion.hpp"
 #include <cstdlib>
+#include <memory>
 
 Alien::Alien(GameObject &associated, int nMinions = 0) : Component(associated)
 {
@@ -86,7 +87,7 @@ void Alien::Update(float dt)
 
             auto stepPos = srcPos + this->speed;
 
-            auto distance = Vec2::GetDistance(stepPos, task.pos);
+            auto distance = Vec2::GetDistancePix(stepPos, task.pos);
 
             auto dstThreshold = 15.0f;
 
@@ -107,6 +108,15 @@ void Alien::Update(float dt)
         }
         else if (task.type == Action::SHOOT)
         {
+            auto selectedMinion = this->minionArray[rand() % nMinions];
+            if(auto minionLock = selectedMinion.lock()){
+                Minion* minionPtr = (Minion*)(minionLock->GetComponent("Minion"));
+                if(minionPtr == nullptr){
+                    std::cerr << "Não foi possível converter o ponteiro de minion em alien" << std::endl;
+                    return;
+                }
+                minionPtr->Shoot(task.pos);
+            }
             taskQueue.pop();
         }
     }

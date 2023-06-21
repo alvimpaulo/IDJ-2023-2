@@ -1,6 +1,9 @@
 #include "Vec2.hpp"
 #include <cmath>
 
+#define PI 3.14159265358979323846
+
+
 Vec2::Vec2(float x, float y)
 {
     this->x = x;
@@ -43,7 +46,7 @@ Vec2 &Vec2::operator*=(const float &num)
     return *this;
 }
 
-Vec2 Vec2::Rotate(const Vec2 &p, float angle)
+Vec2 Vec2::RotateDeg(const Vec2 &p, float angle)
 {
     float cs = std::cos(angle), sn = std::sin(angle);
     return Vec2(p.x * cs - p.y * sn, p.x * sn + p.y * cs);
@@ -62,24 +65,30 @@ Vec2 Vec2::Norm(const Vec2 &p){
     return Vec2(p.x/(pow(p.x, 2) + pow(p.y, 2)), p.y/(pow(p.x, 2) + pow(p.y, 2)));
 }
 
-const Vec2 Vec2::GetRotated(const float rad)
+const Vec2 Vec2::GetRotatedRad(const float rad)
 {
     float cs = std::cos(rad), sn = std::sin(rad);
     return Vec2(x * cs - y * sn, x * sn + y * cs);
 }
 
-float Vec2::GetAngle(const Vec2 &a, const Vec2 &b)
+float Vec2::GetAngleRad(const Vec2 &a, const Vec2 &b)
 {
-    auto product = Vec2::Dot(a, b);
-    auto aMag = Vec2::Mag(a);
-    auto bMag = Vec2::Mag(b);
-
-    auto cos = product / (aMag * bMag);
-    auto angle = acos(cos);
+    auto temp = Vec2(b.x - a.x, b.y - a.y);
+    auto angle = atan2(temp.y, temp.x);
     return float(angle);
 }
 
-float Vec2::GetDistance(const Vec2 &a, const Vec2 &b)
+float Vec2::GetDistancePix(const Vec2 &a, const Vec2 &b)
 {
     return (float)sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
+}
+
+double Vec2::rad2deg(double rad)
+{
+    return rad * (180 / PI);
+}
+
+double Vec2::deg2rad(double deg)
+{
+    return deg * (PI / 180);
 }

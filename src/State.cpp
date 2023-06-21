@@ -37,7 +37,7 @@ State::State()
 	this->AddObject(mapObject);
 
 	auto alienObject = new GameObject();
-	auto alien = new Alien(*alienObject, 2);
+	auto alien = new Alien(*alienObject, 5);
 	alienObject->box.SetCenter(Vec2(512, 300));
 	alienObject->AddComponent(alien);
 
@@ -84,17 +84,17 @@ void State::Update(float dt)
 	{
 	}
 
-	for (auto &it : this->objectArray)
+	for (size_t i = 0; i < this->objectArray.size(); i++)
 	{
-		it->Update(dt);
+		objectArray[i]->Update(dt);
 	}
 
 	for (size_t i = 0; i < this->objectArray.size(); i++)
 	{
 		if (objectArray[i]->IsDead())
 		{
-			if (objectArray[i]->IsEmpty())
-				objectArray.erase(objectArray.begin() + i);
+
+			objectArray.erase(objectArray.begin() + i);
 		}
 	}
 }
@@ -116,14 +116,14 @@ bool State::QuitRequested()
 
 std::weak_ptr<GameObject> State::AddObject(GameObject *go)
 {
+	std::shared_ptr<GameObject> ptr = std::shared_ptr<GameObject>(go);
+
+	objectArray.push_back(ptr);
+
 	if (started)
 	{
 		go->Start();
 	}
-
-	auto ptr = std::shared_ptr<GameObject>(go);
-
-	objectArray.emplace_back(ptr);
 
 	return std::weak_ptr<GameObject>(ptr);
 }
