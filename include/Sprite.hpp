@@ -14,10 +14,15 @@ private:
     SDL_Rect clipRect;
     Vec2 scale;
     double angleDeg;
+    int frameCount;
+    int currentFrame;
+    float timeElapsed;
+    float frameTime;
 
 public:
     Sprite(GameObject &associated);
-    Sprite(GameObject &associated, std::string file);
+    Sprite(GameObject &associated, std::string file, int frameCount = 1,
+           float frameTime = 1);
     ~Sprite();
 
     void Open(std::string file);
@@ -25,7 +30,7 @@ public:
     void Render(float x, float y, float w, float h);
     void Render();
     int GetWidth();
-    int getHeight();
+    int GetHeight();
     bool IsOpen();
     bool Is(std::string type);
     void Update(float dt);
@@ -33,4 +38,7 @@ public:
     Vec2 GetScale();
     void SetAngle(double newAngle);
     double GetAngle();
+    void SetFrame(int frame);
+    void SetFrameCount(int frameCount);
+    void SetFrameTime(float frameTime);
 };

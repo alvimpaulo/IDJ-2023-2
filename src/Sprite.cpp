@@ -9,10 +9,24 @@ Sprite::Sprite(GameObject &associated) : Component(associated)
     texture = nullptr;
     this->scale = Vec2(1, 1);
     this->angleDeg = 0;
+    this->currentFrame = 0;
+    this->frameCount = 1;
+    this->frameTime = 1;
+    this->timeElapsed = 0;
 }
 
-Sprite::Sprite(GameObject &associated, std::string file) : Sprite(associated)
+Sprite::Sprite(GameObject &associated, std::string file, int frameCount ,
+               float frameTime):Component(associated)
 {
+
+    texture = nullptr;
+    this->scale = Vec2(1, 1);
+    this->angleDeg = 0;
+    this->currentFrame = 0;
+    this->frameCount = frameCount;
+    this->frameTime = frameTime;
+    this->timeElapsed = 0;
+
     Open(file);
 }
 
@@ -22,6 +36,13 @@ Sprite::~Sprite()
 
 void Sprite::Update(float dt)
 {
+    timeElapsed += dt;
+    if (frameTime < timeElapsed)
+    {
+        SetFrame((currentFrame + 1) % frameCount);
+        timeElapsed = 0.0f;
+    }
+
     if (associated.IsDead())
     {
         associated.RemoveComponent(this);
@@ -89,14 +110,14 @@ void Sprite::Render()
     Render(renderX, renderY, associated.box.w, associated.box.h);
 }
 
-int Sprite::getHeight()
+int Sprite::GetHeight()
 {
-    return this->height * this->scale.y;
+    return this->height * (int) this->scale.y;
 }
 
 int Sprite::GetWidth()
 {
-    return this->width * this->scale.x;
+    return this->width * (int) this->scale.x;
 }
 
 bool Sprite::IsOpen()
@@ -122,4 +143,30 @@ void Sprite::SetAngle(double newAngle)
 double Sprite::GetAngle()
 {
     return angleDeg;
+}
+
+void Sprite::SetFrame(int frame)
+{
+    if (frame >= frameCount)
+    {
+        std::cerr << "SetFrame com numero maior que frameCount" << std::endl;
+    }
+    this->currentFrame = frame;
+
+    auto framePosX = currentFrame * clipRect.w;
+    auto framePosY = currentFrame * clipRect.y;
+
+    SetClip(framePosX, framePosY, clipRect.w, clipRect.h);
+}
+void Sprite::SetFrameCount(int frameCount)
+{
+    this->frameCount = frameCount;
+    SetFrame(0);
+
+    this->associated.box.w = float(GetWidth());
+    this->associated.box.h = float(GetHeight());
+}
+void Sprite::SetFrameTime(float frameTime)
+{
+    this->frameTime = frameTime;
 }

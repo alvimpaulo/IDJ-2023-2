@@ -28,8 +28,8 @@ void Minion::Update(float dt)
 
     if (auto alienPtr = this->alienCenter.lock())
     {
-        this->arc += std::fmod(ROT_SPEED * dt, 360.0l);
-        auto pos = Vec2::RotateDeg(PIVOT_DIST, Vec2::deg2rad(arc));
+        this->arc += (float) std::fmod(ROT_SPEED * dt, 360.0l);
+        auto pos = Vec2::RotateDeg(PIVOT_DIST, (float) Vec2::deg2rad(arc));
 
         pos += alienPtr->box.GetCenter(); // move to alien position
 
@@ -54,7 +54,7 @@ void Minion::Shoot(Vec2 target)
 
     auto bulletObject = new GameObject();
 
-    auto bullet = new Bullet(*bulletObject, targetAngleRad, 0.8, 10, 1200, "assets/img/minionbullet1.png");
+    auto bullet = new Bullet(*bulletObject, targetAngleRad, 0.8f, 10, 1200, "assets/img/minionbullet1.png");
     bulletObject->AddComponent(bullet);
 
     bulletObject->box.SetCenter(this->associated.box.GetCenter());

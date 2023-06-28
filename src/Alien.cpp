@@ -25,7 +25,7 @@ Alien::~Alien()
 
 void Alien::Start()
 {
-    float arcStep = 360.0f / nMinions;
+    float arcStep = 360.0f / (float) nMinions;
     float arc = 0.0f;
 
     std::weak_ptr<GameObject> alienPtr = Game::GetInstance().GetState().GetObjectPtr(&associated);
