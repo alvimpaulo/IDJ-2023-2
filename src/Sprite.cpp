@@ -7,6 +7,8 @@
 Sprite::Sprite(GameObject &associated) : Component(associated)
 {
     texture = nullptr;
+    this->scale = Vec2(1, 1);
+    this->angleDeg = 0;
 }
 
 Sprite::Sprite(GameObject &associated, std::string file) : Sprite(associated)
@@ -64,12 +66,12 @@ void Sprite::Render(float x, float y, float w, float h)
     SDL_Rect dstRect = SDL_Rect();
     dstRect.x = static_cast<int>(round(x));
     dstRect.y = static_cast<int>(round(y));
-    dstRect.w = static_cast<int>(round(w));
-    dstRect.h = static_cast<int>(round(h));
+    dstRect.w = static_cast<int>(round(w * scale.x));
+    dstRect.h = static_cast<int>(round(h * scale.y));
 
     int result = 0;
 
-    result = SDL_RenderCopy(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstRect);
+    result = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstRect, angleDeg, nullptr, SDL_FLIP_NONE);
     if (result != 0)
     {
         std::cerr << "Erro no SDL_RenderCopy " << result << std::endl;
@@ -89,15 +91,35 @@ void Sprite::Render()
 
 int Sprite::getHeight()
 {
-    return this->height;
+    return this->height * this->scale.y;
 }
 
 int Sprite::GetWidth()
 {
-    return this->width;
+    return this->width * this->scale.x;
 }
 
 bool Sprite::IsOpen()
 {
     return texture != nullptr;
+}
+
+void Sprite::SetScaleX(float scaleX, float scaleY)
+{
+    this->scale = Vec2(scaleX, scaleY);
+}
+
+Vec2 Sprite::GetScale()
+{
+    return this->scale;
+}
+
+void Sprite::SetAngle(double newAngle)
+{
+    angleDeg = newAngle;
+}
+
+double Sprite::GetAngle()
+{
+    return angleDeg;
 }

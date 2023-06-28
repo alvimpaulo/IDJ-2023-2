@@ -6,6 +6,7 @@
 #include "Minion.hpp"
 #include <cstdlib>
 #include <memory>
+#include <limits>
 
 Alien::Alien(GameObject &associated, int nMinions = 0) : Component(associated)
 {
@@ -41,7 +42,9 @@ void Alien::Start()
 
             arc += arcStep;
         }
-    } else {
+    }
+    else
+    {
         std::cout << "Erro ao tentar dar lock no ponteiro de alien." << std::endl;
     }
 }
@@ -108,10 +111,28 @@ void Alien::Update(float dt)
         }
         else if (task.type == Action::SHOOT)
         {
-            auto selectedMinion = this->minionArray[rand() % nMinions];
-            if(auto minionLock = selectedMinion.lock()){
-                Minion* minionPtr = (Minion*)(minionLock->GetComponent("Minion"));
-                if(minionPtr == nullptr){
+            int closestMinionIdx = 0;
+            float closestMinionDist = std::numeric_limits<float>::infinity();
+            for (int i = 0; i < nMinions; i++)
+            {
+                if (auto minionLock = minionArray[i].lock())
+                {
+                    auto minionPos = minionLock->box.GetCenter();
+                    auto minionDist = Vec2::GetDistancePix(task.pos, minionPos);
+                    if (minionDist <= closestMinionDist)
+                    {
+                        closestMinionIdx = i;
+                        closestMinionDist = minionDist;
+                    }
+                }
+            }
+
+            auto selectedMinion = this->minionArray[closestMinionIdx];
+            if (auto minionLock = selectedMinion.lock())
+            {
+                Minion *minionPtr = (Minion *)(minionLock->GetComponent("Minion"));
+                if (minionPtr == nullptr)
+                {
                     std::cerr << "Não foi possível converter o ponteiro de minion em alien" << std::endl;
                     return;
                 }
@@ -120,9 +141,20 @@ void Alien::Update(float dt)
             taskQueue.pop();
         }
     }
+
+    // rotate alien
+    auto angle = -0.05 * dt;
+
+    if (auto sprite = (Sprite *)(associated.GetComponent("Sprite")))
+    {
+        angle += sprite->GetAngle();
+        sprite->SetAngle(angle);
+    }
 }
 
-void Alien::Render() {}
+void Alien::Render()
+{
+}
 
 bool Alien::Is(std::string type)
 {

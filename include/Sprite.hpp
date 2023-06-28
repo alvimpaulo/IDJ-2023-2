@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <SDL2/SDL.h>  
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
 #include "Component.hpp"
@@ -12,6 +12,8 @@ private:
     int width;
     int height;
     SDL_Rect clipRect;
+    Vec2 scale;
+    double angleDeg;
 
 public:
     Sprite(GameObject &associated);
@@ -27,4 +29,8 @@ public:
     bool IsOpen();
     bool Is(std::string type);
     void Update(float dt);
+    void SetScaleX(float scaleX, float scaleY);
+    Vec2 GetScale();
+    void SetAngle(double newAngle);
+    double GetAngle();
 };

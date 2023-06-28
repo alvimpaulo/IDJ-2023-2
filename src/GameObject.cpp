@@ -10,7 +10,8 @@ GameObject::GameObject()
     this->isDead = false;
     this->started = false;
     this->box = Rect();
-    this->components = std::vector<std::unique_ptr<Component>>();
+    this->components = std::vector<std::unique_ptr<Component>>(); 
+    
 }
 GameObject::~GameObject()
 {

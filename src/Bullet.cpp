@@ -14,6 +14,7 @@ Bullet::Bullet(GameObject &associated,
     this->speed = Vec2(speed * cos(angle), speed * sin(angle));
 
     auto spritePtr = new Sprite(associated, sprite);
+    spritePtr->SetAngle(Vec2::rad2deg(angle));
     associated.AddComponent(spritePtr);
 }
 void Bullet::Update(float dt)

@@ -2,15 +2,22 @@
 #include "Sprite.hpp"
 #include "Bullet.hpp"
 #include "Game.hpp"
+#include <random>
 
 
 Minion::Minion(GameObject &associated, std::weak_ptr<GameObject> alienCenter, float arcOffsetDeg = 0) : Component(associated)
 {
     this->arc = arcOffsetDeg;
     this->alienCenter = alienCenter;
-
     auto minionSprite = new Sprite(associated, "assets/img/minion.png");
-
+    
+    //Random scale
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_real_distribution<> distr(1,1.5); // define the range
+    float minionScale = (float) distr(gen);
+    minionSprite->SetScaleX(minionScale, minionScale);
+    
     associated.AddComponent(minionSprite);
 }
 void Minion::Update(float dt)
