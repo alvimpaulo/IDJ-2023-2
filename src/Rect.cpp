@@ -13,7 +13,7 @@ bool Rect::Contains(std::pair<float, float> pair){
     return (pair.first > x && pair.first < x+w) && (pair.second > y && pair.second < y+h);
 }
 
-Vec2 Rect::GetCenter() {
+ Vec2 Rect::GetCenter() const{
     Vec2 v;
     v.x = x + w/2;
     v.y = y + h/2;

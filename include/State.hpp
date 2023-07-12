@@ -3,6 +3,7 @@
 #include "Music.hpp"
 #include <vector>
 #include <memory>
+#include "PenguinBody.hpp"
 
 class State
 {
@@ -22,6 +23,6 @@ public:
     void Render();
     void Start();
 
-    std::weak_ptr<GameObject> AddObject(GameObject *go);
+    std::weak_ptr<GameObject> AddObject(std::shared_ptr<GameObject> go);
     std::weak_ptr<GameObject> GetObjectPtr(GameObject *go);
 };

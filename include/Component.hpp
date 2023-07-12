@@ -11,7 +11,6 @@ public:
     virtual void Render() = 0;
     virtual bool Is(std::string type) = 0;
     virtual void Start();
-
-protected:
+    void virtual NotifyCollision(GameObject &other){};
     GameObject &associated;
 };

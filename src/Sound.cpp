@@ -5,6 +5,7 @@
 
 Sound::Sound(GameObject &associated) : Component(associated)
 {
+    IsPlaying = false;
 }
 Sound::Sound(GameObject &associated,
              std::string file) : Sound(associated)
@@ -23,7 +24,6 @@ Sound::~Sound()
             std::cerr << "Erro no halt dentro do destrutor de sound" << std::endl;
             exit(0);
         }
-        Mix_FreeChunk(chunk);
     }
 }
 void Sound::Play(int times)
@@ -61,10 +61,7 @@ bool Sound::IsOpen()
 }
 void Sound::Update(float dt)
 {
-    if (associated.IsDead() && Mix_Playing(channel) == 0)
-    {
-        // associated.RemoveComponent(associated.GetComponent("Sound"));
-    }
+    IsPlaying = Mix_Playing(channel) == 0;
 }
 void Sound::Render()
 {

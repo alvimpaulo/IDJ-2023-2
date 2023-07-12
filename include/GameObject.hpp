@@ -21,11 +21,15 @@ public:
     void Render();
     bool IsDead();
     void RequestDelete();
-    void AddComponent(Component* cpt);
-    void RemoveComponent(Component * cpt);
+    void AddComponent(Component *cpt);
+    void RemoveComponent(Component *cpt);
     bool IsEmpty();
+    void SetAngle(double newAngle);
+    double GetAngle();
     Component *GetComponent(std::string type);
+    void NotifyCollision(GameObject &other);
 
     Rect box;
     bool started;
+    float angleDeg;
 };

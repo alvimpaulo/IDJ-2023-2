@@ -1,3 +1,4 @@
+#pragma once
 #include "Component.hpp"
 
 class Minion : public Component
@@ -11,4 +12,5 @@ public:
     void Render();
     bool Is(std::string type);
     void Shoot(Vec2 target);
+    void NotifyCollision (GameObject& other );
 };

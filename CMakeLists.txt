@@ -31,8 +31,8 @@ file(
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
   # target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wunreachable-code -pedantic -Wfloat-equal -ggdb -Og -DDEBUG)
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wno-unused-parameter -Wunreachable-code -pedantic -Wfloat-equal -Wconversion -ggdb -O0 -DDEBUG")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_THREAD_SAFE")
+  # set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wno-unused-parameter -Wunreachable-code -pedantic -Wfloat-equal -Wconversion -ggdb -O0 -DDEBUG")
+  # set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_THREAD_SAFE")
 endif()
 
 # if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -44,11 +44,11 @@ endif()
 
 if(MINGW)
   # list(APPEND CMAKE_CXX_FLAGS_DEBUG "-mconsole")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -mconsole")
+  # set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -mconsole")
 endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
+  # set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
 endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")

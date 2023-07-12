@@ -7,15 +7,26 @@
 #include <cstdlib>
 #include <memory>
 #include <limits>
+#include "Collider.hpp"
+#include "Bullet.hpp"
+#include "Sound.hpp"
+
+int Alien::alienCount = 0;
 
 Alien::Alien(GameObject &associated, int nMinions = 0) : Component(associated)
 {
     this->hp = 10;
     this->speed = Vec2(0, 0);
     this->nMinions = nMinions;
+    Alien::alienCount += 1;
+    this->state = RESTING;
+    restTimer = Timer();
 
     auto alienSprite = new Sprite(associated, "assets/img/alien.png");
     this->associated.AddComponent(alienSprite);
+
+    auto collider = new Collider(associated);
+    this->associated.AddComponent(collider);
 }
 
 Alien::~Alien()
@@ -25,7 +36,7 @@ Alien::~Alien()
 
 void Alien::Start()
 {
-    float arcStep = 360.0f / (float) nMinions;
+    float arcStep = 360.0f / (float)nMinions;
     float arc = 0.0f;
 
     std::weak_ptr<GameObject> alienPtr = Game::GetInstance().GetState().GetObjectPtr(&associated);
@@ -34,7 +45,7 @@ void Alien::Start()
     {
         for (int i = 0; i < nMinions; i++)
         {
-            auto minionObject = new GameObject();
+            auto minionObject = std::make_shared<GameObject>();
             auto minion = new Minion(*minionObject, alienPtr, arc);
             minionObject->AddComponent(minion);
             auto wpMinionGO = Game::GetInstance().GetState().AddObject(minionObject);
@@ -51,38 +62,28 @@ void Alien::Start()
 
 void Alien::Update(float dt)
 {
-    InputManager &inputManager = InputManager::GetInstance();
-    auto mouseX = inputManager.GetMouseX();
-    auto mouseY = inputManager.GetMouseY();
+    float alienCooldown = 2000;
 
-    auto mouseRealX = (float)mouseX + Camera::pos.x;
-    auto mouseRealY = (float)mouseY + Camera::pos.y;
-
-    if (inputManager.MousePress(LEFT_MOUSE_BUTTON))
-    { // Shoot
-        taskQueue.emplace(Action::SHOOT, mouseRealX, mouseRealY);
-    }
-    if (inputManager.MousePress(RIGHT_MOUSE_BUTTON))
-    { // Move
-        taskQueue.emplace(Action::MOVE, mouseRealX, mouseRealY);
-    }
-
-    // Executar açoes pendentes
-    if (taskQueue.empty() == false)
+    if (state == RESTING)
     {
-        auto &task = taskQueue.front();
+        restTimer.Update(dt);
+        auto playerPtr = PenguinBody::player;
+        if (playerPtr)
+            destination = playerPtr->associated.box.GetCenter();
+    }
 
-        if (task.type == Action::MOVE)
+    if (restTimer.Get() > alienCooldown)
+    {
+        auto playerPtr = PenguinBody::player;
+        if (playerPtr)
         {
 
             auto maxSpeed = 14.0f;
             auto accel = 2.0f;
 
             auto srcPos = this->associated.box.GetCenter();
-            auto dstPos = task.pos;
+            auto dstPos = destination;
             auto deltaPos = dstPos - srcPos;
-
-            // auto angle = Vec2::GetAngle(dstPos, srcPos);
 
             this->speed += Vec2::Norm(deltaPos) * accel * dt;
             this->speed.x = std::max(std::min(maxSpeed, speed.x), -maxSpeed);
@@ -90,7 +91,7 @@ void Alien::Update(float dt)
 
             auto stepPos = srcPos + this->speed;
 
-            auto distance = Vec2::GetDistancePix(stepPos, task.pos);
+            auto distance = Vec2::GetDistancePix(stepPos, destination);
 
             auto dstThreshold = 15.0f;
 
@@ -100,56 +101,56 @@ void Alien::Update(float dt)
                 this->speed.x = 0;
                 this->speed.y = 0;
 
-                this->associated.box.SetCenter(task.pos);
-                taskQueue.pop();
+                this->associated.box.SetCenter(destination);
+
+                state = RESTING;
+
+                this->restTimer.Restart();
+
+                // Shoot
+                auto playerPos = PenguinBody::player->associated.box.GetCenter();
+                int closestMinionIdx = 0;
+                float closestMinionDist = std::numeric_limits<float>::infinity();
+                for (int i = 0; i < nMinions; i++)
+                {
+                    if (auto minionLock = minionArray[i].lock())
+                    {
+                        auto minionPos = minionLock->box.GetCenter();
+                        auto minionDist = Vec2::GetDistancePix(playerPos, minionPos);
+                        if (minionDist <= closestMinionDist)
+                        {
+                            closestMinionIdx = i;
+                            closestMinionDist = minionDist;
+                        }
+                    }
+                }
+
+                auto selectedMinion = this->minionArray[closestMinionIdx];
+                if (auto minionLock = selectedMinion.lock())
+                {
+                    Minion *minionPtr = (Minion *)(minionLock->GetComponent("Minion"));
+                    if (minionPtr == nullptr)
+                    {
+                        std::cerr << "Não foi possível converter o ponteiro de minion em alien" << std::endl;
+                        return;
+                    }
+                    minionPtr->Shoot(playerPos);
+                }
             }
             else
             {
                 this->associated.box.x += this->speed.x;
                 this->associated.box.y += this->speed.y;
+                state = MOVING;
             }
-        }
-        else if (task.type == Action::SHOOT)
-        {
-            int closestMinionIdx = 0;
-            float closestMinionDist = std::numeric_limits<float>::infinity();
-            for (int i = 0; i < nMinions; i++)
-            {
-                if (auto minionLock = minionArray[i].lock())
-                {
-                    auto minionPos = minionLock->box.GetCenter();
-                    auto minionDist = Vec2::GetDistancePix(task.pos, minionPos);
-                    if (minionDist <= closestMinionDist)
-                    {
-                        closestMinionIdx = i;
-                        closestMinionDist = minionDist;
-                    }
-                }
-            }
-
-            auto selectedMinion = this->minionArray[closestMinionIdx];
-            if (auto minionLock = selectedMinion.lock())
-            {
-                Minion *minionPtr = (Minion *)(minionLock->GetComponent("Minion"));
-                if (minionPtr == nullptr)
-                {
-                    std::cerr << "Não foi possível converter o ponteiro de minion em alien" << std::endl;
-                    return;
-                }
-                minionPtr->Shoot(task.pos);
-            }
-            taskQueue.pop();
         }
     }
 
     // rotate alien
     auto angle = -0.05 * dt;
 
-    if (auto sprite = (Sprite *)(associated.GetComponent("Sprite")))
-    {
-        angle += sprite->GetAngle();
-        sprite->SetAngle(angle);
-    }
+    angle += associated.GetAngle();
+    associated.SetAngle(angle);
 }
 
 void Alien::Render()
@@ -161,8 +162,27 @@ bool Alien::Is(std::string type)
     return type == "Alien";
 }
 
-Alien::Action::Action(ActionType type, float x, float y)
+void Alien::NotifyCollision(GameObject &other)
 {
-    this->type = type;
-    this->pos = Vec2(x, y);
+    auto bulletPtr = (Bullet *)(other.GetComponent("Bullet"));
+    if (!bulletPtr)
+        return;
+
+    // Take damage
+    if (bulletPtr->targetsPlayer == false)
+        hp -= bulletPtr->GetDamage();
+
+    if (hp <= 0)
+    {
+        associated.RequestDelete();
+
+        // Explosion animation
+        auto exploGO = std::make_shared<GameObject>();
+        exploGO->AddComponent(new Sprite(*exploGO, "assets/img/aliendeath.png", 4, 500, 2000));
+        auto exploSOund = new Sound(*exploGO, "assets/audio/boom.wav");
+        exploGO->AddComponent(exploSOund);
+        exploGO->box.SetCenter(associated.box.GetCenter());
+        exploSOund->Play();
+        Game::GetInstance().GetState().AddObject(exploGO);
+    }
 }

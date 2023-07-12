@@ -95,16 +95,17 @@ Game::Game(std::string title, int width, int height)
 
 Game::~Game()
 {
-    delete this->state;
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
 
-    Mix_CloseAudio();
+    SDL_CloseAudio();
     Mix_Quit();
 
     IMG_Quit();
 
-    SDL_DestroyRenderer(this->renderer);
+    
 
-    SDL_DestroyWindow(this->window);
+    // delete this->state;
 
     SDL_Quit();
 }

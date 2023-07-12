@@ -9,6 +9,7 @@ GameObject::GameObject()
 {
     this->isDead = false;
     this->started = false;
+    this->angleDeg = 0;
     this->box = Rect();
     this->components = std::vector<std::unique_ptr<Component>>(); 
     
@@ -93,4 +94,22 @@ Component *GameObject::GetComponent(std::string type)
 bool GameObject::IsEmpty()
 {
     return this->components.size() == 0;
+}
+
+void GameObject::SetAngle(double newAngle)
+{
+    angleDeg = (float) newAngle;
+}
+
+double GameObject::GetAngle()
+{
+    return angleDeg;
+}
+
+void GameObject::NotifyCollision(GameObject &other){
+    for (size_t i = 0; i < this->components.size(); i++)
+    {
+        components[i]->NotifyCollision(other);
+    }
+    
 }

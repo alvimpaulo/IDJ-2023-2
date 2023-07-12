@@ -1,3 +1,4 @@
+#pragma once
 #include <unordered_map>
 #define LEFT_ARROW_KEY SDLK_LEFT
 #define RIGHT_ARROW_KEY SDLK_RIGHT

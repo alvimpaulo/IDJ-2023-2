@@ -8,24 +8,24 @@ Sprite::Sprite(GameObject &associated) : Component(associated)
 {
     texture = nullptr;
     this->scale = Vec2(1, 1);
-    this->angleDeg = 0;
     this->currentFrame = 0;
     this->frameCount = 1;
     this->frameTime = 1;
     this->timeElapsed = 0;
+    this->secondsToSelfDestruct = 0;
 }
 
-Sprite::Sprite(GameObject &associated, std::string file, int frameCount ,
-               float frameTime):Component(associated)
+Sprite::Sprite(GameObject &associated, std::string file, int frameCount,
+               float frameTime, float secondsToSelfDestruct) : Component(associated)
 {
 
     texture = nullptr;
     this->scale = Vec2(1, 1);
-    this->angleDeg = 0;
     this->currentFrame = 0;
     this->frameCount = frameCount;
     this->frameTime = frameTime;
     this->timeElapsed = 0;
+    this->secondsToSelfDestruct = secondsToSelfDestruct;
 
     Open(file);
 }
@@ -36,6 +36,16 @@ Sprite::~Sprite()
 
 void Sprite::Update(float dt)
 {
+    if (secondsToSelfDestruct > 0)
+    {
+        this->selfDesctructCount.Update(dt);
+        if (selfDesctructCount.Get() > secondsToSelfDestruct)
+        {
+            associated.RequestDelete();
+            return;
+        }
+    }
+
     timeElapsed += dt;
     if (frameTime < timeElapsed)
     {
@@ -65,10 +75,13 @@ void Sprite::Open(std::string file)
 
     associated.box.x = 0;
     associated.box.y = 0;
-    associated.box.w = static_cast<float>(width);
-    associated.box.h = static_cast<float>(height);
 
-    SetClip(0, 0, width, height);
+    width = width / frameCount;
+
+    this->SetClip(0, 0, GetWidth(), GetHeight());
+
+    this->associated.box.w = float(GetWidth());
+    this->associated.box.h = float(GetHeight());
 }
 
 void Sprite::SetClip(int x, int y, int w, int h)
@@ -92,7 +105,7 @@ void Sprite::Render(float x, float y, float w, float h)
 
     int result = 0;
 
-    result = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstRect, angleDeg, nullptr, SDL_FLIP_NONE);
+    result = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstRect, associated.angleDeg, nullptr, SDL_FLIP_NONE);
     if (result != 0)
     {
         std::cerr << "Erro no SDL_RenderCopy " << result << std::endl;
@@ -112,12 +125,12 @@ void Sprite::Render()
 
 int Sprite::GetHeight()
 {
-    return this->height * (int) this->scale.y;
+    return this->height * (int)this->scale.y;
 }
 
 int Sprite::GetWidth()
 {
-    return this->width * (int) this->scale.x;
+    return this->width * (int)this->scale.x;
 }
 
 bool Sprite::IsOpen()
@@ -133,16 +146,6 @@ void Sprite::SetScaleX(float scaleX, float scaleY)
 Vec2 Sprite::GetScale()
 {
     return this->scale;
-}
-
-void Sprite::SetAngle(double newAngle)
-{
-    angleDeg = newAngle;
-}
-
-double Sprite::GetAngle()
-{
-    return angleDeg;
 }
 
 void Sprite::SetFrame(int frame)

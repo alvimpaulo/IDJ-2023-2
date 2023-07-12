@@ -1,29 +1,19 @@
+#pragma once
 #include "Vec2.hpp"
-#include <queue>
 #include <string>
 #include "Component.hpp"
 
 class Alien : public Component
 {
 private:
-    class Action
-    {
-    public:
-        enum ActionType
-        {
-            MOVE,
-            SHOOT
-        };
-        Action(ActionType type, float x, float y);
-        ActionType type;
-        Vec2 pos;
-    };
-
     Vec2 speed;
     int hp;
     int nMinions;
-    std::queue<Action> taskQueue;
     std::vector<std::weak_ptr<GameObject>> minionArray;
+    enum AlienState { MOVING, RESTING };
+    AlienState state;
+    Timer restTimer;
+    Vec2 destination;
 
 public:
     Alien(GameObject &associated, int nMinions);
@@ -32,4 +22,6 @@ public:
     void Update(float dt);
     void Render();
     bool Is(std::string type);
+    void NotifyCollision (GameObject& other );
+    static int alienCount;
 };

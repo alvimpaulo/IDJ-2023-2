@@ -12,7 +12,7 @@ public:
     float h;
 
     bool Contains(std::pair<float, float> pair);
-    Vec2 GetCenter();
+    Vec2 GetCenter() const;
     void SetCenter(Rect r);
     void SetCenter(Vec2 r);
 };

@@ -4,6 +4,7 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 #include "Component.hpp"
+#include "Timer.hpp"
 
 class Sprite : public Component
 {
@@ -13,16 +14,17 @@ private:
     int height;
     SDL_Rect clipRect;
     Vec2 scale;
-    double angleDeg;
     int frameCount;
     int currentFrame;
     float timeElapsed;
     float frameTime;
+    Timer selfDesctructCount;
+    float secondsToSelfDestruct;
 
 public:
     Sprite(GameObject &associated);
     Sprite(GameObject &associated, std::string file, int frameCount = 1,
-           float frameTime = 1);
+           float frameTime = 1, float secondsToSelfDestruct = 0);
     ~Sprite();
 
     void Open(std::string file);
@@ -36,8 +38,6 @@ public:
     void Update(float dt);
     void SetScaleX(float scaleX, float scaleY);
     Vec2 GetScale();
-    void SetAngle(double newAngle);
-    double GetAngle();
     void SetFrame(int frame);
     void SetFrameCount(int frameCount);
     void SetFrameTime(float frameTime);
