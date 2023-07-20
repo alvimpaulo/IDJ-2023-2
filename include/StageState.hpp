@@ -5,7 +5,7 @@
 #include <memory>
 #include "PenguinBody.hpp"
 
-class State
+class StageState
 {
 private:
     std::unique_ptr<Sprite> bg;
@@ -15,8 +15,8 @@ private:
     bool started;
 
 public:
-    State();
-    ~State();
+    StageState();
+    ~StageState();
     bool QuitRequested();
     void LoadAssets();
     void Update(float dt);

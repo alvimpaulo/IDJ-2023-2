@@ -86,7 +86,7 @@ Game::Game(std::string title, int width, int height)
         exit(0);
     }
 
-    this->state = new State();
+    this->state = new StageState();
 
     // Init timing
     frameStart = SDL_GetTicks();
@@ -110,7 +110,7 @@ Game::~Game()
     SDL_Quit();
 }
 
-State &Game::GetState()
+StageState &Game::GetState()
 {
     return *state;
 }

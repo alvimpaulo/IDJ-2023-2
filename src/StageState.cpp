@@ -1,5 +1,5 @@
 
-#include "State.hpp"
+#include "StageState.hpp"
 #include "Vec2.hpp"
 #include "Sound.hpp"
 #include <memory>
@@ -12,7 +12,7 @@
 #include "PenguinBody.hpp"
 #include "Collider.hpp"
 
-State::State()
+StageState::StageState()
 {
 	this->quitRequested = false;
 	this->started = false;
@@ -53,18 +53,18 @@ State::State()
 	this->AddObject(bodyObject);
 }
 
-State::~State()
+StageState::~StageState()
 {
 }
 
-void State::LoadAssets()
+void StageState::LoadAssets()
 {
 	this->music.Open("assets/audio/stageState.ogg");
 	this->music.Play();
 	this->bg->Open("assets/img/ocean.jpg");
 }
 
-void State::Start()
+void StageState::Start()
 {
 	this->LoadAssets();
 
@@ -76,7 +76,7 @@ void State::Start()
 	started = true;
 }
 
-void State::Update(float dt)
+void StageState::Update(float dt)
 {
 
 	// camera update
@@ -135,7 +135,7 @@ void State::Update(float dt)
 	}
 }
 
-void State::Render()
+void StageState::Render()
 {
 	this->bg->Render();
 
@@ -145,12 +145,12 @@ void State::Render()
 	}
 }
 
-bool State::QuitRequested()
+bool StageState::QuitRequested()
 {
 	return quitRequested;
 }
 
-std::weak_ptr<GameObject> State::AddObject(std::shared_ptr<GameObject> go)
+std::weak_ptr<GameObject> StageState::AddObject(std::shared_ptr<GameObject> go)
 {
 
 	objectArray.emplace_back(go);
@@ -163,7 +163,7 @@ std::weak_ptr<GameObject> State::AddObject(std::shared_ptr<GameObject> go)
 	return std::weak_ptr<GameObject>(go);
 }
 
-std::weak_ptr<GameObject> State::GetObjectPtr(GameObject *go)
+std::weak_ptr<GameObject> StageState::GetObjectPtr(GameObject *go)
 {
 	for (auto &it : objectArray)
 	{
