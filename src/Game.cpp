@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "Resources.hpp"
 #include "InputManager.hpp"
+#include "State.hpp"
 
 Game &Game::GetInstance()
 {
@@ -86,7 +87,7 @@ Game::Game(std::string title, int width, int height)
         exit(0);
     }
 
-    this->state = new StageState();
+    this->storedState = nullptr;
 
     // Init timing
     frameStart = SDL_GetTicks();
@@ -95,6 +96,7 @@ Game::Game(std::string title, int width, int height)
 
 Game::~Game()
 {
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 
@@ -103,16 +105,20 @@ Game::~Game()
 
     IMG_Quit();
 
-    
+    if (storedState != nullptr)
+    {
+        delete storedState;
+    }
 
-    // delete this->state;
+    while (!stateStack.empty())
+        stateStack.pop();
 
     SDL_Quit();
 }
 
-StageState &Game::GetState()
+State *Game::GetCurrentState()
 {
-    return *state;
+    return stateStack.top().get();
 }
 
 SDL_Renderer *Game::GetRenderer()
@@ -120,17 +126,39 @@ SDL_Renderer *Game::GetRenderer()
     return this->renderer;
 }
 
+void Game::Push(State* state){
+    this->storedState = state;
+}
+
 void Game::Run()
 {
+    if(storedState == nullptr){
+        return;
+    }
+    this->stateStack.push(std::make_unique<State>(storedState));
+    this->storedState = nullptr;
 
-    this->state->Start();
-    while (state->QuitRequested() == false)
+    while (this->GetCurrentState()->QuitRequested() == false || this->stateStack.empty())
     {
+
+        if(this->GetCurrentState()->PopRequested()){
+            this->stateStack.pop();
+            if(this->GetCurrentState() != nullptr){
+                this->GetCurrentState()->Resume();
+            }
+        }
+
+        if(storedState != nullptr){
+            this->stateStack.top()->Pause();
+            this->storedState->Start();
+            this->stateStack.push(std::make_unique<State>(this->storedState));
+        }
+
         this->CalculateDeltaTime();
         InputManager::GetInstance().Update();
 
-        state->Update(33);
-        state->Render();
+        this->GetCurrentState()->Update(dt);
+        this->GetCurrentState()->Render();
 
         SDL_RenderPresent(this->renderer);
 
