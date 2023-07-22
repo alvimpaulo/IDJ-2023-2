@@ -38,7 +38,7 @@ void Music::Stop(int msToStop)
 void Music::Open(std::string file)
 {
 
-    music = Resources::GetMusic(file);
+    music = Resources::GetMusic(file).get();
 }
 
 bool Music::IsOpen()

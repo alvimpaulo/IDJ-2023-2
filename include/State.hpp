@@ -17,6 +17,7 @@ public:
     virtual std::weak_ptr<GameObject> GetObjectPtr(GameObject *object);
     bool PopRequested();
     bool QuitRequested();
+    bool IsStarted();
 
 protected:
     virtual void StartArray();

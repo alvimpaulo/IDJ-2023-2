@@ -6,6 +6,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <iostream>
 #include <stack>
+#include <memory>
 
 #define SCREEN_HEIGHT 600
 #define SCREEN_WIDTH 1024
@@ -13,7 +14,6 @@
 class Game
 {
 public:
-    Game(std::string title, int width, int height);
     ~Game();
     void Run();
     SDL_Renderer *GetRenderer();
@@ -23,6 +23,7 @@ public:
     void Push(State *state);
 
 private:
+    Game(std::string title, int width, int height);
     void CalculateDeltaTime();
 
     static Game *instance;
@@ -31,5 +32,5 @@ private:
     int frameStart;
     float dt;
     State *storedState;
-    std::stack<std::unique_ptr<State>> stateStack;
+    std::stack<State *> stateStack;
 };

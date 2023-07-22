@@ -53,7 +53,7 @@ void Sound::Stop()
 void Sound::Open(std::string file)
 {
 
-    chunk = Resources::GetSound(file);
+    chunk = Resources::GetSound(file).get();
 }
 bool Sound::IsOpen()
 {

@@ -48,7 +48,7 @@ void InputManager::Update()
 		// Se o evento for clique...
 		if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
 		{
-			int mouseButton = event.button.button;
+			int mouseButton = event.button.	button;
 			mouseState[mouseButton] = (event.type == SDL_MOUSEBUTTONDOWN);
 			mouseUpdate[mouseButton] = updateCounter;
 		}

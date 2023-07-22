@@ -67,7 +67,7 @@ bool Sprite::Is(std::string type)
 void Sprite::Open(std::string file)
 {
 
-    this->texture = Resources::GetImage(file);
+    this->texture = Resources::GetImage(file).get();
 
     SDL_QueryTexture(this->texture, nullptr, nullptr, &width, &height);
 

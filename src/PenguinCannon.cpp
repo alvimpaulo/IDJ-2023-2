@@ -50,11 +50,11 @@ bool PenguinCannon::Is(std::string type)
 }
 void PenguinCannon::Shoot()
 {
-    if (timerLastShot.Get() > 300)
+    if (timerLastShot.Get() > 1)
     {
-        auto bulletObject = std::make_shared<GameObject>();
+        auto bulletObject = new GameObject();
 
-        auto bullet = new Bullet(*bulletObject, (float)Vec2::deg2rad(this->associated.angleDeg), 0.8f, 10, 1200, "assets/img/minionbullet2.png", 3, 1, false);
+        auto bullet = new Bullet(*bulletObject, (float)Vec2::deg2rad(this->associated.angleDeg), 1000, 10, 1200, "assets/img/minionbullet2.png", 3, 1, false);
 
         Vec2 startPos;
         if (auto bodyGO = pbody.lock())
@@ -74,7 +74,7 @@ void PenguinCannon::Shoot()
 
         bulletObject->box.SetCenter(startPos);
 
-        auto bulletObj = Game::GetInstance().GetState().AddObject(bulletObject);
+        auto bulletObj = Game::GetInstance().GetCurrentState()->AddObject(bulletObject);
 
         timerLastShot.Restart();
     }

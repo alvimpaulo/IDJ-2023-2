@@ -11,44 +11,34 @@
 #include "Alien.hpp"
 #include "PenguinBody.hpp"
 #include "Collider.hpp"
+#include "Game.hpp"
 
 StageState::StageState()
 {
 	this->quitRequested = false;
 	this->started = false;
 
-	this->music = Music();
+	this->backgroundMusic = Music();
 
-	auto bgObject = std::make_shared<GameObject>();
-	auto bgFollower = new CameraFollower(*bgObject);
-	auto bgSprite = new Sprite(*bgObject);
-
-	bgObject->AddComponent(bgFollower);
-	bgObject->AddComponent(bgSprite);
-
-	this->AddObject(bgObject);
-
-	this->bg = std::unique_ptr<Sprite>(bgSprite);
-
-	auto mapObject = std::make_shared<GameObject>();
+	auto mapObject = new GameObject();
 
 	auto tileset = new TileSet(64, 64, "assets/img/tileset.png");
 	mapObject->AddComponent(new TileMap(*mapObject, "assets/map/tileMap.txt", tileset));
 	this->AddObject(mapObject);
 
-	auto alienObject = std::make_shared<GameObject>();
+	auto alienObject = new GameObject();
 	auto alien = new Alien(*alienObject, 5);
 	alienObject->box.SetCenter(Vec2(512, 300));
 	alienObject->AddComponent(alien);
 
 	this->AddObject(alienObject);
 
-	auto bodyObject = std::make_shared<GameObject>();
+	auto bodyObject = new GameObject();
 	auto body = new PenguinBody(*bodyObject);
 	bodyObject->AddComponent(body);
 
 	bodyObject->box.SetCenter(Vec2(704, 640));
-	Camera::Follow(bodyObject.get());
+	Camera::Follow(bodyObject);
 
 	this->AddObject(bodyObject);
 }
@@ -59,21 +49,18 @@ StageState::~StageState()
 
 void StageState::LoadAssets()
 {
-	this->music.Open("assets/audio/stageState.ogg");
-	this->music.Play();
-	this->bg->Open("assets/img/ocean.jpg");
+	this->backgroundMusic.Open("assets/audio/stageState.ogg");
+	this->backgroundMusic.Play();
 }
 
 void StageState::Start()
 {
+	started = true;
 	this->LoadAssets();
 
-	for (size_t i = 0; i < objectArray.size(); i++)
-	{
-		objectArray[i]->Start();
-	}
+	StartArray();
 
-	started = true;
+	
 }
 
 void StageState::Update(float dt)
@@ -84,19 +71,16 @@ void StageState::Update(float dt)
 
 	std::vector<std::pair<std::shared_ptr<GameObject>, Collider *>> colliders;
 
-	if (InputManager::GetInstance().QuitRequested() || InputManager::GetInstance().KeyPress(SDLK_ESCAPE))
+	if (InputManager::GetInstance().QuitRequested())
 	{
 		this->quitRequested = true;
 	}
 
-	if (InputManager::GetInstance().KeyPress(SDLK_SPACE))
-	{
+	if(InputManager::GetInstance().KeyPress(ESCAPE_KEY)){
+		this->popRequested = true;
 	}
 
-	for (size_t i = 0; i < this->objectArray.size(); i++)
-	{
-		objectArray[i]->Update(dt);
-	}
+	UpdateArray(dt);
 
 	for (size_t i = 0; i < this->objectArray.size(); i++)
 	{
@@ -137,41 +121,13 @@ void StageState::Update(float dt)
 
 void StageState::Render()
 {
-	this->bg->Render();
-
-	for (auto &it : objectArray)
-	{
-		it->Render();
-	}
+	this->RenderArray();
 }
 
-bool StageState::QuitRequested()
-{
-	return quitRequested;
+void StageState::Pause(){
+
 }
 
-std::weak_ptr<GameObject> StageState::AddObject(std::shared_ptr<GameObject> go)
-{
+void StageState::Resume(){
 
-	objectArray.emplace_back(go);
-
-	if (started)
-	{
-		go->Start();
-	}
-
-	return std::weak_ptr<GameObject>(go);
-}
-
-std::weak_ptr<GameObject> StageState::GetObjectPtr(GameObject *go)
-{
-	for (auto &it : objectArray)
-	{
-		if ((it).get() == go)
-		{
-			return std::weak_ptr<GameObject>(it);
-		}
-	}
-
-	return std::weak_ptr<GameObject>();
 }

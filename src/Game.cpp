@@ -2,6 +2,7 @@
 #include "Resources.hpp"
 #include "InputManager.hpp"
 #include "State.hpp"
+#include <SDL_ttf.h>
 
 Game &Game::GetInstance()
 {
@@ -71,27 +72,39 @@ Game::Game(std::string title, int width, int height)
         exit(0);
     }
 
+    // Init mixer
+    int textCode = 0;
+    textCode = TTF_Init();
+    if (textCode != 0)
+    {
+        std::cerr << "TTF não incializado corretamente" << std::endl;
+        std::cerr << textCode << std::endl;
+        exit(0);
+    }
+
+    
+
     // Init window
-    this->window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
-    if (this->window == nullptr)
+    this->instance->window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+    if (this->instance->window == nullptr)
     {
         std::cerr << "Window da Sdl não incializado corretamente" << std::endl;
         exit(0);
     }
 
     // Init renderer
-    this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
-    if (this->renderer == nullptr)
+    this->instance->renderer = SDL_CreateRenderer(this->instance->window, -1, SDL_RENDERER_ACCELERATED);
+    if (this->instance->renderer == nullptr)
     {
         std::cerr << "Renderer da Sdl não incializado corretamente" << std::endl;
         exit(0);
     }
 
-    this->storedState = nullptr;
+    this->instance->storedState = nullptr;
 
     // Init timing
-    frameStart = SDL_GetTicks();
-    this->dt = 0.0;
+    this->instance->frameStart = SDL_GetTicks();
+    this->instance->dt = 0.0;
 }
 
 Game::~Game()
@@ -104,63 +117,70 @@ Game::~Game()
     Mix_Quit();
 
     IMG_Quit();
+    TTF_Quit();
 
-    if (storedState != nullptr)
+    if (this->instance->storedState != nullptr)
     {
-        delete storedState;
+        delete this->instance->storedState;
     }
 
-    while (!stateStack.empty())
-        stateStack.pop();
+    while (!this->instance->stateStack.empty())
+        this->instance->stateStack.pop();
 
     SDL_Quit();
 }
 
 State *Game::GetCurrentState()
 {
-    return stateStack.top().get();
+    return this->instance->stateStack.top();
 }
 
 SDL_Renderer *Game::GetRenderer()
 {
-    return this->renderer;
+    return this->instance->renderer;
 }
 
 void Game::Push(State* state){
-    this->storedState = state;
+    this->instance->storedState = state;
+
 }
 
 void Game::Run()
 {
-    if(storedState == nullptr){
+    if(this->instance->storedState == nullptr){
         return;
     }
-    this->stateStack.push(std::make_unique<State>(storedState));
-    this->storedState = nullptr;
+    this->instance->stateStack.push(this->instance->storedState);
+    this->instance->storedState = nullptr;
 
-    while (this->GetCurrentState()->QuitRequested() == false || this->stateStack.empty())
+    while (this->instance->GetCurrentState()->QuitRequested() == false &&  this->instance->stateStack.empty() == false)
     {
 
-        if(this->GetCurrentState()->PopRequested()){
-            this->stateStack.pop();
-            if(this->GetCurrentState() != nullptr){
-                this->GetCurrentState()->Resume();
+        if(!this->instance->GetCurrentState()->IsStarted()){
+            this->instance->GetCurrentState()->Start();
+        }
+
+        if(this->instance->GetCurrentState()->PopRequested()){
+            this->instance->stateStack.pop();
+            if(this->instance->GetCurrentState() != nullptr){
+                this->instance->GetCurrentState()->Resume();
             }
         }
 
-        if(storedState != nullptr){
-            this->stateStack.top()->Pause();
-            this->storedState->Start();
-            this->stateStack.push(std::make_unique<State>(this->storedState));
+        if(this->instance->storedState != nullptr){
+            this->instance->stateStack.top()->Pause();
+            this->instance->stateStack.push(this->instance->storedState);
+            this->instance->storedState->Start();
+            this->instance->storedState = nullptr;
         }
 
-        this->CalculateDeltaTime();
+        this->instance->CalculateDeltaTime();
         InputManager::GetInstance().Update();
 
-        this->GetCurrentState()->Update(dt);
-        this->GetCurrentState()->Render();
+        this->instance->GetCurrentState()->Update(this->instance->dt);
+        this->instance->GetCurrentState()->Render();
 
-        SDL_RenderPresent(this->renderer);
+        SDL_RenderPresent(this->instance->renderer);
 
         SDL_Delay(33);
     }
@@ -173,14 +193,14 @@ void Game::Run()
 void Game::CalculateDeltaTime()
 {
     int currentTicks = SDL_GetTicks();
-    auto deltaTicks = static_cast<float>(currentTicks) - this->dt;
+    auto deltaTicks = static_cast<float>(currentTicks) - this->instance->frameStart;
 
-    this->dt = deltaTicks / 1000;
+    this->instance->dt = deltaTicks / 1000;
 
-    frameStart = currentTicks;
+    this->instance->frameStart = currentTicks;
 }
 
 float Game::GetDeltaTime()
 {
-    return this->dt;
+    return this->instance->dt;
 }

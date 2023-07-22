@@ -35,22 +35,22 @@ PenguinBody::~PenguinBody()
 
 void PenguinBody::Start()
 {
-    auto bodyPtr = Game::GetInstance().GetState().GetObjectPtr(&associated);
+    auto bodyPtr = Game::GetInstance().GetCurrentState()->GetObjectPtr(&associated);
 
-    auto cannonGo = std::make_shared<GameObject>();
+    auto cannonGo = new GameObject();
     auto cannonPtr = new PenguinCannon(*cannonGo, bodyPtr);
     cannonGo->AddComponent(cannonPtr);
 
-    this->pcannon = Game::GetInstance().GetState().AddObject(cannonGo);
+    this->pcannon = Game::GetInstance().GetCurrentState()->AddObject(cannonGo);
 }
 void PenguinBody::Update(float dt)
 {
     InputManager &inputManager = InputManager::GetInstance();
 
-    const float maxSpeed = 30.0f;
+    const float maxSpeed = 20;
     // const float friction = 1.0f;
-    const float speedStep = 0.01f;
-    const float angleStep = 0.1f;
+    const float speedStep = 5;
+    const float angleStep = 50;
 
     auto speedChange = 0.0f;
     auto angleChange = 0.0f;
@@ -125,13 +125,13 @@ void PenguinBody::NotifyCollision(GameObject &other)
         associated.RequestDelete();
 
         // Explosion animation
-        auto exploGO = std::make_shared<GameObject>();
-        exploGO->AddComponent(new Sprite(*exploGO, "assets/img/penguindeath.png", 5, 400, 2000));
+        auto exploGO = new GameObject();
+        exploGO->AddComponent(new Sprite(*exploGO, "assets/img/penguindeath.png", 5, 0.400, 2));
         auto exploSOund = new Sound(*exploGO, "assets/audio/boom.wav");
         exploGO->AddComponent(exploSOund);
         exploGO->box.SetCenter(associated.box.GetCenter());
         exploSOund->Play();
-        Game::GetInstance().GetState().AddObject(exploGO);
+        Game::GetInstance().GetCurrentState()->AddObject(exploGO);
 
         Camera::Unfollow();
 

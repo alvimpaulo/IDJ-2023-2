@@ -44,6 +44,10 @@ bool State::QuitRequested(){
     return this->quitRequested;
 }
 
+bool State::IsStarted(){
+    return this->started;
+}
+
 void State::RenderArray(){
     for (size_t i = 0; i < objectArray.size(); i++)
     {

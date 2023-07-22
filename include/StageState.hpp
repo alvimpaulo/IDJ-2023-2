@@ -1,28 +1,25 @@
 #pragma once
+#include "State.hpp"
 #include "Sprite.hpp"
 #include "Music.hpp"
 #include <vector>
 #include <memory>
 #include "PenguinBody.hpp"
+#include "TileSet.hpp"
 
-class StageState
+class StageState : public State
 {
 private:
-    std::unique_ptr<Sprite> bg;
-    Music music;
-    bool quitRequested;
-    std::vector<std::shared_ptr<GameObject>> objectArray;
-    bool started;
+    TileSet *tileSet;
+    Music backgroundMusic;
 
 public:
     StageState();
     ~StageState();
-    bool QuitRequested();
     void LoadAssets();
     void Update(float dt);
     void Render();
     void Start();
-
-    std::weak_ptr<GameObject> AddObject(std::shared_ptr<GameObject> go);
-    std::weak_ptr<GameObject> GetObjectPtr(GameObject *go);
+    void Pause();
+    void Resume();
 };

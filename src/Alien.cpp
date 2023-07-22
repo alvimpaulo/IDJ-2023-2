@@ -10,6 +10,7 @@
 #include "Collider.hpp"
 #include "Bullet.hpp"
 #include "Sound.hpp"
+#include "PenguinBody.hpp"
 
 int Alien::alienCount = 0;
 
@@ -39,16 +40,16 @@ void Alien::Start()
     float arcStep = 360.0f / (float)nMinions;
     float arc = 0.0f;
 
-    std::weak_ptr<GameObject> alienPtr = Game::GetInstance().GetState().GetObjectPtr(&associated);
+    std::weak_ptr<GameObject> alienPtr = Game::GetInstance().GetCurrentState()->GetObjectPtr(&associated);
 
     if (alienPtr.lock() != nullptr)
     {
         for (int i = 0; i < nMinions; i++)
         {
-            auto minionObject = std::make_shared<GameObject>();
+            auto minionObject = new GameObject();
             auto minion = new Minion(*minionObject, alienPtr, arc);
             minionObject->AddComponent(minion);
-            auto wpMinionGO = Game::GetInstance().GetState().AddObject(minionObject);
+            auto wpMinionGO = Game::GetInstance().GetCurrentState()->AddObject(minionObject);
             minionArray.push_back(wpMinionGO);
 
             arc += arcStep;
@@ -62,7 +63,7 @@ void Alien::Start()
 
 void Alien::Update(float dt)
 {
-    float alienCooldown = 2000;
+    float alienCooldown = 2;
 
     if (state == RESTING)
     {
@@ -78,8 +79,8 @@ void Alien::Update(float dt)
         if (playerPtr)
         {
 
-            auto maxSpeed = 14.0f;
-            auto accel = 2.0f;
+            float maxSpeed = 10000;
+            auto accel = 2000;
 
             auto srcPos = this->associated.box.GetCenter();
             auto dstPos = destination;
@@ -147,7 +148,7 @@ void Alien::Update(float dt)
     }
 
     // rotate alien
-    auto angle = -0.05 * dt;
+    auto angle = 5 * dt;
 
     angle += associated.GetAngle();
     associated.SetAngle(angle);
@@ -177,12 +178,12 @@ void Alien::NotifyCollision(GameObject &other)
         associated.RequestDelete();
 
         // Explosion animation
-        auto exploGO = std::make_shared<GameObject>();
-        exploGO->AddComponent(new Sprite(*exploGO, "assets/img/aliendeath.png", 4, 500, 2000));
+        auto exploGO = new GameObject();
+        exploGO->AddComponent(new Sprite(*exploGO, "assets/img/aliendeath.png", 4, 0.500, 2));
         auto exploSOund = new Sound(*exploGO, "assets/audio/boom.wav");
         exploGO->AddComponent(exploSOund);
         exploGO->box.SetCenter(associated.box.GetCenter());
         exploSOund->Play();
-        Game::GetInstance().GetState().AddObject(exploGO);
+        Game::GetInstance().GetCurrentState()->AddObject(exploGO);
     }
 }

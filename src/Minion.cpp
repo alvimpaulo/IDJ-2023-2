@@ -26,7 +26,7 @@ Minion::Minion(GameObject &associated, std::weak_ptr<GameObject> alienCenter, fl
 void Minion::Update(float dt)
 {
 
-    const float ROT_SPEED = 0.1f; // deg
+    const float ROT_SPEED = 10; // deg
     const auto PIVOT_DIST = Vec2(200.0f, 0.0f);
 
     if (auto alienPtr = this->alienCenter.lock())
@@ -56,14 +56,14 @@ void Minion::Shoot(Vec2 target)
 {
     auto targetAngleRad = Vec2::GetAngleRad(this->associated.box.GetCenter(), target);
 
-    auto bulletObject = std::make_shared<GameObject>();
+    auto bulletObject = new GameObject();;
 
-    auto bullet = new Bullet(*bulletObject, targetAngleRad, 0.8f, 10, 1200, "assets/img/minionbullet2.png", 3, 1, true);
+    auto bullet = new Bullet(*bulletObject, targetAngleRad, 1000, 10, 1200, "assets/img/minionbullet2.png", 3, 1, true);
     bulletObject->AddComponent(bullet);
 
     bulletObject->box.SetCenter(this->associated.box.GetCenter());
 
-    auto bulletObj = Game::GetInstance().GetState().AddObject(bulletObject);
+    auto bulletObj = Game::GetInstance().GetCurrentState()->AddObject(bulletObject);
 }
 
 void Minion::NotifyCollision(GameObject &other)
