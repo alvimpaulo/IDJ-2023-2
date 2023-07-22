@@ -6,12 +6,14 @@
 #include <memory>
 #include "PenguinBody.hpp"
 #include "TileSet.hpp"
+#include "Alien.hpp"
 
 class StageState : public State
 {
 private:
     TileSet *tileSet;
     Music backgroundMusic;
+    Sprite* bgSprite;
 
 public:
     StageState();
@@ -22,4 +24,7 @@ public:
     void Start();
     void Pause();
     void Resume();
+
+    std::vector<GameObject*> aliens;
+    void AddAlien();
 };

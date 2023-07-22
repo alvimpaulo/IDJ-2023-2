@@ -11,12 +11,13 @@
 #include "Bullet.hpp"
 #include "Sound.hpp"
 #include "PenguinBody.hpp"
+#include <random>
 
 int Alien::alienCount = 0;
 
 Alien::Alien(GameObject &associated, int nMinions = 0) : Component(associated)
 {
-    this->hp = 10;
+    this->hp = 100;
     this->speed = Vec2(0, 0);
     this->nMinions = nMinions;
     Alien::alienCount += 1;
@@ -63,11 +64,16 @@ void Alien::Start()
 
 void Alien::Update(float dt)
 {
+    std::random_device dev;
+	std::mt19937 rng(dev());
+	std::uniform_real_distribution<> distOffset(0.001, 0.030);
+
     float alienCooldown = 2;
+    
 
     if (state == RESTING)
     {
-        restTimer.Update(dt);
+        restTimer.Update(dt - distOffset(rng));
         auto playerPtr = PenguinBody::player;
         if (playerPtr)
             destination = playerPtr->associated.box.GetCenter();

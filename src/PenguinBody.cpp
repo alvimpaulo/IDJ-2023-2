@@ -16,7 +16,7 @@ PenguinBody::PenguinBody(GameObject &associated) : Component(associated)
     speed = {0.0f, 0.0f};
 
     linearSpeed = 0.0f;
-    hp = 10;
+    hp = 20;
 
     auto ptrSprite = new Sprite(associated, "assets/img/penguin.png");
 
@@ -49,8 +49,8 @@ void PenguinBody::Update(float dt)
 
     const float maxSpeed = 20;
     // const float friction = 1.0f;
-    const float speedStep = 5;
-    const float angleStep = 50;
+    const float speedStep = 10;
+    const float angleStep = 100;
 
     auto speedChange = 0.0f;
     auto angleChange = 0.0f;
@@ -88,7 +88,12 @@ void PenguinBody::Update(float dt)
     speed.x = std::max(std::min(speed.x, maxSpeed), -maxSpeed);
     speed.y = std::max(std::min(speed.y, maxSpeed), -maxSpeed);
 
-    auto dest = associated.box.GetCenter() + speed;
+    Vec2 dest = associated.box.GetCenter() + speed;
+
+    dest.x = std::min(std::max(dest.x, 0.0f), 1408.0f);    
+    dest.y = std::min(std::max(dest.y, 0.0f), 1280.0f);    
+
+
     associated.box.SetCenter(dest);
 
     if (hp <= 0)
