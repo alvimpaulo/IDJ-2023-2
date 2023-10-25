@@ -2,6 +2,7 @@
 #include "Allocator.h"
 #include "Fault.h"
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 

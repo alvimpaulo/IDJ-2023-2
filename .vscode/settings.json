@@ -82,5 +82,6 @@
         "span": "cpp",
         "stdfloat": "cpp",
         "strstream": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

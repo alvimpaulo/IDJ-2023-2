@@ -21,13 +21,24 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")   # binary destination
 
-set(src_dir "${PROJECT_SOURCE_DIR}/src")
-set(header_dir "${PROJECT_SOURCE_DIR}/include")
+file(GLOB_RECURSE SRC_DIR LIST_DIRECTORIES true "${PROJECT_SOURCE_DIR}/src/*")
+list(FILTER SRC_DIR EXCLUDE REGEX ^.+\.cpp$)
+list(FILTER SRC_DIR EXCLUDE REGEX ^.+\.c$)
+string(APPEND SRC_DIR ";${PROJECT_SOURCE_DIR}/src")
 
-file(
-  GLOB src_files "${src_dir}/*.cpp" 
-  "${header_dir}/*.hpp"
-)
+message(SRC_DIR="${SRC_DIR}"\n\n)
+
+file(GLOB_RECURSE HEADER_DIR LIST_DIRECTORIES true "${PROJECT_SOURCE_DIR}/include/*")
+list(FILTER HEADER_DIR EXCLUDE REGEX ^.+\.hpp$)
+list(FILTER HEADER_DIR EXCLUDE REGEX ^.+\.h$)
+string(APPEND HEADER_DIR ";${PROJECT_SOURCE_DIR}/include")
+
+message(HEADER_DIR="${HEADER_DIR}"\n\n)
+
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE SRC_DIR CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/*.cpp)
+
+file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/include/*.hpp)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
   # target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wunreachable-code -pedantic -Wfloat-equal -ggdb -Og -DDEBUG)
@@ -58,15 +69,16 @@ endif()
 cmake_print_variables(SDL2_LIBRARIES SDL2_IMAGE_LIBRARIES)
 
 ADD_LIBRARY(${PROJECT_NAME} 
-    ${src_files}
+    ${SRC_FILES}
+    ${HEADER_FILES}
 )
-target_include_directories(${PROJECT_NAME} PUBLIC "${SDL2_INCLUDE_DIRS}" "${SDL2_IMAGE_INCLUDE_DIRS}" "${header_dir}")
+target_include_directories(${PROJECT_NAME} PUBLIC "${SDL2_INCLUDE_DIRS}" "${SDL2_IMAGE_INCLUDE_DIRS}" "${HEADER_DIR}")
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARIES} SDL2::Image SDL2::TTF SDL2::Mixer)
 
 # Executable
 add_executable(jogo src/main.cpp)
 
-target_include_directories(jogo PUBLIC "${header_dir}")
+target_include_directories(jogo PUBLIC "${HEADER_DIR}")
 target_link_libraries(jogo  PUBLIC ${PROJECT_NAME})
 
 
