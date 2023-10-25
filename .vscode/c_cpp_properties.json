@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${default}",
-                "/usr/include/SDL2"
+                "/usr/include/SDL2",
+                "/home/paulo/unb/IDJ-2/trab1/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
