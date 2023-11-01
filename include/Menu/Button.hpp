@@ -18,5 +18,4 @@ public:
     void NotifyCollision(GameObject &other);
 
     bool isSelected;
-    bool isVisible;
 };

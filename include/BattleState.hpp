@@ -5,7 +5,7 @@
 class BattleState : public State
 {
 private:
-    Sprite* bgSprite;
+    Sprite *bgSprite;
 
 public:
     BattleState();
@@ -16,4 +16,8 @@ public:
     void Start();
     void Pause();
     void Resume();
+    std::shared_ptr<GameObject> getFirstObjectByComponent(std::string type);
+    static GameObject* selectedCharecter;
+    static GameObject* selectedenemy;
+
 };

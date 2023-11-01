@@ -8,8 +8,8 @@ TileSet::TileSet(int tileWidth,
     this->tileWidth = tileWidth;
     this->tileHeight = tileHeight;
      
-    int height = tileSet.GetScaledHeight();
-    int width = tileSet.GetScaledWidth();
+    int height = tileSet.associated.getScaledBox().h;
+    int width = tileSet.associated.getScaledBox().w;
 
     rows = height / tileHeight;
     columns = width / tileWidth;

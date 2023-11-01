@@ -14,7 +14,6 @@ private:
     int height;
     int opacity;
     SDL_Rect clipRect;
-    Vec2 scale;
     int frameCount;
     int currentFrame;
     float timeElapsed;
@@ -34,13 +33,9 @@ public:
     void SetClip(int x, int y, int w, int h);
     void Render(float x, float y, float w, float h);
     void Render();
-    int GetScaledWidth();
-    int GetScaledHeight();
     bool IsOpen();
     bool Is(std::string type);
     void Update(float dt);
-    void SetScale(Vec2 scale);
-    Vec2 GetScale();
     void SetFrame(int frame);
     void SetFrameCount(int frameCount);
     void SetFrameTime(float frameTime);

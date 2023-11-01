@@ -7,13 +7,16 @@
 Mushroom::Mushroom(GameObject &associated) : Component(associated)
 {
     this->hp = 100;
+    this->isVisible = true;
+
+
+    this->associated.setScale(Vec2(5,5));
 
     auto mushroomSprite = new Sprite(associated, "assets/img/Monsters/Mushroom/NewIdle.png", 4, 0.1, 0, 255, true, false);
-    mushroomSprite->SetScale(Vec2(5, 5));
     this->associated.AddComponent(mushroomSprite);
 
+
     auto collider = new Collider(associated);
-    collider->SetScale(Vec2(5, 5));
     this->associated.AddComponent(collider);
 }
 
@@ -27,6 +30,16 @@ void Mushroom::Start()
 
 void Mushroom::Update(float dt)
 {
+
+    if (this->isVisible)
+    {
+        associated.setBoxX(SCREEN_WIDTH - associated.getScaledBox().w - 50);
+        associated.setBoxY(SCREEN_HEIGHT - associated.getScaledBox().h - (SCREEN_HEIGHT/10));
+    }
+    else
+    {
+        associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
+    }
 }
 
 void Mushroom::Render()

@@ -17,6 +17,10 @@ private:
     Vec2 speed;
     float linearSpeed;
     float angle;
-    int hp;
+    int currentHp;
+    int maxHp;
+    int damage;
+    int str;
+    int wis;
 
 };

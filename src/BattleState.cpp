@@ -43,7 +43,7 @@ BattleState::BattleState()
 
 	auto attackButtonObj = new GameObject();
 	auto attackButton = new Button(*attackButtonObj, Button::ATTACK);
-	attackButton->isVisible = true;
+	attackButton->setIsVisible(true);
 	attackButtonObj->AddComponent(attackButton);
 	this->AddObject(attackButtonObj);
 
@@ -59,8 +59,6 @@ BattleState::BattleState()
 
 	auto mushroomObj = new GameObject();
 	auto mushroom = new Mushroom(*mushroomObj);
-	auto mushroomSprite = (Sprite *)mushroom->associated.GetComponent("Sprite");
-	mushroomObj->setBoxCenter(Vec2(SCREEN_WIDTH - (mushroomSprite->GetScaledWidth()), SCREEN_HEIGHT - mushroomSprite->GetScaledHeight() - 100));
 	mushroomObj->AddComponent(mushroom);
 	this->AddObject(mushroomObj);
 
@@ -93,13 +91,22 @@ void BattleState::Start()
 void BattleState::Update(float dt)
 {
 	// camera update
-	Camera::Update(dt);
+	// Camera::Update(dt);
 
 	std::vector<std::pair<std::shared_ptr<GameObject>, Collider *>> colliders;
 
 	if (InputManager::GetInstance().QuitRequested() || InputManager::GetInstance().KeyPress(ESCAPE_KEY))
 	{
 		this->quitRequested = true;
+	}
+	if (InputManager::GetInstance().KeyPress(SDLK_SPACE))
+	{
+		auto mushroomComponent = this->getFirstObjectByComponent("Mushroom");
+		if(mushroomComponent){
+			auto mushroomPtr = (Mushroom*) mushroomComponent->GetComponent("Mushroom");
+			mushroomPtr->setIsVisible(!(mushroomPtr->getIsVisible()));
+		}
+		
 	}
 
 	UpdateArray(dt);
@@ -152,4 +159,17 @@ void BattleState::Pause()
 
 void BattleState::Resume()
 {
+}
+
+std::shared_ptr<GameObject> BattleState::getFirstObjectByComponent(std::string type)
+{
+	for (size_t i = 0; i < objectArray.size(); i++)
+	{
+		if (objectArray[i]->GetComponent(type))
+		{
+			return objectArray[i];
+		}
+	}
+
+	return nullptr;
 }

@@ -7,7 +7,6 @@
 Sprite::Sprite(GameObject &associated) : Component(associated)
 {
     texture = nullptr;
-    this->scale = Vec2(1, 1);
     this->currentFrame = 0;
     this->frameCount = 1;
     this->frameTime = 1;
@@ -23,7 +22,6 @@ Sprite::Sprite(GameObject &associated, std::string file, int frameCount,
 {
 
     texture = nullptr;
-    this->scale = Vec2(1, 1);
     this->currentFrame = 0;
     this->frameCount = frameCount;
     this->frameTime = frameTime;
@@ -85,10 +83,10 @@ void Sprite::Open(std::string file)
 
     width = width / frameCount;
 
-    this->SetClip(0, 0, GetScaledWidth(), GetScaledHeight());
+    this->SetClip(0, 0, width, height);
 
-    this->associated.setBoxW(float(GetScaledWidth()));
-    this->associated.setBoxH(float(GetScaledHeight()));
+    this->associated.setBoxW(float(width));
+    this->associated.setBoxH(float(height));
 }
 
 void Sprite::SetClip(int x, int y, int w, int h)
@@ -109,8 +107,8 @@ void Sprite::Render(float x, float y, float w, float h)
     SDL_Rect dstRect = SDL_Rect();
     dstRect.x = (int)(round(x));
     dstRect.y = (int)(round(y));
-    dstRect.w = (int)(round(w * scale.x));
-    dstRect.h = (int)(round(h * scale.y));
+    dstRect.w = (int)(round(w));
+    dstRect.h = (int)(round(h));
 
     int result = 0;
 
@@ -132,35 +130,15 @@ void Sprite::Render(float x, float y, float w, float h)
 void Sprite::Render()
 {
 
-    float renderX = associated.getBox().x - Camera::pos.x;
-    float renderY = associated.getBox().y - Camera::pos.y;
+    float renderX = associated.getBox().x;
+    float renderY = associated.getBox().y;
 
-    Render(renderX, renderY, associated.getBox().w, associated.getBox().h);
-}
-
-int Sprite::GetScaledHeight()
-{
-    return this->height * (int)this->scale.y;
-}
-
-int Sprite::GetScaledWidth()
-{
-    return this->width * (int)this->scale.x;
+    Render(renderX, renderY, associated.getScaledBox().w, associated.getScaledBox().h);
 }
 
 bool Sprite::IsOpen()
 {
     return texture != nullptr;
-}
-
-void Sprite::SetScale(Vec2 scale)
-{
-    this->scale = scale;
-}
-
-Vec2 Sprite::GetScale()
-{
-    return this->scale;
 }
 
 void Sprite::SetFrame(int frame)
@@ -181,8 +159,8 @@ void Sprite::SetFrameCount(int frameCount)
     this->frameCount = frameCount;
     SetFrame(0);
 
-    this->associated.setBoxW(float(GetScaledWidth()));
-    this->associated.setBoxH(float(GetScaledHeight()));
+    this->associated.setBoxW(float(width));
+    this->associated.setBoxH(float(height));
 }
 void Sprite::SetFrameTime(float frameTime)
 {
@@ -201,5 +179,5 @@ int Sprite::getFrameCount()
 
 int Sprite::getSingleFrameWidth()
 {
-    return GetScaledWidth() / frameCount;
+    return associated.getBox().w / frameCount;
 }

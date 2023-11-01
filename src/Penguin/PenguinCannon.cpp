@@ -62,7 +62,7 @@ void PenguinCannon::Shoot()
 
             if (auto spritePtr = (Sprite *)bodyGO->GetComponent("Sprite"))
             {
-                startPos.x += (float)spritePtr->GetScaledWidth() / 2;
+                startPos.x += bodyGO->getScaledBox().w / 2;
 
                 startPos = startPos.GetRotatedRad((float)Vec2::deg2rad(associated.angleDeg));
 
@@ -78,8 +78,6 @@ void PenguinCannon::Shoot()
 
         timerLastShot.Restart();
     }
-
-     
 }
 
 void PenguinCannon::NotifyCollision(GameObject &other)

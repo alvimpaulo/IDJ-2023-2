@@ -3,7 +3,7 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 
-Button::Button(GameObject &associated, ButtonType type) : Component(associated), isSelected(false), isVisible(true)
+Button::Button(GameObject &associated, ButtonType type) : Component(associated), isSelected(false)
 {
     Sprite* ptrSprite;
     switch (type)

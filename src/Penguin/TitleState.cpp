@@ -58,14 +58,13 @@ void TitleState::Pause()
 }
 void TitleState::Resume()
 {
-    
 
     auto sprite = (Sprite *)this->objectArray[0]->GetComponent("Sprite");
-    sprite->SetClip(0, 0, sprite->GetScaledWidth(), sprite->GetScaledHeight());
+    sprite->SetClip(0, 0, sprite->associated.getScaledBox().w, sprite->associated.getScaledBox().h);
     Camera::Unfollow();
 
     auto text = (Text *)this->objectArray[1]->GetComponent("Text");
     this->objectArray[1]->setBoxCenter(Vec2(480.f, 500.f));
 
-    Camera::pos = Vec2(0,0);
+    Camera::pos = Vec2(0, 0);
 }

@@ -16,7 +16,7 @@ Minion::Minion(GameObject &associated, std::weak_ptr<GameObject> alienCenter, fl
     std::mt19937 gen(rd());                         // seed the generator
     std::uniform_real_distribution<> distr(1, 1.5); // define the range
     float minionScale = (float)distr(gen);
-    minionSprite->SetScale(Vec2(minionScale, minionScale));
+    associated.setScale(Vec2(minionScale, minionScale));
 
     associated.AddComponent(minionSprite);
 

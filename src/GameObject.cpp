@@ -12,7 +12,7 @@ GameObject::GameObject()
     this->angleDeg = 0;
     this->box = Rect();
     this->components = std::vector<std::unique_ptr<Component>>();
-    this->scale = Vec2(1,1);
+    this->scale = Vec2(1, 1);
 }
 GameObject::~GameObject()
 {
@@ -114,6 +114,11 @@ void GameObject::NotifyCollision(GameObject &other)
     }
 }
 
+Vec2 GameObject::getScale()
+{
+    return this->scale;
+}
+
 void GameObject::setScale(Vec2 scale)
 {
     this->scale = scale;
@@ -121,26 +126,41 @@ void GameObject::setScale(Vec2 scale)
 
 void GameObject::setBoxCenter(Vec2 center)
 {
-    this->box.x = center.x - (this->box.w * this->scale.x) /2;
+    this->box.x = center.x - (this->box.w * this->scale.x) / 2;
     this->box.y = center.y - (this->box.h * this->scale.y) / 2;
-} 
+}
 
-Rect GameObject::getBox(){
+Rect GameObject::getBox()
+{
     return this->box;
 }
 
-void GameObject::setBoxX(int x){
+void GameObject::setBoxX(int x)
+{
     this->box.x = x;
 }
 
-void GameObject::setBoxY(int y){
+void GameObject::setBoxY(int y)
+{
     this->box.y = y;
 }
 
-void GameObject::setBoxW(int w){
+void GameObject::setBoxW(int w)
+{
     this->box.w = w;
 }
 
-void GameObject::setBoxH(int h){
+void GameObject::setBoxH(int h)
+{
     this->box.h = h;
+}
+
+Rect GameObject::getScaledBox()
+{
+    Rect newBox;
+    newBox.x = this->box.x;
+    newBox.y = this->box.y;
+    newBox.w = this->box.w * this->scale.x;
+    newBox.h = this->box.h * this->scale.y;
+    return newBox;
 }

@@ -6,16 +6,9 @@
 
 Collider::Collider(GameObject &associated, Vec2 scale, Vec2 offset) : Component(associated)
 {
-    this->scale = scale;
     this->offset = offset;
     this->box = associated.getBox();
 }
-
-void Collider::SetScale(Vec2 scale)
-{
-    this->scale = scale;
-}
-
 void Collider::SetOffset(Vec2 offset)
 {
     this->offset = offset;
@@ -50,8 +43,8 @@ void Collider::Render()
 void Collider::Update(float dt)
 {
     box = associated.getBox();
-    box.w = box.w * scale.x;
-    box.h = box.h * scale.y;
+    box.w = box.w * associated.getScale().x;
+    box.h = box.h * associated.getScale().y;
 
     auto center = associated.getBox().GetCenter();
     center += offset;

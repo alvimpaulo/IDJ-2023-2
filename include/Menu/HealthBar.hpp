@@ -3,7 +3,11 @@
 
 class HealthBar : public Component
 {
+private:
+    int maxHp;
+    int currentHp;
+    std::tuple<int, int, int> color;
+
 public:
-    HealthBar();
-    ~HealthBar();
+    HealthBar(GameObject &associated, int maxHp, int currentHp);
 };

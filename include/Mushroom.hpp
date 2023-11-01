@@ -8,7 +8,11 @@ class Mushroom : public Component
 {
 private:
     int hp;
-    enum MushroomState { MOVING, RESTING };
+    enum MushroomState
+    {
+        MOVING,
+        RESTING
+    };
     Timer restTimer;
     Vec2 destination;
 
@@ -19,7 +23,5 @@ public:
     void Update(float dt);
     void Render();
     bool Is(std::string type);
-    void NotifyCollision (GameObject& other );
+    void NotifyCollision(GameObject &other);
 };
-
-

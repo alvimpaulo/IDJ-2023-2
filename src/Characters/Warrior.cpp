@@ -11,13 +11,15 @@ Warrior::Warrior(GameObject &associated) : Component(associated)
     speed = {0.0f, 0.0f};
 
     linearSpeed = 0.0f;
-    hp = 20;
+    currentHp = 20;
+
+    associated.setScale(Vec2(3, 3));
+
     auto ptrSprite = new Sprite(associated, "assets/img/Warrior/NewIdle.png", 10, 0.1);
-    ptrSprite->SetScale(Vec2(3,3));
 
     associated.AddComponent(ptrSprite);
 
-    auto collider = new Collider(associated, {3,3});
+    auto collider = new Collider(associated);
     this->associated.AddComponent(collider);
 
     player = this;
@@ -35,9 +37,10 @@ void Warrior::Start()
 void Warrior::Update(float dt)
 {
 
-    associated.setBoxCenter(Vec2(100, 100));
+    associated.setBoxX(0 + 50);
+    associated.setBoxY(SCREEN_HEIGHT - associated.getScaledBox().h - (SCREEN_HEIGHT/10));
 
-    if (hp <= 0)
+    if (currentHp <= 0)
     {
         this->associated.RequestDelete();
     }
@@ -53,7 +56,7 @@ bool Warrior::Is(std::string type)
 void Warrior::NotifyCollision(GameObject &other)
 {
 
-    if (hp <= 0)
+    if (currentHp <= 0)
     {
         associated.RequestDelete();
     }

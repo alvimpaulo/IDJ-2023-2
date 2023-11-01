@@ -3,8 +3,13 @@
 #include "GameObject.hpp"
 class Component
 {
+protected:
+    bool isVisible;
+
 public:
     Component(GameObject &associated);
+    void setIsVisible(bool newState);
+    bool getIsVisible();
     virtual ~Component();
     virtual void Update(float dt) = 0;
     virtual void Render() = 0;

@@ -30,12 +30,14 @@ public:
     Component *GetComponent(std::string type);
     void NotifyCollision(GameObject &other);
     void setScale(Vec2 scale);
+    Vec2 getScale();
     void setBoxCenter(Vec2(center));
     Rect getBox();
     void setBoxX(int x);
     void setBoxY(int y);
     void setBoxW(int w);
     void setBoxH(int h);
+    Rect getScaledBox();
 
     bool started;
     float angleDeg;
