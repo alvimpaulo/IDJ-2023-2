@@ -31,23 +31,23 @@ void Camera::Update(float dt)
     }
     else
     {
-        if (InputManager::GetInstance().IsKeyDown(SDLK_DOWN))
-        {
-            Camera::pos.y += 5;
-        }
-        if (InputManager::GetInstance().IsKeyDown(SDLK_UP))
-        {
-            Camera::pos.y -= 5;
-        }
+        // if (InputManager::GetInstance().IsKeyDown(SDLK_DOWN))
+        // {
+        //     Camera::pos.y += 5;
+        // }
+        // if (InputManager::GetInstance().IsKeyDown(SDLK_UP))
+        // {
+        //     Camera::pos.y -= 5;
+        // }
 
-        if (InputManager::GetInstance().IsKeyDown(SDLK_RIGHT))
-        {
-            Camera::pos.x += 5;
-        }
-        if (InputManager::GetInstance().IsKeyDown(SDLK_LEFT))
-        {
-            Camera::pos.x-= 5;
-        }
+        // if (InputManager::GetInstance().IsKeyDown(SDLK_RIGHT))
+        // {
+        //     Camera::pos.x += 5;
+        // }
+        // if (InputManager::GetInstance().IsKeyDown(SDLK_LEFT))
+        // {
+        //     Camera::pos.x-= 5;
+        // }
 
         // Camera::pos.x += Camera::speed.x * dt;
         // Camera::pos.y += Camera::speed.y * dt;
