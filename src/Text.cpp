@@ -25,16 +25,16 @@ Text::~Text()
     }
 }
 
-void Text::Update(float dt){
-
+void Text::Update(float dt)
+{
 }
 
 void Text::Render()
 {
-    auto dstPos = associated.box.GetCenter() - Camera::pos;
+    auto dstPos = associated.getBox().GetCenter() - Camera::pos;
 
-    SDL_Rect clipRect{0, 0, (int)associated.box.w, (int)associated.box.h};
-    SDL_Rect dstRect{(int)dstPos.x, (int)dstPos.y, (int)associated.box.w, (int)associated.box.h};
+    SDL_Rect clipRect{0, 0, (int)associated.getBox().w, (int)associated.getBox().h};
+    SDL_Rect dstRect{(int)dstPos.x, (int)dstPos.y, (int)associated.getBox().w, (int)associated.getBox().h};
 
     int error = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(),
                                  texture, &clipRect, &dstRect, associated.angleDeg, nullptr, SDL_FLIP_NONE);
@@ -96,13 +96,14 @@ void Text::RemakeTexture()
     }
 
     texture = SDL_CreateTextureFromSurface(Game::GetInstance().GetRenderer(), surface);
-    if(!texture){
+    if (!texture)
+    {
         std::cerr << "Error: Não criou a textura com SDL_CreateTextureFromSurface" << std::endl;
         return;
     }
 
-    associated.box.w = (float)surface->w;
-    associated.box.h = (float)surface->h;
+    associated.setBoxW((float)surface->w);
+    associated.setBoxH((float)surface->h);
 
     SDL_FreeSurface(surface);
 }

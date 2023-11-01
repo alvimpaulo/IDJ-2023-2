@@ -29,13 +29,13 @@ Bullet::Bullet(GameObject &associated,
 }
 void Bullet::Update(float dt)
 {
-    auto srcPos = this->associated.box.GetCenter();
+    auto srcPos = this->associated.getBox().GetCenter();
 
     Vec2 dstPos = srcPos + (this->speed * dt);
 
     auto distance = Vec2::GetDistancePix(srcPos, dstPos);
 
-    this->associated.box.SetCenter(dstPos);
+    this->associated.setBoxCenter(dstPos);
     distanceLeft -= distance;
 
     if (this->distanceLeft - distance <= 0)

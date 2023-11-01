@@ -24,7 +24,7 @@ TitleState::TitleState()
     textObject->AddComponent(textComponent);
     AddObject(textObject);
 
-    textObject->box.SetCenter(Vec2(480.f, 500.f));
+    textObject->setBoxCenter(Vec2(480.f, 500.f));
 }
 TitleState::~TitleState()
 {
@@ -61,11 +61,11 @@ void TitleState::Resume()
     
 
     auto sprite = (Sprite *)this->objectArray[0]->GetComponent("Sprite");
-    sprite->SetClip(0, 0, sprite->GetWidth(), sprite->GetHeight());
+    sprite->SetClip(0, 0, sprite->GetScaledWidth(), sprite->GetScaledHeight());
     Camera::Unfollow();
 
     auto text = (Text *)this->objectArray[1]->GetComponent("Text");
-    this->objectArray[1]->box.SetCenter(Vec2(480.f, 500.f));
+    this->objectArray[1]->setBoxCenter(Vec2(480.f, 500.f));
 
     Camera::pos = Vec2(0,0);
 }

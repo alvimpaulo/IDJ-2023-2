@@ -32,9 +32,9 @@ void PenguinCannon::Update(float dt)
     auto mousePos = Vec2((float)inputManager.GetMouseX(), (float)inputManager.GetMouseY());
     mousePos += Camera::pos;
 
-    associated.box.SetCenter(bodyPtr->box.GetCenter());
+    associated.setBoxCenter(bodyPtr->getBox().GetCenter());
 
-    associated.angleDeg = (float)Vec2::rad2deg(Vec2::GetAngleRad(associated.box.GetCenter(), mousePos));
+    associated.angleDeg = (float)Vec2::rad2deg(Vec2::GetAngleRad(associated.getBox().GetCenter(), mousePos));
 
     if (inputManager.MousePress(LEFT_MOUSE_BUTTON))
     {
@@ -62,17 +62,17 @@ void PenguinCannon::Shoot()
 
             if (auto spritePtr = (Sprite *)bodyGO->GetComponent("Sprite"))
             {
-                startPos.x += (float)spritePtr->GetWidth() / 2;
+                startPos.x += (float)spritePtr->GetScaledWidth() / 2;
 
                 startPos = startPos.GetRotatedRad((float)Vec2::deg2rad(associated.angleDeg));
 
-                startPos += associated.box.GetCenter();
+                startPos += associated.getBox().GetCenter();
             }
         }
 
         bulletObject->AddComponent(bullet);
 
-        bulletObject->box.SetCenter(startPos);
+        bulletObject->setBoxCenter(startPos);
 
         auto bulletObj = Game::GetInstance().GetCurrentState()->AddObject(bulletObject);
 

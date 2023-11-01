@@ -8,7 +8,7 @@ Collider::Collider(GameObject &associated, Vec2 scale, Vec2 offset) : Component(
 {
     this->scale = scale;
     this->offset = offset;
-    this->box = associated.box;
+    this->box = associated.getBox();
 }
 
 void Collider::SetScale(Vec2 scale)
@@ -25,7 +25,7 @@ bool Collider::Is(std::string type) { return type == "Collider"; }
 
 void Collider::Render()
 {
-#ifdef DEBUG
+#ifndef NDEBUG
     Vec2 center(box.GetCenter());
     SDL_Point points[5];
 
@@ -49,14 +49,14 @@ void Collider::Render()
 
 void Collider::Update(float dt)
 {
-    box = associated.box;
+    box = associated.getBox();
     box.w = box.w * scale.x;
-    box.y = box.y * scale.y;
+    box.h = box.h * scale.y;
 
-    auto center = associated.box.GetCenter();
+    auto center = associated.getBox().GetCenter();
     center += offset;
 
-    box.SetCenter(center);
+    // box.SetCenter(center);
 }
 
 bool Collider::IsColliding(const Rect &a, const Rect &b, const float &angleOfA, const float &angleOfB)

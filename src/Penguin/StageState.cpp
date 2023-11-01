@@ -49,7 +49,7 @@ StageState::StageState()
 	{
 		auto alienObject = new GameObject();
 		auto alien = new Alien(*alienObject, distMinions(rng));
-		alienObject->box.SetCenter(Vec2(distXAlien(rng), distYAlien(rng)));
+		alienObject->setBoxCenter(Vec2(distXAlien(rng), distYAlien(rng)));
 		alienObject->AddComponent(alien);
 
 		this->AddObject(alienObject);
@@ -60,7 +60,7 @@ StageState::StageState()
 	auto body = new PenguinBody(*bodyObject);
 	bodyObject->AddComponent(body);
 
-	bodyObject->box.SetCenter(Vec2(704, 640));
+	bodyObject->setBoxCenter(Vec2(704, 640));
 	Camera::Follow(bodyObject);
 
 	this->AddObject(bodyObject);

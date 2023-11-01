@@ -5,12 +5,13 @@
 #include <memory>
 
 class Component;
-
 class GameObject
 {
 private:
     std::vector<std::unique_ptr<Component>> components;
     bool isDead;
+    Vec2 scale;
+    Rect box;
 
 public:
     GameObject();
@@ -28,8 +29,14 @@ public:
     double GetAngle();
     Component *GetComponent(std::string type);
     void NotifyCollision(GameObject &other);
+    void setScale(Vec2 scale);
+    void setBoxCenter(Vec2(center));
+    Rect getBox();
+    void setBoxX(int x);
+    void setBoxY(int y);
+    void setBoxW(int w);
+    void setBoxH(int h);
 
-    Rect box;
     bool started;
     float angleDeg;
 };

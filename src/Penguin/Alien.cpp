@@ -76,7 +76,7 @@ void Alien::Update(float dt)
         restTimer.Update(dt - distOffset(rng));
         auto playerPtr = PenguinBody::player;
         if (playerPtr)
-            destination = playerPtr->associated.box.GetCenter();
+            destination = playerPtr->associated.getBox().GetCenter();
     }
 
     if (restTimer.Get() > alienCooldown)
@@ -88,7 +88,7 @@ void Alien::Update(float dt)
             float maxSpeed = 10000;
             auto accel = 2000;
 
-            auto srcPos = this->associated.box.GetCenter();
+            auto srcPos = this->associated.getBox().GetCenter();
             auto dstPos = destination;
             auto deltaPos = dstPos - srcPos;
 
@@ -108,21 +108,21 @@ void Alien::Update(float dt)
                 this->speed.x = 0;
                 this->speed.y = 0;
 
-                this->associated.box.SetCenter(destination);
+                this->associated.setBoxCenter(destination);
 
                 state = RESTING;
 
                 this->restTimer.Restart();
 
                 // Shoot
-                auto playerPos = PenguinBody::player->associated.box.GetCenter();
+                auto playerPos = PenguinBody::player->associated.getBox().GetCenter();
                 int closestMinionIdx = 0;
                 float closestMinionDist = std::numeric_limits<float>::infinity();
                 for (int i = 0; i < nMinions; i++)
                 {
                     if (auto minionLock = minionArray[i].lock())
                     {
-                        auto minionPos = minionLock->box.GetCenter();
+                        auto minionPos = minionLock->getBox().GetCenter();
                         auto minionDist = Vec2::GetDistancePix(playerPos, minionPos);
                         if (minionDist <= closestMinionDist)
                         {
@@ -146,8 +146,8 @@ void Alien::Update(float dt)
             }
             else
             {
-                this->associated.box.x += this->speed.x;
-                this->associated.box.y += this->speed.y;
+                this->associated.setBoxX(this->associated.getBox().x + this->speed.x);
+                this->associated.setBoxY(this->associated.getBox().y + this->speed.y);
                 state = MOVING;
             }
         }
@@ -188,7 +188,7 @@ void Alien::NotifyCollision(GameObject &other)
         exploGO->AddComponent(new Sprite(*exploGO, "assets/img/Penguin/aliendeath.png", 4, 0.500, 2));
         auto exploSOund = new Sound(*exploGO, "assets/audio/boom.wav");
         exploGO->AddComponent(exploSOund);
-        exploGO->box.SetCenter(associated.box.GetCenter());
+        exploGO->setBoxCenter(associated.getBox().GetCenter());
         exploSOund->Play();
         Game::GetInstance().GetCurrentState()->AddObject(exploGO);
     }

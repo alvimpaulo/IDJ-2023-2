@@ -11,8 +11,8 @@ GameObject::GameObject()
     this->started = false;
     this->angleDeg = 0;
     this->box = Rect();
-    this->components = std::vector<std::unique_ptr<Component>>(); 
-    
+    this->components = std::vector<std::unique_ptr<Component>>();
+    this->scale = Vec2(1,1);
 }
 GameObject::~GameObject()
 {
@@ -98,7 +98,7 @@ bool GameObject::IsEmpty()
 
 void GameObject::SetAngle(double newAngle)
 {
-    angleDeg = (float) newAngle;
+    angleDeg = (float)newAngle;
 }
 
 double GameObject::GetAngle()
@@ -106,10 +106,41 @@ double GameObject::GetAngle()
     return angleDeg;
 }
 
-void GameObject::NotifyCollision(GameObject &other){
+void GameObject::NotifyCollision(GameObject &other)
+{
     for (size_t i = 0; i < this->components.size(); i++)
     {
         components[i]->NotifyCollision(other);
     }
-    
+}
+
+void GameObject::setScale(Vec2 scale)
+{
+    this->scale = scale;
+}
+
+void GameObject::setBoxCenter(Vec2 center)
+{
+    this->box.x = center.x - (this->box.w * this->scale.x) /2;
+    this->box.y = center.y - (this->box.h * this->scale.y) / 2;
+} 
+
+Rect GameObject::getBox(){
+    return this->box;
+}
+
+void GameObject::setBoxX(int x){
+    this->box.x = x;
+}
+
+void GameObject::setBoxY(int y){
+    this->box.y = y;
+}
+
+void GameObject::setBoxW(int w){
+    this->box.w = w;
+}
+
+void GameObject::setBoxH(int h){
+    this->box.h = h;
 }

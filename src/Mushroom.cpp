@@ -2,15 +2,18 @@
 #include "GameObject.hpp"
 #include "Sprite.hpp"
 #include "Collider.hpp"
+#include "Game.hpp"
 
 Mushroom::Mushroom(GameObject &associated) : Component(associated)
 {
     this->hp = 100;
 
-    auto alienSprite = new Sprite(associated, "assets/img/Monsters/Mushroom/Idle.png", 4, 10);
-    this->associated.AddComponent(alienSprite);
+    auto mushroomSprite = new Sprite(associated, "assets/img/Monsters/Mushroom/NewIdle.png", 4, 0.1, 0, 255, true, false);
+    mushroomSprite->SetScale(Vec2(5, 5));
+    this->associated.AddComponent(mushroomSprite);
 
     auto collider = new Collider(associated);
+    collider->SetScale(Vec2(5, 5));
     this->associated.AddComponent(collider);
 }
 

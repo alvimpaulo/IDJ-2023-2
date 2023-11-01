@@ -77,8 +77,8 @@ void TileMap::Load(std::string file)
 
     mapFile.close();
 
-    associated.box.w = float(mapWidth * tileSet->GetTileWidth());
-    associated.box.h = float(mapHeight * tileSet->GetTileHeight());
+    associated.setBoxW(float(mapWidth * tileSet->GetTileWidth()));
+    associated.setBoxH(float(mapHeight * tileSet->GetTileHeight()));
 }
 
 void TileMap::SetTileSet(TileSet *tileSet)

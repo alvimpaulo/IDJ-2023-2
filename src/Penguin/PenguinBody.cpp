@@ -88,13 +88,12 @@ void PenguinBody::Update(float dt)
     speed.x = std::max(std::min(speed.x, maxSpeed), -maxSpeed);
     speed.y = std::max(std::min(speed.y, maxSpeed), -maxSpeed);
 
-    Vec2 dest = associated.box.GetCenter() + speed;
+    Vec2 dest = associated.getBox().GetCenter() + speed;
 
-    dest.x = std::min(std::max(dest.x, 0.0f), 1408.0f);    
-    dest.y = std::min(std::max(dest.y, 0.0f), 1280.0f);    
+    dest.x = std::min(std::max(dest.x, 0.0f), 1408.0f);
+    dest.y = std::min(std::max(dest.y, 0.0f), 1280.0f);
 
-
-    associated.box.SetCenter(dest);
+    associated.setBoxCenter(dest);
 
     if (hp <= 0)
     {
@@ -134,13 +133,10 @@ void PenguinBody::NotifyCollision(GameObject &other)
         exploGO->AddComponent(new Sprite(*exploGO, "assets/img/Penguin/penguindeath.png", 5, 0.400, 2));
         auto exploSOund = new Sound(*exploGO, "assets/audio/boom.wav");
         exploGO->AddComponent(exploSOund);
-        exploGO->box.SetCenter(associated.box.GetCenter());
+        exploGO->setBoxCenter(associated.getBox().GetCenter());
         exploSOund->Play();
         Game::GetInstance().GetCurrentState()->AddObject(exploGO);
 
         Camera::Unfollow();
-
-        
-    
     }
 }

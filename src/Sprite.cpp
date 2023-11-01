@@ -13,10 +13,13 @@ Sprite::Sprite(GameObject &associated) : Component(associated)
     this->frameTime = 1;
     this->timeElapsed = 0;
     this->secondsToSelfDestruct = 0;
+    this->opacity = 255;
+    this->flipHorizontal = false;
+    this->flipVertical = false;
 }
 
 Sprite::Sprite(GameObject &associated, std::string file, int frameCount,
-               float frameTime, float secondsToSelfDestruct) : Component(associated)
+               float frameTime, float secondsToSelfDestruct, int opacity, bool flipHorizontal, bool flipVertical) : Component(associated)
 {
 
     texture = nullptr;
@@ -26,6 +29,9 @@ Sprite::Sprite(GameObject &associated, std::string file, int frameCount,
     this->frameTime = frameTime;
     this->timeElapsed = 0;
     this->secondsToSelfDestruct = secondsToSelfDestruct;
+    this->opacity = opacity;
+    this->flipHorizontal = flipHorizontal;
+    this->flipVertical = flipVertical;
 
     Open(file);
 }
@@ -68,20 +74,21 @@ void Sprite::Open(std::string file)
 {
 
     this->texture = Resources::GetImage(file).get();
+    SDL_SetTextureAlphaMod(this->texture, this->opacity);
 
     SDL_QueryTexture(this->texture, nullptr, nullptr, &width, &height);
 
     // std::cerr << "width: " << width << " Height: " << height << std::endl;
 
-    associated.box.x = 0;
-    associated.box.y = 0;
+    associated.setBoxX(0);
+    associated.setBoxY(0);
 
     width = width / frameCount;
 
-    this->SetClip(0, 0, GetWidth(), GetHeight());
+    this->SetClip(0, 0, GetScaledWidth(), GetScaledHeight());
 
-    this->associated.box.w = float(GetWidth());
-    this->associated.box.h = float(GetHeight());
+    this->associated.setBoxW(float(GetScaledWidth()));
+    this->associated.setBoxH(float(GetScaledHeight()));
 }
 
 void Sprite::SetClip(int x, int y, int w, int h)
@@ -97,15 +104,23 @@ void Sprite::Render(float x, float y, float w, float h)
     if (this->texture == NULL)
         return;
 
+    auto boxCenter = associated.getBox().GetCenter();
+
     SDL_Rect dstRect = SDL_Rect();
-    dstRect.x = static_cast<int>(round(x));
-    dstRect.y = static_cast<int>(round(y));
-    dstRect.w = static_cast<int>(round(w * scale.x));
-    dstRect.h = static_cast<int>(round(h * scale.y));
+    dstRect.x = (int)(round(x));
+    dstRect.y = (int)(round(y));
+    dstRect.w = (int)(round(w * scale.x));
+    dstRect.h = (int)(round(h * scale.y));
 
     int result = 0;
 
-    result = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstRect, associated.angleDeg, nullptr, SDL_FLIP_NONE);
+    auto flips = SDL_FLIP_NONE;
+    if (this->flipHorizontal)
+        flips = SDL_FLIP_HORIZONTAL;
+    if (this->flipVertical)
+        flips = SDL_FLIP_VERTICAL;
+
+    result = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstRect, associated.angleDeg, nullptr, flips);
     if (result != 0)
     {
         std::cerr << "Erro no SDL_RenderCopy " << result << std::endl;
@@ -117,18 +132,18 @@ void Sprite::Render(float x, float y, float w, float h)
 void Sprite::Render()
 {
 
-    float renderX = associated.box.x - Camera::pos.x;
-    float renderY = associated.box.y - Camera::pos.y;
+    float renderX = associated.getBox().x - Camera::pos.x;
+    float renderY = associated.getBox().y - Camera::pos.y;
 
-    Render(renderX, renderY, associated.box.w, associated.box.h);
+    Render(renderX, renderY, associated.getBox().w, associated.getBox().h);
 }
 
-int Sprite::GetHeight()
+int Sprite::GetScaledHeight()
 {
     return this->height * (int)this->scale.y;
 }
 
-int Sprite::GetWidth()
+int Sprite::GetScaledWidth()
 {
     return this->width * (int)this->scale.x;
 }
@@ -138,9 +153,9 @@ bool Sprite::IsOpen()
     return texture != nullptr;
 }
 
-void Sprite::SetScaleX(float scaleX, float scaleY)
+void Sprite::SetScale(Vec2 scale)
 {
-    this->scale = Vec2(scaleX, scaleY);
+    this->scale = scale;
 }
 
 Vec2 Sprite::GetScale()
@@ -166,10 +181,25 @@ void Sprite::SetFrameCount(int frameCount)
     this->frameCount = frameCount;
     SetFrame(0);
 
-    this->associated.box.w = float(GetWidth());
-    this->associated.box.h = float(GetHeight());
+    this->associated.setBoxW(float(GetScaledWidth()));
+    this->associated.setBoxH(float(GetScaledHeight()));
 }
 void Sprite::SetFrameTime(float frameTime)
 {
     this->frameTime = frameTime;
+}
+
+void Sprite::setOpacity(int newOpacity)
+{
+    this->opacity = std::min(std::max(newOpacity, 0), 255);
+}
+
+int Sprite::getFrameCount()
+{
+    return frameCount;
+}
+
+int Sprite::getSingleFrameWidth()
+{
+    return GetScaledWidth() / frameCount;
 }

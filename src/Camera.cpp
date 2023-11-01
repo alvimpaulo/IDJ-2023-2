@@ -24,7 +24,7 @@ void Camera::Update(float dt)
     Rect screenArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     if (Camera::focus != nullptr)
     {
-        auto focusCenter = focus->box.GetCenter();
+        auto focusCenter = focus->getBox().GetCenter();
         auto screenCenter = screenArea.GetCenter();
 
         pos = Vec2(-(screenCenter.x - focusCenter.x), -(screenCenter.y - focusCenter.y));
