@@ -1,7 +1,7 @@
 include(CMakePrintHelpers)
 
 cmake_minimum_required(VERSION 3.16.3)
-project(IDJ VERSION 2 LANGUAGES CXX)
+project(IDJ-2 VERSION 2 LANGUAGES CXX)
 include(CMakePrintHelpers)
 INCLUDE(FindPkgConfig)
 
@@ -36,9 +36,10 @@ string(APPEND HEADER_DIR ";${PROJECT_SOURCE_DIR}/include")
 message(HEADER_DIR="${HEADER_DIR}"\n\n)
 
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/*.cpp)
-file(GLOB_RECURSE SRC_DIR CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/*.cpp)
+message(SRC_FILES="${SRC_FILES}"\n\n)
 
 file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/include/*.hpp)
+message(HEADER_FILES="${HEADER_FILES}"\n\n)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
   # target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wunreachable-code -pedantic -Wfloat-equal -ggdb -Og -DDEBUG)
