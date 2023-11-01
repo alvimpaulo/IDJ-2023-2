@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/home/paulo/unb/IDJ/trab1/jogo",
+            "program": "/home/paulo/unb/IDJ-2/trab1/jogo",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

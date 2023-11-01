@@ -1,7 +1,7 @@
 {
     "C_Cpp.default.includePath": [
         "${default}",
-        "/home/paulo/unb/IDJ/trab1/include"
+        "/home/paulo/unb/IDJ-2/trab1/include"
     ],
     "files.associations": {
         "cctype": "cpp",
