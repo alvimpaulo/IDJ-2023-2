@@ -22,6 +22,8 @@ private:
     float secondsToSelfDestruct;
     bool flipHorizontal;
     bool flipVertical;
+    Vec2 scale;
+    std::string file;
 
 public:
     Sprite(GameObject &associated);
@@ -42,4 +44,7 @@ public:
     void setOpacity(int newOpacity);
     int getFrameCount();
     int getSingleFrameWidth();
+    int getWidth();
+    void setScale(Vec2 newScale);
+    Vec2 getScale();
 };

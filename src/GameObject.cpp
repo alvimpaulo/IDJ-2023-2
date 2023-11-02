@@ -91,6 +91,20 @@ Component *GameObject::GetComponent(std::string type)
     return nullptr;
 }
 
+std::vector<Component *> GameObject::GetComponentArray(std::string type)
+{
+    std::vector<Component*> returnArray;
+    for (auto &cpt : components)
+    {
+        if (cpt->Is(type))
+        {
+            returnArray.push_back(cpt.get());
+        }
+    }
+
+    return returnArray;
+}
+
 bool GameObject::IsEmpty()
 {
     return this->components.size() == 0;

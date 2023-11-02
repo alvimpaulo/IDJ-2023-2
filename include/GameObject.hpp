@@ -28,6 +28,7 @@ public:
     void SetAngle(double newAngle);
     double GetAngle();
     Component *GetComponent(std::string type);
+    std::vector<Component *> GetComponentArray(std::string type);
     void NotifyCollision(GameObject &other);
     void setScale(Vec2 scale);
     Vec2 getScale();

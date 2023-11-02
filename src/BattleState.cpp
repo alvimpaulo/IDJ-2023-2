@@ -17,6 +17,8 @@
 #include "Warrior.hpp"
 #include "ActionMenu.hpp"
 #include "Button.hpp"
+#include "HealthBar.hpp"
+#include "GreenBar.hpp"
 
 BattleState::BattleState()
 {
@@ -58,14 +60,24 @@ BattleState::BattleState()
 	this->AddObject(skillButtonObj);
 
 	auto mushroomObj = new GameObject();
-	auto mushroom = new Mushroom(*mushroomObj);
+	auto mushroom = new Mushroom(*mushroomObj, 100, 100, 100, 100, 1, 10, 5, 1, 50);
 	mushroomObj->AddComponent(mushroom);
 	this->AddObject(mushroomObj);
 
+	auto healthBarObj2 = new GameObject();
+	auto healthBar2 = new HealthBar(*healthBarObj2, *mushroom);
+	healthBarObj2->AddComponent(healthBar2);
+	this->AddObject(healthBarObj2);
+
 	auto warriorObj = new GameObject();
-	auto warrior = new Warrior(*warriorObj);
+	auto warrior = new Warrior(*warriorObj, 100, 100, 100, 100, 15, 1, 10, 10, 50);
 	warriorObj->AddComponent(warrior);
 	this->AddObject(warriorObj);
+
+	auto healthBarObj1 = new GameObject();
+	auto healthBar1 = new HealthBar(*healthBarObj1, *warrior);
+	healthBarObj1->AddComponent(healthBar1);
+	this->AddObject(healthBarObj1);
 }
 
 BattleState::~BattleState()
@@ -102,11 +114,33 @@ void BattleState::Update(float dt)
 	if (InputManager::GetInstance().KeyPress(SDLK_SPACE))
 	{
 		auto mushroomComponent = this->getFirstObjectByComponent("Mushroom");
-		if(mushroomComponent){
-			auto mushroomPtr = (Mushroom*) mushroomComponent->GetComponent("Mushroom");
+		if (mushroomComponent)
+		{
+			auto mushroomPtr = (Mushroom *)mushroomComponent->GetComponent("Mushroom");
 			mushroomPtr->setIsVisible(!(mushroomPtr->getIsVisible()));
 		}
-		
+	}
+
+	if (InputManager::GetInstance().KeyPress(SDLK_RIGHT))
+	{
+		auto mushroom = this->getFirstObjectByComponent("Mushroom");
+		if (mushroom)
+		{
+			auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+			mushroomPtr->loseHp(10);
+			;
+		}
+	}
+
+	if (InputManager::GetInstance().KeyPress(SDLK_LEFT))
+	{
+		auto warrior = this->getFirstObjectByComponent("Warrior");
+		if (warrior)
+		{
+			auto warriorPtr = (Warrior *)warrior->GetComponent("Warrior");
+			warriorPtr->loseHp(10);
+			;
+		}
 	}
 
 	UpdateArray(dt);

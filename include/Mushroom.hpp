@@ -3,25 +3,34 @@
 #include <string>
 #include "Component.hpp"
 #include "Timer.hpp"
+#include "Entities/Entity.hpp"
 
-class Mushroom : public Component
+class Mushroom : public EntityComponent
 {
 private:
-    int hp;
     enum MushroomState
     {
         MOVING,
         RESTING
     };
-    Timer restTimer;
-    Vec2 destination;
 
 public:
-    Mushroom(GameObject &associated);
+    Mushroom(GameObject &associated, int currentHp,
+             int maxHp,
+
+             int maxMp,
+             int currentMp,
+
+             int strength,
+             int wisdom,
+             int dexterity,
+             int agility,
+
+             int aggro);
     ~Mushroom();
-    void Start();
-    void Update(float dt);
-    void Render();
-    bool Is(std::string type);
-    void NotifyCollision(GameObject &other);
+    void Start() override;
+    void Update(float dt) override;
+    void Render() override;
+    bool Is(std::string type) override;
+    void NotifyCollision(GameObject &other) override;
 };

@@ -15,11 +15,13 @@ Sprite::Sprite(GameObject &associated) : Component(associated)
     this->opacity = 255;
     this->flipHorizontal = false;
     this->flipVertical = false;
+    this->scale = Vec2(1, 1);
 }
 
 Sprite::Sprite(GameObject &associated, std::string file, int frameCount,
                float frameTime, float secondsToSelfDestruct, int opacity, bool flipHorizontal, bool flipVertical) : Component(associated)
 {
+    this->file = file;
 
     texture = nullptr;
     this->currentFrame = 0;
@@ -30,6 +32,7 @@ Sprite::Sprite(GameObject &associated, std::string file, int frameCount,
     this->opacity = opacity;
     this->flipHorizontal = flipHorizontal;
     this->flipVertical = flipVertical;
+    this->scale = Vec2(1, 1);
 
     Open(file);
 }
@@ -97,6 +100,15 @@ void Sprite::SetClip(int x, int y, int w, int h)
     clipRect.h = h;
 }
 
+void Sprite::Render()
+{
+
+    float renderX = associated.getBox().x;
+    float renderY = associated.getBox().y;
+
+    Render(renderX, renderY, associated.getScaledBox().w, associated.getScaledBox().h);
+}
+
 void Sprite::Render(float x, float y, float w, float h)
 {
     if (this->texture == NULL)
@@ -107,8 +119,8 @@ void Sprite::Render(float x, float y, float w, float h)
     SDL_Rect dstRect = SDL_Rect();
     dstRect.x = (int)(round(x));
     dstRect.y = (int)(round(y));
-    dstRect.w = (int)(round(w));
-    dstRect.h = (int)(round(h));
+    dstRect.w = (int)(round(w * scale.x));
+    dstRect.h = (int)(round(h * scale.y));
 
     int result = 0;
 
@@ -125,15 +137,6 @@ void Sprite::Render(float x, float y, float w, float h)
         std::cerr << SDL_GetError() << std::endl;
         exit(0);
     }
-}
-
-void Sprite::Render()
-{
-
-    float renderX = associated.getBox().x;
-    float renderY = associated.getBox().y;
-
-    Render(renderX, renderY, associated.getScaledBox().w, associated.getScaledBox().h);
 }
 
 bool Sprite::IsOpen()
@@ -180,4 +183,19 @@ int Sprite::getFrameCount()
 int Sprite::getSingleFrameWidth()
 {
     return associated.getBox().w / frameCount;
+}
+
+int Sprite::getWidth()
+{
+    return width;
+}
+
+Vec2 Sprite::getScale()
+{
+    return this->scale;
+}
+
+void Sprite::setScale(Vec2 newScale)
+{
+    this->scale = newScale;
 }
