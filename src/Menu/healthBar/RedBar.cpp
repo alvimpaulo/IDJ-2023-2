@@ -3,7 +3,7 @@
 
 RedBar::RedBar(GameObject &associated) : Component(associated)
 {
-    auto redSprite = new Sprite(associated, "assets/img/Menu/healthBar/red.png");
+    auto redSprite = new Sprite(associated, "assets/img/Menu/bars/red.png");
     associated.AddComponent(redSprite);
 }
 void RedBar::Update(float dt)

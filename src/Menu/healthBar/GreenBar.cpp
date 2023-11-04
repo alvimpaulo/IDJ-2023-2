@@ -3,7 +3,7 @@
 
 GreenBar::GreenBar(GameObject &associated) : Component(associated)
 {
-    auto greenSprite = new Sprite(associated, "assets/img/Menu/healthBar/green.png");
+    auto greenSprite = new Sprite(associated, "assets/img/Menu/bars/green.png");
     greenSprite->setScale(Vec2(1, 1));
     associated.AddComponent(greenSprite);
 }

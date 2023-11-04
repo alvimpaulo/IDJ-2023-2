@@ -3,7 +3,7 @@
 
 OutlineBar::OutlineBar(GameObject &associated) : Component(associated)
 {
-    auto outlineSprite = new Sprite(associated, "assets/img/Menu/healthBar/outline.png");
+    auto outlineSprite = new Sprite(associated, "assets/img/Menu/bars/outline.png");
     associated.AddComponent(outlineSprite);
 }
 void OutlineBar::Update(float dt)
