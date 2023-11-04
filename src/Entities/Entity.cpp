@@ -34,7 +34,7 @@ void EntityComponent::loseHp(int amount)
     this->currentHp -= amount;
     if (this->currentHp <= 0)
     {
-        // is dead
+        currentHp = 0;
     }
 }
 void EntityComponent::gainHp(int amount)
