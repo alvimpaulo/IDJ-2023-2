@@ -1,10 +1,14 @@
 #include "ActionMenu.hpp"
 #include "Sprite.hpp"
+#include "InputManager.hpp"
 ActionMenu::ActionMenu(GameObject &associated) : Component(associated)
 {
     auto bgSprite = new Sprite(associated, "/home/paulo/unb/IDJ-2/trab1/assets/img/Menu/actionMenu.png", 1, 1, 0, 255/3 * 2);
     bgSprite->setOpacity(255);
     associated.AddComponent(bgSprite);
+    this->attackButton = nullptr;
+    this->defendButton = nullptr;
+    this->skillButton = nullptr;
 }
 void ActionMenu::Update(float dt)
 {
