@@ -5,9 +5,9 @@
 #include "GreenBar.hpp"
 #include "Collider.hpp"
 
-HealthBar::HealthBar(GameObject &associated, EntityComponent& baseEntity) : Component(associated), masterEntity(baseEntity)
+HealthBar::HealthBar(GameObject &associated, EntityComponent &baseEntity) : Component(associated), masterEntity(baseEntity)
 {
-    auto outlineSprite = new Sprite(associated, "assets/img/Menu/healthBar/outline.png");
+    auto outlineSprite = new Sprite(associated, "assets/img/Menu/bars/outline.png");
     auto spriteWidth = outlineSprite->getWidth();
     delete (outlineSprite);
     this->associated.setScale(Vec2((float)masterEntity.associated.getScaledBox().w / spriteWidth, (float)masterEntity.associated.getScaledBox().w / spriteWidth));
@@ -26,13 +26,15 @@ HealthBar::HealthBar(GameObject &associated, EntityComponent& baseEntity) : Comp
 }
 void HealthBar::Update(float dt)
 {
-    double greenScale = (double) masterEntity.getCurrentHp() / masterEntity.getMaxHp();
+    double greenScale = (double)masterEntity.getCurrentHp() / masterEntity.getMaxHp();
     auto greenBar = (GreenBar *)associated.GetComponent("GreenBar");
     greenBar->setScale(greenScale);
-    auto masterBox = masterEntity.associated.getBox();
+    auto barHeight = greenBar->associated.getScaledBox().h;
+
+    auto masterBox = masterEntity.associated.getScaledBox();
 
     associated.setBoxX(masterBox.x);
-    associated.setBoxY(masterBox.y - 10);
+    associated.setBoxY(masterBox.y - barHeight * 2 - 10);
 }
 void HealthBar::Render()
 {

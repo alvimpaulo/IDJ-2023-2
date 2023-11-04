@@ -18,7 +18,10 @@
 #include "ActionMenu.hpp"
 #include "Button.hpp"
 #include "HealthBar.hpp"
-#include "GreenBar.hpp"
+#include "ManaBar.hpp"
+#include "AttackButton.hpp"
+#include "DefendButton.hpp"
+#include "SkillButton.hpp"
 
 BattleState::BattleState()
 {
@@ -44,18 +47,18 @@ BattleState::BattleState()
 	actionMenu->setVisible(true);
 
 	auto attackButtonObj = new GameObject();
-	auto attackButton = new Button(*attackButtonObj, Button::ATTACK);
+	auto attackButton = new AttackButton(*attackButtonObj);
 	attackButton->setIsVisible(true);
 	attackButtonObj->AddComponent(attackButton);
 	this->AddObject(attackButtonObj);
 
 	auto defendButtonObj = new GameObject();
-	auto defendButton = new Button(*defendButtonObj, Button::DEFEND);
+	auto defendButton = new DefendButton(*defendButtonObj);
 	defendButtonObj->AddComponent(defendButton);
 	this->AddObject(defendButtonObj);
 
 	auto skillButtonObj = new GameObject();
-	auto skillButton = new Button(*skillButtonObj, Button::SKILL);
+	auto skillButton = new SkillButton(*skillButtonObj);
 	skillButtonObj->AddComponent(skillButton);
 	this->AddObject(skillButtonObj);
 
@@ -64,20 +67,30 @@ BattleState::BattleState()
 	mushroomObj->AddComponent(mushroom);
 	this->AddObject(mushroomObj);
 
-	auto healthBarObj2 = new GameObject();
-	auto healthBar2 = new HealthBar(*healthBarObj2, *mushroom);
-	healthBarObj2->AddComponent(healthBar2);
-	this->AddObject(healthBarObj2);
+	auto mushroomHealthBarObj = new GameObject();
+	auto mushroomHealthBar = new HealthBar(*mushroomHealthBarObj, *mushroom);
+	mushroomHealthBarObj->AddComponent(mushroomHealthBar);
+	this->AddObject(mushroomHealthBarObj);
+
+	auto mushroomManaBarObj = new GameObject();
+	auto mushroomManaBar = new ManaBar(*mushroomManaBarObj, *mushroom);
+	mushroomManaBarObj->AddComponent(mushroomManaBar);
+	this->AddObject(mushroomManaBarObj);
 
 	auto warriorObj = new GameObject();
 	auto warrior = new Warrior(*warriorObj, 100, 100, 100, 100, 15, 1, 10, 10, 50);
 	warriorObj->AddComponent(warrior);
 	this->AddObject(warriorObj);
 
-	auto healthBarObj1 = new GameObject();
-	auto healthBar1 = new HealthBar(*healthBarObj1, *warrior);
-	healthBarObj1->AddComponent(healthBar1);
-	this->AddObject(healthBarObj1);
+	auto warriorHealthBarObj = new GameObject();
+	auto warriorHealthBar = new HealthBar(*warriorHealthBarObj, *warrior);
+	warriorHealthBarObj->AddComponent(warriorHealthBar);
+	this->AddObject(warriorHealthBarObj);
+
+	auto warriorManaBarObj = new GameObject();
+	auto warriorManaBar = new ManaBar(*warriorManaBarObj, *warrior);
+	warriorManaBarObj->AddComponent(warriorManaBar);
+	this->AddObject(warriorManaBarObj);
 }
 
 BattleState::~BattleState()
@@ -102,6 +115,8 @@ void BattleState::Start()
 
 void BattleState::Update(float dt)
 {
+	auto mouseX = InputManager::GetInstance().GetMouseX();
+	auto mouseY = InputManager::GetInstance().GetMouseY();
 	// camera update
 	// Camera::Update(dt);
 
@@ -139,6 +154,53 @@ void BattleState::Update(float dt)
 		{
 			auto warriorPtr = (Warrior *)warrior->GetComponent("Warrior");
 			warriorPtr->loseHp(10);
+			;
+		}
+	}
+
+	if (InputManager::GetInstance().MousePress(SDL_BUTTON_LEFT))
+	{
+		auto attackButtonobj = this->getFirstObjectByComponent("AttackButton");
+		if (attackButtonobj->getBox().Contains({mouseX, mouseY}))
+		{
+			auto mushroomObj = this->getFirstObjectByComponent("Mushroom");
+			auto warriorObj = this->getFirstObjectByComponent("Warrior");
+			auto mushroomPtr = (Mushroom *)mushroomObj->GetComponent("Mushroom");
+			auto warriorPtr = (Warrior *)warriorObj->GetComponent("Warrior");
+			mushroomPtr->gainHp(100);
+			warriorPtr->gainHp(100);
+		}
+
+		auto defendButtonObj = this->getFirstObjectByComponent("DefendButton");
+		if (defendButtonObj->getBox().Contains({mouseX, mouseY}))
+		{
+			auto mushroomObj = this->getFirstObjectByComponent("Mushroom");
+			auto warriorObj = this->getFirstObjectByComponent("Warrior");
+			auto mushroomPtr = (Mushroom *)mushroomObj->GetComponent("Mushroom");
+			auto warriorPtr = (Warrior *)warriorObj->GetComponent("Warrior");
+			mushroomPtr->gainMp(100);
+			warriorPtr->gainMp(100);
+		}
+	}
+
+	if (InputManager::GetInstance().KeyPress(SDLK_DOWN))
+	{
+		auto mushroom = this->getFirstObjectByComponent("Mushroom");
+		if (mushroom)
+		{
+			auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+			mushroomPtr->loseMp(10);
+			;
+		}
+	}
+
+	if (InputManager::GetInstance().KeyPress(SDLK_UP))
+	{
+		auto warrior = this->getFirstObjectByComponent("Warrior");
+		if (warrior)
+		{
+			auto warriorPtr = (Warrior *)warrior->GetComponent("Warrior");
+			warriorPtr->loseMp(10);
 			;
 		}
 	}
