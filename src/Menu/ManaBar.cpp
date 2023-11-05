@@ -4,8 +4,9 @@
 #include "RedBar.hpp"
 #include "BlueBar.hpp"
 #include "Collider.hpp"
+#include "Game.hpp"
 
-ManaBar::ManaBar(GameObject &associated, EntityComponent& baseEntity) : Component(associated), masterEntity(baseEntity)
+ManaBar::ManaBar(GameObject &associated, EntityComponent &baseEntity) : Component(associated), masterEntity(baseEntity)
 {
     auto outlineSprite = new Sprite(associated, "assets/img/Menu/bars/outline.png");
     auto spriteWidth = outlineSprite->getWidth();
@@ -26,17 +27,29 @@ ManaBar::ManaBar(GameObject &associated, EntityComponent& baseEntity) : Componen
 }
 void ManaBar::Update(float dt)
 {
-    double blueScale = (double) masterEntity.getCurrentMp() / masterEntity.getMaxMp();
-    auto blueBar = (BlueBar *)associated.GetComponent("BlueBar");
-    blueBar->setScale(blueScale);
-    auto barHeight = blueBar->associated.getScaledBox().h;
-    auto masterBox = masterEntity.associated.getScaledBox();
+    if (masterEntity.getIsIndicated())
+    {
+        this->setIsVisible(true);
+        double blueScale = (double)masterEntity.getCurrentMp() / masterEntity.getMaxMp();
+        auto blueBar = (BlueBar *)associated.GetComponent("BlueBar");
+        blueBar->setScale(blueScale);
+        auto barHeight = blueBar->associated.getScaledBox().h;
+        auto masterBox = masterEntity.associated.getScaledBox();
 
-    associated.setBoxX(masterBox.x);
-    associated.setBoxY(masterBox.y - barHeight - 10);
+        associated.setBoxX(masterBox.x);
+        associated.setBoxY(masterBox.y - barHeight - 10);
+    }
+    else
+    {
+        this->setIsVisible(false);
+    }
 }
 void ManaBar::Render()
 {
+    if (!getIsVisible())
+    {
+        associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
+    }
 }
 bool ManaBar::Is(std::string type)
 {

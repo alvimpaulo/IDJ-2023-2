@@ -4,6 +4,8 @@
 #include "State.hpp"
 #include <SDL_ttf.h>
 
+Game* Game::instance = nullptr;
+
 Game &Game::GetInstance()
 {
     if (Game::instance == nullptr)

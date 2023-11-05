@@ -16,6 +16,7 @@ protected:
     int agility;
 
     int aggro;
+    bool isIndicated;
 
 public:
     EntityComponent(GameObject &associated, int currentHp,
@@ -29,7 +30,7 @@ public:
                     int dexterity,
                     int agility,
 
-                    int aggro);
+                    int aggro, bool isIndicated);
     void virtual Update(float dt) = 0;
     void virtual Render() = 0;
     bool virtual Is(std::string type) = 0;
@@ -52,4 +53,7 @@ public:
 
     void loseMp(int amount);
     void gainMp(int amount);
+
+    bool getIsIndicated();
+    void setIsIndicated(bool newState);
 };

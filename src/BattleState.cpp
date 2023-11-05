@@ -22,8 +22,12 @@
 #include "AttackButton.hpp"
 #include "DefendButton.hpp"
 #include "SkillButton.hpp"
+#include "UI/CharacterIndicator.hpp"
+#include "Ranger.hpp"
 
-BattleState::BattleState()
+BattleState *BattleState::instance = nullptr;
+
+BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullptr)
 {
 	this->quitRequested = false;
 	this->started = false;
@@ -44,23 +48,23 @@ BattleState::BattleState()
 	auto actionMenu = new ActionMenu(*actionMenuObj);
 	actionMenuObj->AddComponent(actionMenu);
 	this->AddObject(actionMenuObj);
-	actionMenu->setVisible(true);
 
 	auto attackButtonObj = new GameObject();
-	auto attackButton = new AttackButton(*attackButtonObj);
-	attackButton->setIsVisible(true);
+	auto attackButton = new AttackButton(*attackButtonObj, actionMenu);
 	attackButtonObj->AddComponent(attackButton);
 	this->AddObject(attackButtonObj);
 
 	auto defendButtonObj = new GameObject();
-	auto defendButton = new DefendButton(*defendButtonObj);
+	auto defendButton = new DefendButton(*defendButtonObj, actionMenu);
 	defendButtonObj->AddComponent(defendButton);
 	this->AddObject(defendButtonObj);
 
 	auto skillButtonObj = new GameObject();
-	auto skillButton = new SkillButton(*skillButtonObj);
+	auto skillButton = new SkillButton(*skillButtonObj, actionMenu);
 	skillButtonObj->AddComponent(skillButton);
 	this->AddObject(skillButtonObj);
+
+	//------------------------------------- MUSHROOM -----------------------------------------------------
 
 	auto mushroomObj = new GameObject();
 	auto mushroom = new Mushroom(*mushroomObj, 100, 100, 100, 100, 1, 10, 5, 1, 50);
@@ -76,6 +80,29 @@ BattleState::BattleState()
 	auto mushroomManaBar = new ManaBar(*mushroomManaBarObj, *mushroom);
 	mushroomManaBarObj->AddComponent(mushroomManaBar);
 	this->AddObject(mushroomManaBarObj);
+	//------------------------------------- MUSHROOM -----------------------------------------------------
+
+	//------------------------------------- RANGER -----------------------------------------------------
+
+	auto rangerObj = new GameObject();
+	auto ranger = new Ranger(*rangerObj, 100, 100, 100, 100, 15, 1, 10, 10, 50);
+	rangerObj->AddComponent(ranger);
+	this->AddObject(rangerObj);
+
+	auto rangerHealthBarObj = new GameObject();
+	auto rangerHealthBar = new HealthBar(*rangerHealthBarObj, *ranger);
+	rangerHealthBarObj->AddComponent(rangerHealthBar);
+	this->AddObject(rangerHealthBarObj);
+
+	auto rangerManaBarObj = new GameObject();
+	auto rangerManaBar = new ManaBar(*rangerManaBarObj, *ranger);
+	rangerManaBarObj->AddComponent(rangerManaBar);
+	this->AddObject(rangerManaBarObj);
+
+	characters.push_back(ranger);
+	//------------------------------------- RANGER -----------------------------------------------------
+
+	//------------------------------------- WARRIOR -----------------------------------------------------
 
 	auto warriorObj = new GameObject();
 	auto warrior = new Warrior(*warriorObj, 100, 100, 100, 100, 15, 1, 10, 10, 50);
@@ -91,10 +118,15 @@ BattleState::BattleState()
 	auto warriorManaBar = new ManaBar(*warriorManaBarObj, *warrior);
 	warriorManaBarObj->AddComponent(warriorManaBar);
 	this->AddObject(warriorManaBarObj);
-}
 
-BattleState::~BattleState()
-{
+	characters.push_back(warrior);
+	//------------------------------------- WARRIOR -----------------------------------------------------
+
+	auto indicatorObj = new GameObject();
+	auto indicator = new CharacterIndicator(*indicatorObj, ranger);
+	indicatorObj->AddComponent(indicator);
+	this->AddObject(indicatorObj);
+	this->indicator = indicator;
 }
 
 void BattleState::LoadAssets()
@@ -126,6 +158,22 @@ void BattleState::Update(float dt)
 	{
 		this->quitRequested = true;
 	}
+
+	if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
+	{
+		indicatedCharacterIndex = std::max(indicatedCharacterIndex - 1, 0);
+		indicator->setAttached(characters[indicatedCharacterIndex]);
+	}
+	if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
+	{
+		indicatedCharacterIndex = std::min(indicatedCharacterIndex + 1, (int)characters.size() - 1);
+		indicator->setAttached(characters[indicatedCharacterIndex]);
+	}
+	if (InputManager::GetInstance().KeyPress(SDLK_RETURN))
+	{
+		this->selectedCharacter = characters[indicatedCharacterIndex];
+	}
+
 	if (InputManager::GetInstance().KeyPress(SDLK_SPACE))
 	{
 		auto mushroomComponent = this->getFirstObjectByComponent("Mushroom");
@@ -136,7 +184,7 @@ void BattleState::Update(float dt)
 		}
 	}
 
-	if (InputManager::GetInstance().KeyPress(SDLK_RIGHT))
+	if (InputManager::GetInstance().KeyPress(SDLK_KP_1))
 	{
 		auto mushroom = this->getFirstObjectByComponent("Mushroom");
 		if (mushroom)
@@ -147,7 +195,7 @@ void BattleState::Update(float dt)
 		}
 	}
 
-	if (InputManager::GetInstance().KeyPress(SDLK_LEFT))
+	if (InputManager::GetInstance().KeyPress(SDLK_KP_2))
 	{
 		auto warrior = this->getFirstObjectByComponent("Warrior");
 		if (warrior)
@@ -183,7 +231,7 @@ void BattleState::Update(float dt)
 		}
 	}
 
-	if (InputManager::GetInstance().KeyPress(SDLK_DOWN))
+	if (InputManager::GetInstance().KeyPress(SDLK_KP_3))
 	{
 		auto mushroom = this->getFirstObjectByComponent("Mushroom");
 		if (mushroom)
@@ -194,7 +242,7 @@ void BattleState::Update(float dt)
 		}
 	}
 
-	if (InputManager::GetInstance().KeyPress(SDLK_UP))
+	if (InputManager::GetInstance().KeyPress(SDLK_KP_4))
 	{
 		auto warrior = this->getFirstObjectByComponent("Warrior");
 		if (warrior)
@@ -268,4 +316,22 @@ std::shared_ptr<GameObject> BattleState::getFirstObjectByComponent(std::string t
 	}
 
 	return nullptr;
+}
+
+BattleState *BattleState::GetInstance()
+{
+	if (BattleState::instance == nullptr)
+	{
+		BattleState::instance = new BattleState();
+		return BattleState::instance;
+	}
+	else
+	{
+		return BattleState::instance;
+	}
+}
+
+EntityComponent *BattleState::getSelectedCharacter()
+{
+	return this->selectedCharacter;
 }

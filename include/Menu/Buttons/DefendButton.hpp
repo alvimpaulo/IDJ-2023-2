@@ -1,15 +1,19 @@
 #pragma once
 #include "Component.hpp"
+#include "ActionMenu.hpp"
 
 class DefendButton : public Component
 {
+private:
+    ActionMenu *menu;
+
 public:
-    DefendButton(GameObject &associated);
+    DefendButton(GameObject &associated, ActionMenu* menu);
     void Update(float dt);
     void Render();
     bool Is(std::string type);
     void Start();
     void NotifyCollision(GameObject &other);
 
-    bool isSelected;
+    bool isHovered;
 };

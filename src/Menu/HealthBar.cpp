@@ -4,6 +4,7 @@
 #include "RedBar.hpp"
 #include "GreenBar.hpp"
 #include "Collider.hpp"
+#include "Game.hpp"
 
 HealthBar::HealthBar(GameObject &associated, EntityComponent &baseEntity) : Component(associated), masterEntity(baseEntity)
 {
@@ -26,18 +27,27 @@ HealthBar::HealthBar(GameObject &associated, EntityComponent &baseEntity) : Comp
 }
 void HealthBar::Update(float dt)
 {
-    double greenScale = (double)masterEntity.getCurrentHp() / masterEntity.getMaxHp();
-    auto greenBar = (GreenBar *)associated.GetComponent("GreenBar");
-    greenBar->setScale(greenScale);
-    auto barHeight = greenBar->associated.getScaledBox().h;
+    if (masterEntity.getIsIndicated())
+    {
+        this->setIsVisible(true);
+        double greenScale = (double)masterEntity.getCurrentHp() / masterEntity.getMaxHp();
+        auto greenBar = (GreenBar *)associated.GetComponent("GreenBar");
+        greenBar->setScale(greenScale);
+        auto barHeight = greenBar->associated.getScaledBox().h;
 
-    auto masterBox = masterEntity.associated.getScaledBox();
+        auto masterBox = masterEntity.associated.getScaledBox();
 
-    associated.setBoxX(masterBox.x);
-    associated.setBoxY(masterBox.y - barHeight * 2 - 10);
+        associated.setBoxX(masterBox.x);
+        associated.setBoxY(masterBox.y - barHeight * 2 - 10);
+    } else {
+        this->setIsVisible(false);
+    }
 }
 void HealthBar::Render()
 {
+    if(!getIsVisible()){
+        associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
+    }
 }
 bool HealthBar::Is(std::string type)
 {

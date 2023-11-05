@@ -5,13 +5,11 @@
 #include "TitleState.hpp"
 #include <BattleState.hpp>
 
-Game* Game::instance = nullptr;
-
 int main(int argc, char **argv)
 {
 
     Game game = Game::GetInstance();
-    auto initState = new BattleState();
+    BattleState* initState = BattleState::GetInstance();
     game.Push(initState);
     game.Run();
 

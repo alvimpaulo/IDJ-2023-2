@@ -15,9 +15,9 @@ Mushroom::Mushroom(GameObject &associated, int currentHp,
                    int dexterity,
                    int agility,
 
-                   int aggro) : EntityComponent(associated, currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro)
+                   int aggro) : EntityComponent(associated, currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false)
 {
-    this->isVisible = true;
+    setIsVisible(true);
 
     this->associated.setScale(Vec2(5, 5));
 
@@ -39,7 +39,7 @@ void Mushroom::Start()
 void Mushroom::Update(float dt)
 {
 
-    if (this->isVisible)
+    if (getIsVisible())
     {
         associated.setBoxX(SCREEN_WIDTH - associated.getScaledBox().w - 50);
         associated.setBoxY(SCREEN_HEIGHT - associated.getScaledBox().h - (SCREEN_HEIGHT / 10));

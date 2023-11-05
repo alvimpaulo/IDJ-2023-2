@@ -4,6 +4,7 @@
 
 Component::Component(GameObject &associated) : associated(associated)
 {
+    isVisible = false;
 }
 
 Component::~Component()

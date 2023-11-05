@@ -5,7 +5,6 @@
 class State
 {
 public:
-    State();
     virtual ~State();
     virtual void LoadAssets() = 0;
     virtual void Update(float dt) = 0;
@@ -20,6 +19,7 @@ public:
     bool IsStarted();
 
 protected:
+    State();
     virtual void StartArray();
     virtual void UpdateArray(float dt);
     virtual void RenderArray();

@@ -5,7 +5,7 @@
 
 Button::Button(GameObject &associated, ButtonType type) : Component(associated), isSelected(false)
 {
-    Sprite* ptrSprite;
+    Sprite *ptrSprite;
     switch (type)
     {
     case ATTACK:
@@ -27,23 +27,21 @@ Button::Button(GameObject &associated, ButtonType type) : Component(associated),
     associated.AddComponent(ptrSprite);
     auto collider = new Collider(associated);
     associated.AddComponent(collider);
-    isVisible = false;
     isSelected = false;
-
 }
 void Button::Update(float dt)
 {
-    //  if (this->isVisible)
-    // {
-    //     associated.setBoxCenter(Vec2(SCREEN_WIDTH / 2, associated.box.h / 2));
-    // }
-    // else
-    // {
-    //     associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
-    // }
 }
 void Button::Render()
 {
+    if (getIsVisible())
+    {
+        associated.setBoxCenter(Vec2(SCREEN_WIDTH / 2, associated.getScaledBox().h / 2));
+    }
+    else
+    {
+        associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
+    }
 }
 bool Button::Is(std::string type)
 {

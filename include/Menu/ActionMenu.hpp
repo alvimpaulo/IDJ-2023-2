@@ -4,8 +4,6 @@
 
 class ActionMenu : public Component
 {
-private:
-    bool isVisible;
 
 public:
     ActionMenu(GameObject &associated);
@@ -17,8 +15,4 @@ public:
 
     int height = SCREEN_HEIGHT / 10;
     int width = SCREEN_WIDTH / 4;
-    void setVisible(bool newState);
-    GameObject* attackButton;
-    GameObject* defendButton;
-    GameObject* skillButton;
 };

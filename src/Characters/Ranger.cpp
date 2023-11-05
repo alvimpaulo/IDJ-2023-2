@@ -1,10 +1,10 @@
-#include "Warrior.hpp"
+#include "Ranger.hpp"
 #include "Sprite.hpp"
 #include "Collider.hpp"
 #include "Game.hpp"
 #include "InputManager.hpp"
 
-Warrior::Warrior(GameObject &associated, int currentHp,
+Ranger::Ranger(GameObject &associated, int currentHp,
                  int maxHp,
 
                  int maxMp,
@@ -23,7 +23,7 @@ Warrior::Warrior(GameObject &associated, int currentHp,
 
     associated.setScale(Vec2(3, 3));
 
-    auto ptrSprite = new Sprite(associated, "assets/img/Warrior/NewIdle.png", 10, 0.1);
+    auto ptrSprite = new Sprite(associated, "assets/img/Ranger/NewIdle.png", 10, 0.1);
 
     associated.AddComponent(ptrSprite);
 
@@ -31,34 +31,34 @@ Warrior::Warrior(GameObject &associated, int currentHp,
     // this->associated.AddComponent(collider);
 }
 
-Warrior::~Warrior()
+Ranger::~Ranger()
 {
 }
 
-void Warrior::Start()
+void Ranger::Start()
 {
     auto bodyPtr = Game::GetInstance().GetCurrentState()->GetObjectPtr(&associated);
 }
-void Warrior::Update(float dt)
+void Ranger::Update(float dt)
 {
 
     associated.setBoxX(0 + 50);
-    associated.setBoxY(SCREEN_HEIGHT - associated.getScaledBox().h - (SCREEN_HEIGHT / 10));
+    associated.setBoxY(SCREEN_HEIGHT - (associated.getScaledBox().h * 2) - (SCREEN_HEIGHT / 10));
 
     // if (currentHp <= 0)
     // {
     //     this->associated.RequestDelete();
     // }
 }
-void Warrior::Render()
+void Ranger::Render()
 {
 }
-bool Warrior::Is(std::string type)
+bool Ranger::Is(std::string type)
 {
-    return type == "Warrior";
+    return type == "Ranger";
 }
 
-void Warrior::NotifyCollision(GameObject &other)
+void Ranger::NotifyCollision(GameObject &other)
 {
 
     // if (currentHp <= 0)

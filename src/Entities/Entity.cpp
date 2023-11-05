@@ -12,15 +12,15 @@ EntityComponent::EntityComponent(GameObject &associated, int currentHp,
                                  int dexterity,
                                  int agility,
 
-                                 int aggro) : Component(associated), currentHp(currentHp),
-                                              maxHp(maxHp), maxMp(maxMp), currentMp(currentMp), strength(strength), wisdom(wisdom), dexterity(dexterity), agility(agility)
+                                 int aggro, bool isSelected) : Component(associated), currentHp(currentHp),
+                                                               maxHp(maxHp), maxMp(maxMp), currentMp(currentMp), strength(strength), wisdom(wisdom), dexterity(dexterity), agility(agility), isIndicated(isSelected)
 {
 }
-void EntityComponent::physicalAttack(EntityComponent* target)
+void EntityComponent::physicalAttack(EntityComponent *target)
 {
     target->loseHp(target->strength - this->strength);
 }
-void EntityComponent::useSkill(EntityComponent* target)
+void EntityComponent::useSkill(EntityComponent *target)
 {
     target->loseHp(target->wisdom - this->wisdom);
 }
@@ -83,6 +83,15 @@ int EntityComponent::getDexterity()
     return this->dexterity;
 }
 
-int EntityComponent::getAggro(){
+int EntityComponent::getAggro()
+{
     return this->aggro;
+}
+
+void EntityComponent::setIsIndicated(bool newState){
+    this->isIndicated = newState;
+}
+
+bool EntityComponent::getIsIndicated(){
+    return isIndicated;
 }
