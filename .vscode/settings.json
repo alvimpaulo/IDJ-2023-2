@@ -82,7 +82,10 @@
         "span": "cpp",
         "stdfloat": "cpp",
         "strstream": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "shared_mutex": "cpp"
     },
     "cmake.configureOnOpen": false
 }
