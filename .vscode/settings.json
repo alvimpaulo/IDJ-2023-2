@@ -85,7 +85,19 @@
         "any": "cpp",
         "hash_map": "cpp",
         "hash_set": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "csetjmp": "cpp",
+        "csignal": "cpp",
+        "barrier": "cpp",
+        "coroutine": "cpp",
+        "cuchar": "cpp",
+        "expected": "cpp",
+        "latch": "cpp",
+        "ranges": "cpp",
+        "scoped_allocator": "cpp",
+        "spanstream": "cpp",
+        "stacktrace": "cpp",
+        "syncstream": "cpp"
     },
     "cmake.configureOnOpen": false
 }

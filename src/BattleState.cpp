@@ -15,7 +15,6 @@
 #include "Mushroom.hpp"
 #include "Warrior.hpp"
 #include "ActionMenu.hpp"
-#include "Button.hpp"
 #include "HealthBar.hpp"
 #include "ManaBar.hpp"
 #include "AttackButton.hpp"
@@ -40,6 +39,8 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	bgObject->AddComponent(bgSprite);
 	AddObject(bgObject);
 
+	// ----------------------------------- MENU ---------------------------------------------
+
 	auto menuObj = new GameObject();
 	auto menu = ActionMenu(*menuObj);
 
@@ -47,6 +48,11 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	auto actionMenu = new ActionMenu(*actionMenuObj);
 	actionMenuObj->AddComponent(actionMenu);
 	this->AddObject(actionMenuObj);
+	
+	auto actionMenuSelectorObj = new GameObject();
+	auto actionMenuSelector = new ActionMenuSelector(*actionMenuSelectorObj, nullptr);
+	actionMenuSelectorObj->AddComponent(actionMenuSelector);
+	this->AddObject(actionMenuSelectorObj);
 
 	auto attackButtonObj = new GameObject();
 	auto attackButton = new AttackButton(*attackButtonObj, actionMenu);
@@ -62,6 +68,11 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	auto skillButton = new SkillButton(*skillButtonObj, actionMenu);
 	skillButtonObj->AddComponent(skillButton);
 	this->AddObject(skillButtonObj);
+
+	actionMenu->setButtons({attackButton, defendButton, skillButton});
+	actionMenu->setSelector(actionMenuSelector);
+	actionMenuSelector->setAttached(attackButton);
+	// ----------------------------------- MENU ---------------------------------------------
 
 	//------------------------------------- MUSHROOM -----------------------------------------------------
 
@@ -163,15 +174,17 @@ void BattleState::Update(float dt)
 		if (indicator->getIsCharacterLocked() == false)
 		{
 			auto characterHealthBar = getFirstHealthBarOfEntityType(characters[indicatedCharacterIndex]->getType());
-			if(characterHealthBar){
+			if (characterHealthBar)
+			{
 				characterHealthBar->setIsVisible(false);
 			}
 
 			auto characterManaBar = getFirstManaBarOfEntityType(characters[indicatedCharacterIndex]->getType());
-			if(characterManaBar){
+			if (characterManaBar)
+			{
 				characterManaBar->setIsVisible(false);
 			}
-			
+
 			indicatedCharacterIndex = std::max(indicatedCharacterIndex - 1, 0);
 			indicator->setAttached(characters[indicatedCharacterIndex]);
 		}
@@ -181,15 +194,17 @@ void BattleState::Update(float dt)
 		if (indicator->getIsCharacterLocked() == false)
 		{
 			auto characterHealthBar = getFirstHealthBarOfEntityType(characters[indicatedCharacterIndex]->getType());
-			if(characterHealthBar){
+			if (characterHealthBar)
+			{
 				characterHealthBar->setIsVisible(false);
 			}
 
 			auto characterManaBar = getFirstManaBarOfEntityType(characters[indicatedCharacterIndex]->getType());
-			if(characterManaBar){
+			if (characterManaBar)
+			{
 				characterManaBar->setIsVisible(false);
 			}
-			
+
 			indicatedCharacterIndex = std::min(indicatedCharacterIndex + 1, (int)characters.size() - 1);
 			indicator->setAttached(characters[indicatedCharacterIndex]);
 		}
@@ -205,7 +220,7 @@ void BattleState::Update(float dt)
 		indicator->setIsCharacterLocked(false);
 	}
 
-	if (InputManager::GetInstance().KeyPress(SDLK_SPACE))
+	if (InputManager::GetInstance().KeyPress(SDLK_F1))
 	{
 
 		auto mushroomHealthBar = getFirstHealthBarOfEntityType("Mushroom");
