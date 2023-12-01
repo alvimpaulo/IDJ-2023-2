@@ -1,11 +1,7 @@
 #include "GreenBar.hpp"
 #include "Sprite.hpp"
 
-<<<<<<< HEAD
 GreenBar::GreenBar(GameObject &associated) : Component(associated, "GreenBar")
-=======
-GreenBar::GreenBar(GameObject &associated, std::string type) : Component(associated, type)
->>>>>>> f7e9db92a33dd43d0d2e2e03888ea3940bf3f923
 {
     auto greenSprite = new Sprite(associated, "assets/img/Menu/bars/green.png");
     greenSprite->setScale(Vec2(1, 1));

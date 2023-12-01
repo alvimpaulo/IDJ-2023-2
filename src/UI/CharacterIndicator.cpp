@@ -1,11 +1,7 @@
 #include "CharacterIndicator.hpp"
 #include "Sprite.hpp"
 
-<<<<<<< HEAD
 CharacterIndicator::CharacterIndicator(GameObject &associated, EntityComponent *selected) : Component(associated, "CharacterIndicator"), attached(selected)
-=======
-CharacterIndicator::CharacterIndicator(GameObject &associated, EntityComponent *selected) : Component(associated, type), attached(selected)
->>>>>>> f7e9db92a33dd43d0d2e2e03888ea3940bf3f923
 {
 
     offset = 40;

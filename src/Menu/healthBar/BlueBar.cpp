@@ -1,11 +1,7 @@
 #include "BlueBar.hpp"
 #include "Sprite.hpp"
 
-<<<<<<< HEAD
 BlueBar::BlueBar(GameObject &associated) : Component(associated, "BlueBar")
-=======
-BlueBar::BlueBar(GameObject &associated, std::string type) : Component(associated, type)
->>>>>>> f7e9db92a33dd43d0d2e2e03888ea3940bf3f923
 {
     auto blueSprite = new Sprite(associated, "assets/img/Menu/bars/blue.png");
     blueSprite->setScale(Vec2(1, 1));
