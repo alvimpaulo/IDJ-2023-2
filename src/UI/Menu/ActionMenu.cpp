@@ -38,11 +38,13 @@ void ActionMenu::Update(float dt)
             if (InputManager::GetInstance().KeyPress(SDLK_SPACE))
             {
                 selector->setIsActionLocked(true);
+                BattleState::GetInstance()->setRound(BattleState::Round::PlayerAction);
             }
         } else {
-             if (InputManager::GetInstance().KeyPress(SDLK_BACKSPACE))
+             if (InputManager::GetInstance().KeyPress(SDLK_MINUS))
             {
                 selector->setIsActionLocked(false);
+                BattleState::GetInstance()->setRound(BattleState::Round::PlayerActionSelect);
             }
         }
     }

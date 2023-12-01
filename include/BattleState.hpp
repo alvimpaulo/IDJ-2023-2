@@ -8,7 +8,9 @@
 
 class BattleState : public State
 {
-    enum class Turns
+
+public:
+    enum class Round
     {
         NoTurn,
         PlayerCharacterSelect,
@@ -17,16 +19,6 @@ class BattleState : public State
         EnemyActionSelect,
         EnemyAction
     };
-
-private:
-    Sprite *bgSprite;
-    std::vector<EntityComponent *> characters;
-    CharacterIndicator *indicator;
-    int indicatedCharacterIndex;
-    EntityComponent *selectedCharacter;
-    BattleState();
-
-public:
     static BattleState *GetInstance();
     static BattleState *instance;
     void LoadAssets();
@@ -41,4 +33,16 @@ public:
     // Essas duas provavelmente não deveriam estar aqui.
     HealthBar *getFirstHealthBarOfEntityType(std::string type);
     ManaBar *getFirstManaBarOfEntityType(std::string type);
+
+    void setRound(Round round);
+    Round getRound();
+
+private:
+    Sprite *bgSprite;
+    std::vector<EntityComponent *> characters;
+    CharacterIndicator *indicator;
+    int indicatedCharacterIndex;
+    EntityComponent *selectedCharacter;
+    BattleState();
+    Round currentRound;
 };

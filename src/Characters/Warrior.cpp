@@ -3,6 +3,7 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 #include "InputManager.hpp"
+#include "BattleState.hpp"
 
 Warrior::Warrior(GameObject &associated, int currentHp,
                  int maxHp,
@@ -15,7 +16,9 @@ Warrior::Warrior(GameObject &associated, int currentHp,
                  int dexterity,
                  int agility,
 
-                 int aggro) : EntityComponent(associated, "Warrior", currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false)
+                 int aggro) : EntityComponent(associated, "Warrior", currentHp, maxHp,
+                                              maxMp, currentMp, strength, wisdom, dexterity, agility, aggro,
+                                              false, Vec2(0 + 50, SCREEN_HEIGHT - associated.getScaledBox().h - (SCREEN_HEIGHT / 10)))
 {
     speed = {0.0f, 0.0f};
 
@@ -41,10 +44,56 @@ void Warrior::Start()
 }
 void Warrior::Update(float dt)
 {
+    if (isIdle)
+    {
 
-    associated.setBoxX(0 + 50);
-    associated.setBoxY(SCREEN_HEIGHT - associated.getScaledBox().h - (SCREEN_HEIGHT / 10));
+        associated.setBoxX(IdlePosition.x);
+        associated.setBoxY(IdlePosition.y);
+    }
+    else
+    {
+        auto currentTargetDistance = Vec2::GetDistancePix(associated.getBox().GetCenter(), target->associated.getBox().GetCenter());
+        auto currrentIdleDistance = Vec2::GetDistancePix(associated.getBox().GetCenter(), IdlePosition);
 
+        if (currentTargetDistance <= 50 && currentAnimationFrame <= attackAnimationFrames / 2)
+        {
+            currentAnimationFrame = attackAnimationFrames / 2 + 1;
+            target->loseHp(std::max(this->strength, 0));
+        }
+        else if (currrentIdleDistance <= 50 && currentAnimationFrame > attackAnimationFrames / 2)
+        {
+            isOnAnimation = false;
+            hasAttackFinished = true;
+            isIdle = true;
+            target = nullptr;
+            currentAnimationFrame = 0;
+            BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
+        }
+        else if (currentAnimationFrame < attackAnimationFrames / 2)
+        {
+            currentAnimationFrame++;
+
+            auto idleTargetDistanceX = Vec2::GetDistancePix(
+                Vec2(IdlePosition.x, 0),
+                Vec2(target->associated.getBox().GetCenter().x, 0));
+
+            auto animationMoveDistance = idleTargetDistanceX / attackAnimationFrames * 2;
+
+            associated.setBoxX(associated.getBox().x + animationMoveDistance);
+        }
+        else if (currentAnimationFrame > attackAnimationFrames / 2)
+        {
+            currentAnimationFrame++;
+
+            auto idleTargetDistanceX = Vec2::GetDistancePix(
+                Vec2(IdlePosition.x, 0),
+                Vec2(target->associated.getBox().GetCenter().x, 0));
+
+            auto animationMoveDistance = idleTargetDistanceX / attackAnimationFrames * 2;
+
+            associated.setBoxX(associated.getBox().x - animationMoveDistance);
+        }
+    }
     // if (currentHp <= 0)
     // {
     //     this->associated.RequestDelete();

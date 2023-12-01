@@ -15,7 +15,7 @@ Ranger::Ranger(GameObject &associated, int currentHp,
                int dexterity,
                int agility,
 
-               int aggro) : EntityComponent(associated, "Ranger", currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false)
+               int aggro) : EntityComponent(associated, "Ranger", currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false, Vec2(0 + 50, SCREEN_HEIGHT - (associated.getScaledBox().h * 2) - (SCREEN_HEIGHT / 10)))
 {
     speed = {0.0f, 0.0f};
 
@@ -42,8 +42,8 @@ void Ranger::Start()
 void Ranger::Update(float dt)
 {
 
-    associated.setBoxX(0 + 50);
-    associated.setBoxY(SCREEN_HEIGHT - (associated.getScaledBox().h * 2) - (SCREEN_HEIGHT / 10));
+    associated.setBoxX(IdlePosition.x);
+    associated.setBoxY(IdlePosition.y);;
 
     // if (currentHp <= 0)
     // {

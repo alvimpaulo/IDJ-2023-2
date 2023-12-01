@@ -45,3 +45,7 @@ void ActionMenuSelector::setIsActionLocked(bool newState)
 {
     this->isActionLocked = newState;
 }
+
+Component* ActionMenuSelector::getAttached(){
+    return this->attached;
+}

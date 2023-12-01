@@ -18,6 +18,8 @@ protected:
     int aggro;
     bool isIndicated;
 
+    EntityComponent *target;
+
 public:
     EntityComponent(GameObject &associated, std::string type, int currentHp,
                     int maxHp,
@@ -30,7 +32,7 @@ public:
                     int dexterity,
                     int agility,
 
-                    int aggro, bool isIndicated);
+                    int aggro, bool isIndicated, Vec2 IdlePosition);
     void virtual Update(float dt) = 0;
     void virtual Render() = 0;
     void virtual Start() = 0;
@@ -43,7 +45,7 @@ public:
     int getDexterity();
     int getAgility();
     int getAggro();
-    void physicalAttack(EntityComponent *target);
+    void startPhysicalAttack(EntityComponent *target);
     void useSkill(EntityComponent *target);
     void defend();
 
@@ -55,4 +57,16 @@ public:
 
     bool getIsIndicated();
     void setIsIndicated(bool newState);
+
+    bool isIdle;
+    Vec2 IdlePosition;
+
+    // Animations
+    int attackAnimationFrames;
+    int currentAnimationFrame;
+    bool isOnAnimation;
+    bool hasAttackFinished;
+
+    // Attack
+    void setTarget(EntityComponent *newTarget);
 };

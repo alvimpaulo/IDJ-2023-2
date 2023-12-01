@@ -23,4 +23,5 @@ public:
     void setAttached(Component *newButton);
     bool getIsActionLocked();
     void setIsActionLocked(bool newState);
+    Component* getAttached();
 };

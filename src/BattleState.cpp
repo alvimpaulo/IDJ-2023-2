@@ -48,7 +48,7 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	auto actionMenu = new ActionMenu(*actionMenuObj);
 	actionMenuObj->AddComponent(actionMenu);
 	this->AddObject(actionMenuObj);
-	
+
 	auto actionMenuSelectorObj = new GameObject();
 	auto actionMenuSelector = new ActionMenuSelector(*actionMenuSelectorObj, nullptr);
 	actionMenuSelectorObj->AddComponent(actionMenuSelector);
@@ -77,7 +77,7 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	//------------------------------------- MUSHROOM -----------------------------------------------------
 
 	auto mushroomObj = new GameObject();
-	auto mushroom = new Mushroom(*mushroomObj, 100, 100, 100, 100, 1, 10, 5, 1, 50);
+	auto mushroom = new Mushroom(*mushroomObj, 100, 100, 100, 100, 5, 10, 5, 1, 50);
 	mushroomObj->AddComponent(mushroom);
 	this->AddObject(mushroomObj);
 
@@ -95,7 +95,7 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	//------------------------------------- RANGER -----------------------------------------------------
 
 	auto rangerObj = new GameObject();
-	auto ranger = new Ranger(*rangerObj, 100, 100, 100, 100, 15, 1, 10, 10, 50);
+	auto ranger = new Ranger(*rangerObj, 100, 100, 100, 100, 2, 1, 10, 10, 50);
 	rangerObj->AddComponent(ranger);
 	this->AddObject(rangerObj);
 
@@ -115,7 +115,7 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	//------------------------------------- WARRIOR -----------------------------------------------------
 
 	auto warriorObj = new GameObject();
-	auto warrior = new Warrior(*warriorObj, 100, 100, 100, 100, 15, 1, 10, 10, 50);
+	auto warrior = new Warrior(*warriorObj, 100, 100, 100, 100, 5, 1, 10, 10, 50);
 	warriorObj->AddComponent(warrior);
 	this->AddObject(warriorObj);
 
@@ -137,6 +137,8 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	indicatorObj->AddComponent(indicator);
 	this->AddObject(indicatorObj);
 	this->indicator = indicator;
+
+	currentRound = Round::PlayerCharacterSelect;
 }
 
 void BattleState::LoadAssets()
@@ -169,136 +171,182 @@ void BattleState::Update(float dt)
 		this->quitRequested = true;
 	}
 
-	if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
+	if (this->getRound() == Round::PlayerAction)
 	{
-		if (indicator->getIsCharacterLocked() == false)
+		if (selectedCharacter->isIdle)
 		{
-			auto characterHealthBar = getFirstHealthBarOfEntityType(characters[indicatedCharacterIndex]->getType());
-			if (characterHealthBar)
+			auto selectedActionObj = this->getFirstObjectByComponent("ActionMenu");
+			auto selectedActionMenu = (ActionMenu *)selectedActionObj->GetComponent("ActionMenu");
+			auto selectedButton = selectedActionMenu->selector->getAttached();
+			if (selectedButton->getType() == "AttackButton")
 			{
-				characterHealthBar->setIsVisible(false);
+				auto mushroom = this->getFirstObjectByComponent("Mushroom");
+				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				selectedCharacter->startPhysicalAttack(mushroomPtr);
 			}
-
-			auto characterManaBar = getFirstManaBarOfEntityType(characters[indicatedCharacterIndex]->getType());
-			if (characterManaBar)
-			{
-				characterManaBar->setIsVisible(false);
-			}
-
-			indicatedCharacterIndex = std::max(indicatedCharacterIndex - 1, 0);
-			indicator->setAttached(characters[indicatedCharacterIndex]);
 		}
 	}
-	if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
-	{
-		if (indicator->getIsCharacterLocked() == false)
-		{
-			auto characterHealthBar = getFirstHealthBarOfEntityType(characters[indicatedCharacterIndex]->getType());
-			if (characterHealthBar)
-			{
-				characterHealthBar->setIsVisible(false);
-			}
-
-			auto characterManaBar = getFirstManaBarOfEntityType(characters[indicatedCharacterIndex]->getType());
-			if (characterManaBar)
-			{
-				characterManaBar->setIsVisible(false);
-			}
-
-			indicatedCharacterIndex = std::min(indicatedCharacterIndex + 1, (int)characters.size() - 1);
-			indicator->setAttached(characters[indicatedCharacterIndex]);
-		}
-	}
-	if (InputManager::GetInstance().KeyPress(SDLK_RETURN))
-	{
-		this->selectedCharacter = characters[indicatedCharacterIndex];
-		indicator->setIsCharacterLocked(true);
-	}
-	if (InputManager::GetInstance().KeyPress(SDLK_BACKSPACE))
-	{
-		this->selectedCharacter = nullptr;
-		indicator->setIsCharacterLocked(false);
-	}
-
-	if (InputManager::GetInstance().KeyPress(SDLK_F1))
-	{
-
-		auto mushroomHealthBar = getFirstHealthBarOfEntityType("Mushroom");
-
-		if (mushroomHealthBar)
-			mushroomHealthBar->toggleVisibility();
-
-		auto mushroomManaBar = getFirstManaBarOfEntityType("Mushroom");
-
-		if (mushroomManaBar)
-			mushroomManaBar->toggleVisibility();
-	}
-
-	if (InputManager::GetInstance().KeyPress(SDLK_KP_1))
+	else if (getRound() == Round::EnemyAction || getRound() == Round::EnemyActionSelect)
 	{
 		auto mushroom = this->getFirstObjectByComponent("Mushroom");
-		if (mushroom)
+		auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+		if (mushroomPtr->isIdle == true)
 		{
-			auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
-			mushroomPtr->loseHp(10);
+			mushroomPtr->startPhysicalAttack(selectedCharacter);
 		}
 	}
-
-	if (InputManager::GetInstance().KeyPress(SDLK_KP_2))
+	else if (getRound() == Round::PlayerCharacterSelect)
 	{
-		auto warrior = this->getFirstObjectByComponent("Warrior");
-		if (warrior)
+		auto actionMenuObj = this->getFirstObjectByComponent("ActionMenu");
+		auto actionMenuPtr = (ActionMenu *)actionMenuObj->GetComponent("ActionMenu");
+		actionMenuPtr->setIsVisible(false);
+		actionMenuPtr->selectedActionIndex = 0;
+		actionMenuPtr->selector->setIsActionLocked(false);
+
+		if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
 		{
-			auto warriorPtr = (Warrior *)warrior->GetComponent("Warrior");
-			warriorPtr->loseHp(10);
+			if (indicator->getIsCharacterLocked() == false)
+			{
+				auto characterHealthBar = getFirstHealthBarOfEntityType(characters[indicatedCharacterIndex]->getType());
+				if (characterHealthBar)
+				{
+					characterHealthBar->setIsVisible(false);
+				}
+
+				auto characterManaBar = getFirstManaBarOfEntityType(characters[indicatedCharacterIndex]->getType());
+				if (characterManaBar)
+				{
+					characterManaBar->setIsVisible(false);
+				}
+
+				indicatedCharacterIndex = std::max(indicatedCharacterIndex - 1, 0);
+				indicator->setAttached(characters[indicatedCharacterIndex]);
+			}
+		}
+		if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
+		{
+			if (indicator->getIsCharacterLocked() == false)
+			{
+				auto characterHealthBar = getFirstHealthBarOfEntityType(characters[indicatedCharacterIndex]->getType());
+				if (characterHealthBar)
+				{
+					characterHealthBar->setIsVisible(false);
+				}
+
+				auto characterManaBar = getFirstManaBarOfEntityType(characters[indicatedCharacterIndex]->getType());
+				if (characterManaBar)
+				{
+					characterManaBar->setIsVisible(false);
+				}
+
+				indicatedCharacterIndex = std::min(indicatedCharacterIndex + 1, (int)characters.size() - 1);
+				indicator->setAttached(characters[indicatedCharacterIndex]);
+			}
+		}
+		if (InputManager::GetInstance().KeyPress(SDLK_RETURN))
+		{
+			this->selectedCharacter = characters[indicatedCharacterIndex];
+			indicator->setIsCharacterLocked(true);
+			setRound(Round::PlayerActionSelect);
+		}
+
+		if (InputManager::GetInstance().KeyPress(SDLK_F1))
+		{
+
+			auto mushroomHealthBar = getFirstHealthBarOfEntityType("Mushroom");
+
+			if (mushroomHealthBar)
+				mushroomHealthBar->toggleVisibility();
+
+			auto mushroomManaBar = getFirstManaBarOfEntityType("Mushroom");
+
+			if (mushroomManaBar)
+				mushroomManaBar->toggleVisibility();
+		}
+
+		if (InputManager::GetInstance().KeyPress(SDLK_KP_1))
+		{
+			auto mushroom = this->getFirstObjectByComponent("Mushroom");
+			if (mushroom)
+			{
+				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				mushroomPtr->loseHp(10);
+			}
+		}
+
+		if (InputManager::GetInstance().KeyPress(SDLK_KP_2))
+		{
+			auto warrior = this->getFirstObjectByComponent("Warrior");
+			if (warrior)
+			{
+				auto warriorPtr = (Warrior *)warrior->GetComponent("Warrior");
+				warriorPtr->loseHp(10);
+			}
+		}
+
+		if (InputManager::GetInstance().KeyPress(SDLK_KP_3))
+		{
+			auto mushroom = this->getFirstObjectByComponent("Mushroom");
+			if (mushroom)
+			{
+				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				mushroomPtr->loseMp(10);
+				;
+			}
+		}
+
+		if (InputManager::GetInstance().KeyPress(SDLK_KP_4))
+		{
+			auto warrior = this->getFirstObjectByComponent("Warrior");
+			if (warrior)
+			{
+				auto warriorPtr = (Warrior *)warrior->GetComponent("Warrior");
+				warriorPtr->loseMp(10);
+				;
+			}
 		}
 	}
-
-	if (InputManager::GetInstance().MousePress(SDL_BUTTON_LEFT))
+	else if (getRound() == Round::PlayerActionSelect)
 	{
-		auto attackButtonobj = this->getFirstObjectByComponent("AttackButton");
-		if (attackButtonobj->getBox().Contains({mouseX, mouseY}))
+		if (InputManager::GetInstance().KeyPress(SDLK_BACKSPACE))
 		{
-			auto mushroomObj = this->getFirstObjectByComponent("Mushroom");
-			auto warriorObj = this->getFirstObjectByComponent("Warrior");
-			auto mushroomPtr = (Mushroom *)mushroomObj->GetComponent("Mushroom");
-			auto warriorPtr = (Warrior *)warriorObj->GetComponent("Warrior");
-			mushroomPtr->gainHp(100);
-			warriorPtr->gainHp(100);
+			auto selectedActionObj = this->getFirstObjectByComponent("ActionMenu");
+			auto selectedActionMenu = (ActionMenu *)selectedActionObj->GetComponent("ActionMenu");
+			if (selectedActionMenu->selector->getIsActionLocked() == false)
+			{
+				this->selectedCharacter = nullptr;
+				indicator->setIsCharacterLocked(false);
+				setRound(Round::PlayerCharacterSelect);
+			}
 		}
 
-		auto defendButtonObj = this->getFirstObjectByComponent("DefendButton");
-		if (defendButtonObj->getBox().Contains({mouseX, mouseY}))
+		if (InputManager::GetInstance().MousePress(SDL_BUTTON_LEFT))
 		{
-			auto mushroomObj = this->getFirstObjectByComponent("Mushroom");
-			auto warriorObj = this->getFirstObjectByComponent("Warrior");
-			auto mushroomPtr = (Mushroom *)mushroomObj->GetComponent("Mushroom");
-			auto warriorPtr = (Warrior *)warriorObj->GetComponent("Warrior");
-			mushroomPtr->gainMp(100);
-			warriorPtr->gainMp(100);
+			auto attackButtonobj = this->getFirstObjectByComponent("AttackButton");
+			if (attackButtonobj->getBox().Contains({mouseX, mouseY}))
+			{
+				auto mushroomObj = this->getFirstObjectByComponent("Mushroom");
+				auto warriorObj = this->getFirstObjectByComponent("Warrior");
+				auto mushroomPtr = (Mushroom *)mushroomObj->GetComponent("Mushroom");
+				auto warriorPtr = (Warrior *)warriorObj->GetComponent("Warrior");
+				mushroomPtr->gainHp(100);
+				warriorPtr->gainHp(100);
+			}
+
+			auto defendButtonObj = this->getFirstObjectByComponent("DefendButton");
+			if (defendButtonObj->getBox().Contains({mouseX, mouseY}))
+			{
+				auto mushroomObj = this->getFirstObjectByComponent("Mushroom");
+				auto warriorObj = this->getFirstObjectByComponent("Warrior");
+				auto mushroomPtr = (Mushroom *)mushroomObj->GetComponent("Mushroom");
+				auto warriorPtr = (Warrior *)warriorObj->GetComponent("Warrior");
+				mushroomPtr->gainMp(100);
+				warriorPtr->gainMp(100);
+			}
 		}
 	}
-
-	if (InputManager::GetInstance().KeyPress(SDLK_KP_3))
+	else
 	{
-		auto mushroom = this->getFirstObjectByComponent("Mushroom");
-		if (mushroom)
-		{
-			auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
-			mushroomPtr->loseMp(10);
-			;
-		}
-	}
-
-	if (InputManager::GetInstance().KeyPress(SDLK_KP_4))
-	{
-		auto warrior = this->getFirstObjectByComponent("Warrior");
-		if (warrior)
-		{
-			auto warriorPtr = (Warrior *)warrior->GetComponent("Warrior");
-			warriorPtr->loseMp(10);
-			;
-		}
 	}
 
 	UpdateArray(dt);
@@ -428,4 +476,14 @@ ManaBar *BattleState::getFirstManaBarOfEntityType(std::string type)
 	}
 
 	return nullptr;
+}
+
+void BattleState::setRound(Round turn)
+{
+	this->currentRound = turn;
+}
+
+BattleState::Round BattleState::getRound()
+{
+	return currentRound;
 }
