@@ -1,7 +1,11 @@
 #include "CharacterIndicator.hpp"
 #include "Sprite.hpp"
 
+<<<<<<< HEAD
+CharacterIndicator::CharacterIndicator(GameObject &associated, EntityComponent *selected) : Component(associated, "CharacterIndicator"), attached(selected)
+=======
 CharacterIndicator::CharacterIndicator(GameObject &associated, EntityComponent *selected) : Component(associated, type), attached(selected)
+>>>>>>> f7e9db92a33dd43d0d2e2e03888ea3940bf3f923
 {
 
     offset = 40;
@@ -39,10 +43,6 @@ void CharacterIndicator::Update(float dt)
     associated.setBoxCenter(Vec2(masterBox.x + masterBox.w / 2, masterBox.y - offset));
 }
 void CharacterIndicator::Render() {}
-bool CharacterIndicator::Is(std::string type)
-{
-    return type == "CharacterIndicator";
-}
 void CharacterIndicator::Start() {}
 
 void CharacterIndicator::setAttached(EntityComponent *newEntity)

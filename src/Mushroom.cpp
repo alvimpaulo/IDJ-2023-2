@@ -15,7 +15,7 @@ Mushroom::Mushroom(GameObject &associated, int currentHp,
                    int dexterity,
                    int agility,
 
-                   int aggro) : EntityComponent(associated, currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false)
+                   int aggro) : EntityComponent(associated, "Mushroom", currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false)
 {
     setIsVisible(true);
 
@@ -52,11 +52,6 @@ void Mushroom::Update(float dt)
 
 void Mushroom::Render()
 {
-}
-
-bool Mushroom::Is(std::string type)
-{
-    return type == "Mushroom";
 }
 
 void Mushroom::NotifyCollision(GameObject &other)

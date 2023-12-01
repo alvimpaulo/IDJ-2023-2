@@ -3,7 +3,11 @@
 #include "Camera.hpp"
 #include "Resources.hpp"
 
+<<<<<<< HEAD
+Text::Text(GameObject &associated, std::string fontFile, int fontSize, TextStyle style, std::string text, SDL_Color color) : Component(associated, "Text")
+=======
 Text::Text(GameObject &associated, std::string fontFile, int fontSize, TextStyle style, std::string text, SDL_Color color) : Component(associated, type)
+>>>>>>> f7e9db92a33dd43d0d2e2e03888ea3940bf3f923
 {
     this->fontFile = fontFile;
     this->fontSize = fontSize;
@@ -43,8 +47,6 @@ void Text::Render()
         std::cerr << "Erro renderizando Text " << SDL_GetError() << std::endl;
     }
 }
-
-bool Text::Is(std::string type) { return type == "Text"; }
 
 void Text::SetText(std::string text)
 {

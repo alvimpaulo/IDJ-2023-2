@@ -66,11 +66,6 @@ void Sprite::Update(float dt)
     }
 }
 
-bool Sprite::Is(std::string type)
-{
-    return type == "Sprite";
-}
-
 void Sprite::Open(std::string file)
 {
 

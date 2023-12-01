@@ -4,7 +4,6 @@
 #include "GameObject.hpp"
 #include "Component.hpp"
 
-
 class Sound : public Component
 {
 private:
@@ -21,5 +20,4 @@ public:
     void Update(float dt);
     void Render();
     bool IsPlaying;
-
 };

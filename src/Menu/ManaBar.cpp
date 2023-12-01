@@ -6,7 +6,11 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 
+<<<<<<< HEAD
+ManaBar::ManaBar(GameObject &associated, EntityComponent *baseEntity) : Component(associated, "ManaBar"), masterEntity(baseEntity)
+=======
 ManaBar::ManaBar(GameObject &associated, EntityComponent *baseEntity) : Component(associated, type), masterEntity(baseEntity)
+>>>>>>> f7e9db92a33dd43d0d2e2e03888ea3940bf3f923
 {
     auto outlineSprite = new Sprite(associated, "assets/img/Menu/bars/outline.png");
     auto spriteWidth = outlineSprite->getWidth();
@@ -50,10 +54,13 @@ void ManaBar::Render()
         associated.setBoxX(masterBox.x);
         associated.setBoxY(masterBox.y - barHeight - 10);
     }
+<<<<<<< HEAD
+=======
 }
 bool ManaBar::Is(std::string type)
 {
     return type == "ManaBar";
+>>>>>>> f7e9db92a33dd43d0d2e2e03888ea3940bf3f923
 }
 void ManaBar::Shoot(Vec2 target)
 {

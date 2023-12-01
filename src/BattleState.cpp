@@ -10,7 +10,6 @@
 #include "Game.hpp"
 #include "CameraFollower.hpp"
 #include "GameData.hpp"
-#include "EndState.hpp"
 #include <random>
 #include "BattleState.hpp"
 #include "Mushroom.hpp"
@@ -181,7 +180,16 @@ void BattleState::Update(float dt)
 	{
 		if (indicator->getIsCharacterLocked() == false)
 		{
+			auto characterHealthBar = getFirstHealthBarOfEntityType(characters[indicatedCharacterIndex]->getType());
+			if(characterHealthBar){
+				characterHealthBar->setIsVisible(false);
+			}
 
+			auto characterManaBar = getFirstManaBarOfEntityType(characters[indicatedCharacterIndex]->getType());
+			if(characterManaBar){
+				characterManaBar->setIsVisible(false);
+			}
+			
 			indicatedCharacterIndex = std::min(indicatedCharacterIndex + 1, (int)characters.size() - 1);
 			indicator->setAttached(characters[indicatedCharacterIndex]);
 		}

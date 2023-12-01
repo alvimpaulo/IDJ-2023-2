@@ -66,7 +66,3 @@ void Sound::Update(float dt)
 void Sound::Render()
 {
 }
-bool Sound::Is(std::string type)
-{
-    return type == "Sound";
-}

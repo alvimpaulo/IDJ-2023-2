@@ -2,7 +2,6 @@
 #include "Resources.hpp"
 #include "Camera.hpp"
 #include <unordered_map>
-#include "TitleState.hpp"
 #include <BattleState.hpp>
 
 int main(int argc, char **argv)
