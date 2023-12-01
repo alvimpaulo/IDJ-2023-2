@@ -72,12 +72,12 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	this->AddObject(mushroomObj);
 
 	auto mushroomHealthBarObj = new GameObject();
-	auto mushroomHealthBar = new HealthBar(*mushroomHealthBarObj, *mushroom);
+	auto mushroomHealthBar = new HealthBar(*mushroomHealthBarObj, mushroom);
 	mushroomHealthBarObj->AddComponent(mushroomHealthBar);
 	this->AddObject(mushroomHealthBarObj);
 
 	auto mushroomManaBarObj = new GameObject();
-	auto mushroomManaBar = new ManaBar(*mushroomManaBarObj, *mushroom);
+	auto mushroomManaBar = new ManaBar(*mushroomManaBarObj, mushroom);
 	mushroomManaBarObj->AddComponent(mushroomManaBar);
 	this->AddObject(mushroomManaBarObj);
 	//------------------------------------- MUSHROOM -----------------------------------------------------
@@ -90,12 +90,12 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	this->AddObject(rangerObj);
 
 	auto rangerHealthBarObj = new GameObject();
-	auto rangerHealthBar = new HealthBar(*rangerHealthBarObj, *ranger);
+	auto rangerHealthBar = new HealthBar(*rangerHealthBarObj, ranger);
 	rangerHealthBarObj->AddComponent(rangerHealthBar);
 	this->AddObject(rangerHealthBarObj);
 
 	auto rangerManaBarObj = new GameObject();
-	auto rangerManaBar = new ManaBar(*rangerManaBarObj, *ranger);
+	auto rangerManaBar = new ManaBar(*rangerManaBarObj, ranger);
 	rangerManaBarObj->AddComponent(rangerManaBar);
 	this->AddObject(rangerManaBarObj);
 
@@ -110,12 +110,12 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	this->AddObject(warriorObj);
 
 	auto warriorHealthBarObj = new GameObject();
-	auto warriorHealthBar = new HealthBar(*warriorHealthBarObj, *warrior);
+	auto warriorHealthBar = new HealthBar(*warriorHealthBarObj, warrior);
 	warriorHealthBarObj->AddComponent(warriorHealthBar);
 	this->AddObject(warriorHealthBarObj);
 
 	auto warriorManaBarObj = new GameObject();
-	auto warriorManaBar = new ManaBar(*warriorManaBarObj, *warrior);
+	auto warriorManaBar = new ManaBar(*warriorManaBarObj, warrior);
 	warriorManaBarObj->AddComponent(warriorManaBar);
 	this->AddObject(warriorManaBarObj);
 
@@ -154,34 +154,61 @@ void BattleState::Update(float dt)
 
 	std::vector<std::pair<std::shared_ptr<GameObject>, Collider *>> colliders;
 
-	if (InputManager::GetInstance().QuitRequested() || InputManager::GetInstance().KeyPress(ESCAPE_KEY))
+	if (InputManager::GetInstance().QuitRequested())
 	{
 		this->quitRequested = true;
 	}
 
 	if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
 	{
-		indicatedCharacterIndex = std::max(indicatedCharacterIndex - 1, 0);
-		indicator->setAttached(characters[indicatedCharacterIndex]);
+		if (indicator->getIsCharacterLocked() == false)
+		{
+			auto characterHealthBar = getFirstHealthBarOfEntityType(characters[indicatedCharacterIndex]->getType());
+			if(characterHealthBar){
+				characterHealthBar->setIsVisible(false);
+			}
+
+			auto characterManaBar = getFirstManaBarOfEntityType(characters[indicatedCharacterIndex]->getType());
+			if(characterManaBar){
+				characterManaBar->setIsVisible(false);
+			}
+			
+			indicatedCharacterIndex = std::max(indicatedCharacterIndex - 1, 0);
+			indicator->setAttached(characters[indicatedCharacterIndex]);
+		}
 	}
 	if (InputManager::GetInstance().KeyPress(DOWN_ARROW_KEY))
 	{
-		indicatedCharacterIndex = std::min(indicatedCharacterIndex + 1, (int)characters.size() - 1);
-		indicator->setAttached(characters[indicatedCharacterIndex]);
+		if (indicator->getIsCharacterLocked() == false)
+		{
+
+			indicatedCharacterIndex = std::min(indicatedCharacterIndex + 1, (int)characters.size() - 1);
+			indicator->setAttached(characters[indicatedCharacterIndex]);
+		}
 	}
 	if (InputManager::GetInstance().KeyPress(SDLK_RETURN))
 	{
 		this->selectedCharacter = characters[indicatedCharacterIndex];
+		indicator->setIsCharacterLocked(true);
+	}
+	if (InputManager::GetInstance().KeyPress(SDLK_BACKSPACE))
+	{
+		this->selectedCharacter = nullptr;
+		indicator->setIsCharacterLocked(false);
 	}
 
 	if (InputManager::GetInstance().KeyPress(SDLK_SPACE))
 	{
-		auto mushroomComponent = this->getFirstObjectByComponent("Mushroom");
-		if (mushroomComponent)
-		{
-			auto mushroomPtr = (Mushroom *)mushroomComponent->GetComponent("Mushroom");
-			mushroomPtr->setIsVisible(!(mushroomPtr->getIsVisible()));
-		}
+
+		auto mushroomHealthBar = getFirstHealthBarOfEntityType("Mushroom");
+
+		if (mushroomHealthBar)
+			mushroomHealthBar->toggleVisibility();
+
+		auto mushroomManaBar = getFirstManaBarOfEntityType("Mushroom");
+
+		if (mushroomManaBar)
+			mushroomManaBar->toggleVisibility();
 	}
 
 	if (InputManager::GetInstance().KeyPress(SDLK_KP_1))
@@ -191,7 +218,6 @@ void BattleState::Update(float dt)
 		{
 			auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
 			mushroomPtr->loseHp(10);
-			;
 		}
 	}
 
@@ -202,7 +228,6 @@ void BattleState::Update(float dt)
 		{
 			auto warriorPtr = (Warrior *)warrior->GetComponent("Warrior");
 			warriorPtr->loseHp(10);
-			;
 		}
 	}
 
@@ -318,6 +343,21 @@ std::shared_ptr<GameObject> BattleState::getFirstObjectByComponent(std::string t
 	return nullptr;
 }
 
+std::vector<std::shared_ptr<GameObject>> BattleState::getAllObjectsWithComponentType(std::string type)
+{
+	std::vector<std::shared_ptr<GameObject>> returnVector;
+
+	for (size_t i = 0; i < objectArray.size(); i++)
+	{
+		if (objectArray[i]->GetComponent(type))
+		{
+			returnVector.push_back(objectArray[i]);
+		}
+	}
+
+	return returnVector;
+}
+
 BattleState *BattleState::GetInstance()
 {
 	if (BattleState::instance == nullptr)
@@ -334,4 +374,35 @@ BattleState *BattleState::GetInstance()
 EntityComponent *BattleState::getSelectedCharacter()
 {
 	return this->selectedCharacter;
+}
+
+HealthBar *BattleState::getFirstHealthBarOfEntityType(std::string type)
+{
+	auto healthBars = this->getAllObjectsWithComponentType("HealthBar");
+
+	for (size_t i = 0; i < healthBars.size(); i++)
+	{
+		auto healthBarPtr = (HealthBar *)healthBars[i]->GetComponent("HealthBar");
+		if (healthBarPtr->getMasterEntity()->Is(type))
+		{
+			return healthBarPtr;
+		}
+	}
+
+	return nullptr;
+}
+ManaBar *BattleState::getFirstManaBarOfEntityType(std::string type)
+{
+	auto manaBars = this->getAllObjectsWithComponentType("ManaBar");
+
+	for (size_t i = 0; i < manaBars.size(); i++)
+	{
+		auto manaBarPtr = (ManaBar *)manaBars[i]->GetComponent("ManaBar");
+		if (manaBarPtr->getMasterEntity()->Is(type))
+		{
+			return manaBarPtr;
+		}
+	}
+
+	return nullptr;
 }
