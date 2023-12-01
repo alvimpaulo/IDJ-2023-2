@@ -7,8 +7,7 @@ Sound::Sound(GameObject &associated) : Component(associated, "Sound")
 {
     IsPlaying = false;
 }
-Sound::Sound(GameObject &associated,
-             std::string file) : Sound(associated)
+Sound::Sound(GameObject &associated,std::string file) : Sound(associated)
 {
     Open(file);
 }
