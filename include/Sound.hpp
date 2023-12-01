@@ -13,8 +13,6 @@ private:
 
 public:
     Sound(GameObject &associated);
-    Sound(GameObject &associated,
-          std::string file);
     ~Sound();
     void Play(int times = 1);
     void Stop();
@@ -22,7 +20,6 @@ public:
     bool IsOpen();
     void Update(float dt);
     void Render();
-    bool Is(std::string type);
     bool IsPlaying;
 
 };

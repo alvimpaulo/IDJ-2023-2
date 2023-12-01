@@ -21,7 +21,6 @@ public:
     int GetHeight();
     int GetDepth();
     void Update(float dt);
-    bool Is(std::string type);
 
 private:
     std::vector<int> tileMatrix;

@@ -3,7 +3,7 @@
 #include "Camera.hpp"
 #include "Resources.hpp"
 
-Text::Text(GameObject &associated, std::string fontFile, int fontSize, TextStyle style, std::string text, SDL_Color color) : Component(associated)
+Text::Text(GameObject &associated, std::string fontFile, int fontSize, TextStyle style, std::string text, SDL_Color color) : Component(associated, type)
 {
     this->fontFile = fontFile;
     this->fontSize = fontSize;

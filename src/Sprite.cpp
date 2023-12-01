@@ -4,7 +4,7 @@
 #include "Resources.hpp"
 #include "Camera.hpp"
 
-Sprite::Sprite(GameObject &associated) : Component(associated)
+Sprite::Sprite(GameObject &associated) : Component(associated, "Sprite")
 {
     texture = nullptr;
     this->currentFrame = 0;
@@ -19,7 +19,7 @@ Sprite::Sprite(GameObject &associated) : Component(associated)
 }
 
 Sprite::Sprite(GameObject &associated, std::string file, int frameCount,
-               float frameTime, float secondsToSelfDestruct, int opacity, bool flipHorizontal, bool flipVertical) : Component(associated)
+               float frameTime, float secondsToSelfDestruct, int opacity, bool flipHorizontal, bool flipVertical) : Component(associated, "Sprite")
 {
     this->file = file;
 

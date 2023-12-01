@@ -12,7 +12,7 @@ Bullet::Bullet(GameObject &associated,
                int damage,
                float maxDistance,
                std::string sprite,
-               int frameCount, float frameTime, bool targetsPlayer) : Component(associated)
+               int frameCount, float frameTime, bool targetsPlayer) : Component(associated, type)
 {
     this->damage = damage;
     this->distanceLeft = maxDistance;

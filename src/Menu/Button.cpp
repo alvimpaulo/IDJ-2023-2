@@ -3,7 +3,7 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 
-Button::Button(GameObject &associated, ButtonType type) : Component(associated), isSelected(false)
+Button::Button(GameObject &associated, ButtonType type) : Component(associated, "Button"), isSelected(false)
 {
     Sprite *ptrSprite;
     switch (type)
@@ -42,10 +42,6 @@ void Button::Render()
     {
         associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
     }
-}
-bool Button::Is(std::string type)
-{
-    return type == "Button";
 }
 void Button::Start()
 {

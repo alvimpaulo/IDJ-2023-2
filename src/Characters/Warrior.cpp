@@ -15,7 +15,7 @@ Warrior::Warrior(GameObject &associated, int currentHp,
                  int dexterity,
                  int agility,
 
-                 int aggro) : EntityComponent(associated, currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false)
+                 int aggro) : EntityComponent(associated, "Warrior", currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false)
 {
     speed = {0.0f, 0.0f};
 
@@ -53,11 +53,6 @@ void Warrior::Update(float dt)
 void Warrior::Render()
 {
 }
-bool Warrior::Is(std::string type)
-{
-    return type == "Warrior";
-}
-
 void Warrior::NotifyCollision(GameObject &other)
 {
 

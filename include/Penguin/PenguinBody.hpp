@@ -5,12 +5,11 @@
 class PenguinBody : public Component
 {
 public:
-    PenguinBody(GameObject &associated);
+    PenguinBody(GameObject &associated, std::string type);
     ~PenguinBody();
     void Start();
     void Update(float dt);
     void Render();
-    bool Is(std::string type);
     static PenguinBody *player;
     void NotifyCollision (GameObject& other );
 

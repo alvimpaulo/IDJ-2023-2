@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include "Resources.hpp"
 
-Sound::Sound(GameObject &associated) : Component(associated)
+Sound::Sound(GameObject &associated) : Component(associated, "Sound")
 {
     IsPlaying = false;
 }

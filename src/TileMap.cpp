@@ -6,7 +6,7 @@
 
 TileMap::TileMap(GameObject &associated,
                  std::string file,
-                 TileSet *tileSet) : Component(associated)
+                 TileSet *tileSet) : Component(associated, type)
 {
     SetTileSet(tileSet);
     this->Load(file);

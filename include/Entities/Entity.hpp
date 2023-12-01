@@ -19,7 +19,7 @@ protected:
     bool isIndicated;
 
 public:
-    EntityComponent(GameObject &associated, int currentHp,
+    EntityComponent(GameObject &associated, std::string type, int currentHp,
                     int maxHp,
 
                     int maxMp,
@@ -33,7 +33,6 @@ public:
                     int aggro, bool isIndicated);
     void virtual Update(float dt) = 0;
     void virtual Render() = 0;
-    bool virtual Is(std::string type) = 0;
     void virtual Start() = 0;
     int getCurrentHp();
     int getMaxHp();

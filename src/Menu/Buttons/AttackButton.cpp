@@ -3,7 +3,7 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 
-AttackButton::AttackButton(GameObject &associated, ActionMenu *menu) : Component(associated)
+AttackButton::AttackButton(GameObject &associated, ActionMenu *menu) : Component(associated, "AttackButton")
 {
     Sprite *ptrSprite;
     ptrSprite = new Sprite(associated, "assets/img/Menu/buttons/swordButton.png");
@@ -29,10 +29,6 @@ void AttackButton::Render()
     {
         associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
     }
-}
-bool AttackButton::Is(std::string type)
-{
-    return type == "AttackButton";
 }
 void AttackButton::Start()
 {

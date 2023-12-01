@@ -5,13 +5,13 @@
 class HealthBar : public Component
 {
 private:
-    EntityComponent& masterEntity;
+    EntityComponent* masterEntity;
 
 public:
-    HealthBar(GameObject &associated, EntityComponent& baseEntity);
+    HealthBar(GameObject &associated, EntityComponent* baseEntity);
     void Update(float dt);
     void Render();
-    bool Is(std::string type);
     void Shoot(Vec2 target);
     void NotifyCollision(GameObject &other);
+    EntityComponent* getMasterEntity();
 };

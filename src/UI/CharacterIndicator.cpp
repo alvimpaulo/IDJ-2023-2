@@ -1,11 +1,12 @@
 #include "CharacterIndicator.hpp"
 #include "Sprite.hpp"
 
-CharacterIndicator::CharacterIndicator(GameObject &associated, EntityComponent *selected) : Component(associated), attached(selected)
+CharacterIndicator::CharacterIndicator(GameObject &associated, EntityComponent *selected) : Component(associated, type), attached(selected)
 {
 
     offset = 40;
     direction = UP;
+    isCharacterLocked = false;
     associated.setScale(Vec2(2, 2));
     auto ptrSprite = new Sprite(associated, "assets/img/UI/Indicator.png");
 
@@ -46,7 +47,20 @@ void CharacterIndicator::Start() {}
 
 void CharacterIndicator::setAttached(EntityComponent *newEntity)
 {
-    this->attached->setIsIndicated(false);
-    this->attached = newEntity;
-    this->attached->setIsIndicated(true);
+    if (this->isCharacterLocked == false)
+    {
+        this->attached->setIsIndicated(false);
+        this->attached = newEntity;
+        this->attached->setIsIndicated(true);
+    }
+}
+
+bool CharacterIndicator::getIsCharacterLocked()
+{
+    return this->isCharacterLocked;
+}
+
+void CharacterIndicator::setIsCharacterLocked(bool newState)
+{
+    this->isCharacterLocked = newState;
 }

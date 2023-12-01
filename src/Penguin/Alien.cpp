@@ -15,7 +15,7 @@
 
 int Alien::alienCount = 0;
 
-Alien::Alien(GameObject &associated, int nMinions = 0) : Component(associated)
+Alien::Alien(GameObject &associated, int nMinions = 0) : Component(associated, type)
 {
     this->hp = 100;
     this->speed = Vec2(0, 0);

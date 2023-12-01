@@ -5,17 +5,17 @@
 #include "InputManager.hpp"
 
 Ranger::Ranger(GameObject &associated, int currentHp,
-                 int maxHp,
+               int maxHp,
 
-                 int maxMp,
-                 int currentMp,
+               int maxMp,
+               int currentMp,
 
-                 int strength,
-                 int wisdom,
-                 int dexterity,
-                 int agility,
+               int strength,
+               int wisdom,
+               int dexterity,
+               int agility,
 
-                 int aggro) : EntityComponent(associated, currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false)
+               int aggro) : EntityComponent(associated, "Ranger", currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false)
 {
     speed = {0.0f, 0.0f};
 
@@ -53,11 +53,6 @@ void Ranger::Update(float dt)
 void Ranger::Render()
 {
 }
-bool Ranger::Is(std::string type)
-{
-    return type == "Ranger";
-}
-
 void Ranger::NotifyCollision(GameObject &other)
 {
 

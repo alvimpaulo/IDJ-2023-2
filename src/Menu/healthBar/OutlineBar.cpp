@@ -1,7 +1,7 @@
 #include "OutlineBar.hpp"
 #include "Sprite.hpp"
 
-OutlineBar::OutlineBar(GameObject &associated) : Component(associated)
+OutlineBar::OutlineBar(GameObject &associated, std::string type) : Component(associated, type)
 {
     auto outlineSprite = new Sprite(associated, "assets/img/Menu/bars/outline.png");
     associated.AddComponent(outlineSprite);

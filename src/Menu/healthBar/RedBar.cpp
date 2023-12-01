@@ -1,7 +1,7 @@
 #include "RedBar.hpp"
 #include "Sprite.hpp"
 
-RedBar::RedBar(GameObject &associated) : Component(associated)
+RedBar::RedBar(GameObject &associated, std::string type) : Component(associated, type)
 {
     auto redSprite = new Sprite(associated, "assets/img/Menu/bars/red.png");
     associated.AddComponent(redSprite);

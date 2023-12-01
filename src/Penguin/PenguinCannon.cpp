@@ -8,7 +8,7 @@
 
 PenguinCannon::PenguinCannon(GameObject &associated,
                              std::weak_ptr<GameObject>
-                                 penguinBody) : Component(associated)
+                                 penguinBody) : Component(associated, type)
 {
     // lastShootTime = 0.f;
     this->pbody = penguinBody;

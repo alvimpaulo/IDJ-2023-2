@@ -3,7 +3,7 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 
-DefendButton::DefendButton(GameObject &associated, ActionMenu* menu) : Component(associated)
+DefendButton::DefendButton(GameObject &associated, ActionMenu* menu) : Component(associated, "DefendButton")
 {
     Sprite *ptrSprite;
     ptrSprite = new Sprite(associated, "assets/img/Menu/buttons/shieldButton.png");
@@ -29,10 +29,6 @@ void DefendButton::Render()
     {
         associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
     }
-}
-bool DefendButton::Is(std::string type)
-{
-    return type == "DefendButton";
 }
 void DefendButton::Start()
 {

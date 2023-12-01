@@ -1,7 +1,7 @@
 #include "CameraFollower.hpp"
 #include "Camera.hpp"
 
-CameraFollower::CameraFollower(GameObject &go) : Component(go)
+CameraFollower::CameraFollower(GameObject &go) : Component(go, "CameraFollower")
 {
 }
 
@@ -13,9 +13,4 @@ void CameraFollower::Update(float dt)
 
 void CameraFollower::Render()
 {
-}
-
-bool CameraFollower::Is(std::string type)
-{
-    return type == "CameraFollower";
 }

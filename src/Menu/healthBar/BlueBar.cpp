@@ -1,7 +1,7 @@
 #include "BlueBar.hpp"
 #include "Sprite.hpp"
 
-BlueBar::BlueBar(GameObject &associated) : Component(associated)
+BlueBar::BlueBar(GameObject &associated, std::string type) : Component(associated, type)
 {
     auto blueSprite = new Sprite(associated, "assets/img/Menu/bars/blue.png");
     blueSprite->setScale(Vec2(1, 1));

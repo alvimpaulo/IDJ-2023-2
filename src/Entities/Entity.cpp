@@ -1,7 +1,7 @@
 #include "Entities/Entity.hpp"
 #include "algorithm"
 
-EntityComponent::EntityComponent(GameObject &associated, int currentHp,
+EntityComponent::EntityComponent(GameObject &associated, std::string type, int currentHp,
                                  int maxHp,
 
                                  int maxMp,
@@ -12,7 +12,7 @@ EntityComponent::EntityComponent(GameObject &associated, int currentHp,
                                  int dexterity,
                                  int agility,
 
-                                 int aggro, bool isSelected) : Component(associated), currentHp(currentHp),
+                                 int aggro, bool isSelected) : Component(associated, type), currentHp(currentHp),
                                                                maxHp(maxHp), maxMp(maxMp), currentMp(currentMp), strength(strength), wisdom(wisdom), dexterity(dexterity), agility(agility), isIndicated(isSelected)
 {
 }
@@ -88,10 +88,12 @@ int EntityComponent::getAggro()
     return this->aggro;
 }
 
-void EntityComponent::setIsIndicated(bool newState){
+void EntityComponent::setIsIndicated(bool newState)
+{
     this->isIndicated = newState;
 }
 
-bool EntityComponent::getIsIndicated(){
+bool EntityComponent::getIsIndicated()
+{
     return isIndicated;
 }

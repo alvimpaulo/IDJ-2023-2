@@ -14,12 +14,14 @@ private:
     EntityComponent *attached;
     double offset;
     animationDirection direction;
+    bool isCharacterLocked;
 
 public:
     CharacterIndicator(GameObject &associated, EntityComponent *selected);
     void Update(float dt);
     void Render();
-    bool Is(std::string type);
     void Start();
     void setAttached(EntityComponent *newEntity);
+    bool getIsCharacterLocked();
+    void setIsCharacterLocked(bool newState);
 };

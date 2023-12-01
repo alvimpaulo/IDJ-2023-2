@@ -3,7 +3,7 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 
-SkillButton::SkillButton(GameObject &associated, ActionMenu* menu) : Component(associated)
+SkillButton::SkillButton(GameObject &associated, ActionMenu* menu) : Component(associated, "SkillButton")
 {
     Sprite *ptrSprite;
     ptrSprite = new Sprite(associated, "assets/img/Menu/buttons/skillButton.png");
@@ -29,10 +29,6 @@ void SkillButton::Render()
     {
         associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
     }
-}
-bool SkillButton::Is(std::string type)
-{
-    return type == "SkillButton";
 }
 void SkillButton::Start()
 {

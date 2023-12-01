@@ -11,7 +11,7 @@
 
 PenguinBody *PenguinBody::player = nullptr;
 
-PenguinBody::PenguinBody(GameObject &associated) : Component(associated)
+PenguinBody::PenguinBody(GameObject &associated, std::string type) : Component(associated, type)
 {
     speed = {0.0f, 0.0f};
 

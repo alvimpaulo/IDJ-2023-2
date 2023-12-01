@@ -4,7 +4,7 @@
 #include "Camera.hpp"
 #include "Game.hpp"
 
-Collider::Collider(GameObject &associated, Vec2 scale, Vec2 offset) : Component(associated)
+Collider::Collider(GameObject &associated, Vec2 scale, Vec2 offset) : Component(associated, "Collider")
 {
     this->offset = offset;
     this->box = associated.getBox();
@@ -13,8 +13,6 @@ void Collider::SetOffset(Vec2 offset)
 {
     this->offset = offset;
 }
-
-bool Collider::Is(std::string type) { return type == "Collider"; }
 
 void Collider::Render()
 {

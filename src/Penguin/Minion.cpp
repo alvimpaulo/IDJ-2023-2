@@ -5,7 +5,7 @@
 #include <random>
 #include "Collider.hpp"
 
-Minion::Minion(GameObject &associated, std::weak_ptr<GameObject> alienCenter, float arcOffsetDeg = 0) : Component(associated)
+Minion::Minion(GameObject &associated, std::weak_ptr<GameObject> alienCenter, float arcOffsetDeg = 0) : Component(associated, type)
 {
     this->arc = arcOffsetDeg;
     this->alienCenter = alienCenter;

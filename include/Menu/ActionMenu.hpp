@@ -10,7 +10,6 @@ public:
 
     void Update(float dt);
     void Render();
-    bool Is(std::string type);
     void Start();
 
     int height = SCREEN_HEIGHT / 10;

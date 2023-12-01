@@ -36,7 +36,6 @@ public:
     void Render(float x, float y, float w, float h);
     void Render();
     bool IsOpen();
-    bool Is(std::string type);
     void Update(float dt);
     void SetFrame(int frame);
     void SetFrameCount(int frameCount);
