@@ -5,7 +5,7 @@
 class CameraFollower : public Component
 {
 public:
-    CameraFollower(GameObject &go);
+    CameraFollower(GameObject *go);
     void Update(float dt);
     void Render();
 };

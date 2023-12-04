@@ -8,7 +8,7 @@ private:
     EntityComponent* masterEntity;
 
 public:
-    HealthBar(GameObject &associated, EntityComponent* baseEntity);
+    HealthBar(GameObject *associated, EntityComponent* baseEntity);
     void Update(float dt);
     void Render();
     void Shoot(Vec2 target);

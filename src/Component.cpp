@@ -2,7 +2,7 @@
 #include "Component.hpp"
 #include "GameObject.hpp"
 
-Component::Component(GameObject &associated, std::string type) : associated(associated), type(type)
+Component::Component(GameObject *associated, std::string type) : associated(associated), type(type)
 {
     isVisible = false;
 

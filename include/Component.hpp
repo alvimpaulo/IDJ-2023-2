@@ -8,7 +8,7 @@ protected:
     const std::string type;
 
 public:
-    Component(GameObject &associated, std::string type);
+    Component(GameObject *associated, std::string type);
     void setIsVisible(bool newState);
     bool getIsVisible();
     bool toggleVisibility();
@@ -19,5 +19,5 @@ public:
     virtual std::string getType() final;
     virtual void Start();
     void virtual NotifyCollision(GameObject &other){};
-    GameObject &associated;
+    GameObject *associated;
 };

@@ -7,7 +7,7 @@ private:
     ActionMenu *menu;
 
 public:
-    SkillButton(GameObject &associated, ActionMenu* menu);
+    SkillButton(GameObject *associated, ActionMenu* menu);
     void Update(float dt);
     void Render();
     void Start();

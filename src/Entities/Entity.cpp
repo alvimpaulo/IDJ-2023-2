@@ -1,7 +1,8 @@
 #include "Entities/Entity.hpp"
 #include "algorithm"
+#include "Entity.hpp"
 
-EntityComponent::EntityComponent(GameObject &associated, std::string type, int currentHp,
+EntityComponent::EntityComponent(GameObject *associated, std::string type, int currentHp,
                                  int maxHp,
 
                                  int maxMp,
@@ -12,26 +13,30 @@ EntityComponent::EntityComponent(GameObject &associated, std::string type, int c
                                  int dexterity,
                                  int agility,
 
-                                 int aggro, bool isSelected, Vec2 IdlePosition) : Component(associated, type), currentHp(currentHp),
-                                                               maxHp(maxHp), maxMp(maxMp), currentMp(currentMp), strength(strength), wisdom(wisdom), dexterity(dexterity), agility(agility), isIndicated(isSelected)
+                                 int aggro, bool isSelected, Vec2 IdlePosition, Sprite *idleSprite, Sprite *runSprite, Sprite *attackSprite, Sprite *criticalSprite) : Component(associated, type), currentHp(currentHp),
+                                                                                                                                                                       maxHp(maxHp), maxMp(maxMp), currentMp(currentMp), strength(strength), wisdom(wisdom), dexterity(dexterity), agility(agility), isIndicated(isSelected)
 {
-    isOnAnimation = false;
-    attackAnimationFrames = 100;
-    currentAnimationFrame = 0;
     hasAttackFinished = true;
     isIdle = true;
 
-    target = nullptr;
-
     this->IdlePosition = IdlePosition;
+
+
+    this->animations = {new Animation(
+        30, IdlePosition, IdlePosition, idleSprite, true, nullptr,
+        AnimationPhase::Phase::Idle, associated)};
+    this->animations.front()->startAnimation();
+    this->associated->AddComponent(this->animations.front());
 }
 void EntityComponent::startPhysicalAttack(EntityComponent *target)
 {
-    isOnAnimation = true;
     hasAttackFinished = false;
-    currentAnimationFrame = 1;
     isIdle = false;
-    this->target = target;
+    this->animations.push_front(new Animation(
+        120, IdlePosition, target->associated->getBox().GetCenter(), nullptr, false, [this]()
+        { std::cout << "Physical attack " << this->getType() << " acabou" << std::endl; },
+        AnimationPhase::Phase::Run, associated));
+    this->animations.front()->startAnimation();
 }
 void EntityComponent::useSkill(EntityComponent *target)
 {
@@ -114,11 +119,26 @@ bool EntityComponent::getIsIndicated()
     return isIndicated;
 }
 
-void EntityComponent::setTarget(EntityComponent *newTarget)
+void EntityComponent::goToNextAnimation()
 {
-
-    if (target == nullptr)
+    if (animations.size() > 1)
     {
-        target = newTarget;
+        auto aux = animations.front();
+        animations.pop_front();
+        animations.push_back(aux);
+    }
+}
+
+void EntityComponent::Update(float dt)
+{
+    auto currentAnimation = (Animation *)associated->GetComponent("Animation");
+    if (currentAnimation)
+    {
+        if (animations.front() != currentAnimation)
+        {
+            // new animation
+            associated->RemoveComponent(currentAnimation);
+            associated->AddComponent(animations.front());
+        }
     }
 }

@@ -11,8 +11,8 @@ private:
     int channel;
 
 public:
-    Sound(GameObject &associated);
-    Sound(GameObject &associated,std::string file);
+    Sound(GameObject *associated);
+    Sound(GameObject *associated,std::string file);
     ~Sound();
     void Play(int times = 1);
     void Stop();

@@ -4,7 +4,7 @@
 class Warrior : public EntityComponent
 {
 public:
-    Warrior(GameObject &associated, int currentHp,
+    Warrior(GameObject *associated, int currentHp,
             int maxHp,
 
             int maxMp,
@@ -15,7 +15,7 @@ public:
             int dexterity,
             int agility,
 
-            int aggro);
+            int aggro, Sprite* idleSprite);
     ~Warrior();
     void Start();
     void Update(float dt);

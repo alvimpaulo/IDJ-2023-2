@@ -33,39 +33,39 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	auto mapObject = new GameObject();
 
 	auto bgObject = new GameObject();
-	auto bgFollower = new CameraFollower(*bgObject);
+	auto bgFollower = new CameraFollower(bgObject);
 	bgObject->AddComponent(bgFollower);
-	bgSprite = new Sprite(*bgObject);
+	bgSprite = new Sprite(bgObject);
 	bgObject->AddComponent(bgSprite);
 	AddObject(bgObject);
 
 	// ----------------------------------- MENU ---------------------------------------------
 
 	auto menuObj = new GameObject();
-	auto menu = ActionMenu(*menuObj);
+	auto menu = ActionMenu(menuObj);
 
 	auto actionMenuObj = new GameObject();
-	auto actionMenu = new ActionMenu(*actionMenuObj);
+	auto actionMenu = new ActionMenu(actionMenuObj);
 	actionMenuObj->AddComponent(actionMenu);
 	this->AddObject(actionMenuObj);
 
 	auto actionMenuSelectorObj = new GameObject();
-	auto actionMenuSelector = new ActionMenuSelector(*actionMenuSelectorObj, nullptr);
+	auto actionMenuSelector = new ActionMenuSelector(actionMenuSelectorObj, nullptr);
 	actionMenuSelectorObj->AddComponent(actionMenuSelector);
 	this->AddObject(actionMenuSelectorObj);
 
 	auto attackButtonObj = new GameObject();
-	auto attackButton = new AttackButton(*attackButtonObj, actionMenu);
+	auto attackButton = new AttackButton(attackButtonObj, actionMenu);
 	attackButtonObj->AddComponent(attackButton);
 	this->AddObject(attackButtonObj);
 
 	auto defendButtonObj = new GameObject();
-	auto defendButton = new DefendButton(*defendButtonObj, actionMenu);
+	auto defendButton = new DefendButton(defendButtonObj, actionMenu);
 	defendButtonObj->AddComponent(defendButton);
 	this->AddObject(defendButtonObj);
 
 	auto skillButtonObj = new GameObject();
-	auto skillButton = new SkillButton(*skillButtonObj, actionMenu);
+	auto skillButton = new SkillButton(skillButtonObj, actionMenu);
 	skillButtonObj->AddComponent(skillButton);
 	this->AddObject(skillButtonObj);
 
@@ -77,55 +77,61 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	//------------------------------------- MUSHROOM -----------------------------------------------------
 
 	auto mushroomObj = new GameObject();
-	auto mushroom = new Mushroom(*mushroomObj, 100, 100, 100, 100, 5, 10, 5, 1, 50);
+	mushroomObj->setScale(Vec2(5, 5));
+	auto mushroomSprite = new Sprite(mushroomObj, "assets/img/Monsters/Mushroom/NewIdle.png", 4, 0.1, 0, 255, true, false);
+	mushroomObj->AddComponent(mushroomSprite);
+	auto mushroom = new Mushroom(mushroomObj, 100, 100, 100, 100, 5, 10, 5, 1, 50, mushroomSprite);
 	mushroomObj->AddComponent(mushroom);
 	this->AddObject(mushroomObj);
 
 	auto mushroomHealthBarObj = new GameObject();
-	auto mushroomHealthBar = new HealthBar(*mushroomHealthBarObj, mushroom);
+	auto mushroomHealthBar = new HealthBar(mushroomHealthBarObj, mushroom);
 	mushroomHealthBarObj->AddComponent(mushroomHealthBar);
 	this->AddObject(mushroomHealthBarObj);
 
 	auto mushroomManaBarObj = new GameObject();
-	auto mushroomManaBar = new ManaBar(*mushroomManaBarObj, mushroom);
+	auto mushroomManaBar = new ManaBar(mushroomManaBarObj, mushroom);
 	mushroomManaBarObj->AddComponent(mushroomManaBar);
 	this->AddObject(mushroomManaBarObj);
 	//------------------------------------- MUSHROOM -----------------------------------------------------
 
 	//------------------------------------- RANGER -----------------------------------------------------
 
-	auto rangerObj = new GameObject();
-	auto ranger = new Ranger(*rangerObj, 100, 100, 100, 100, 2, 1, 10, 10, 50);
-	rangerObj->AddComponent(ranger);
-	this->AddObject(rangerObj);
+	// auto rangerObj = new GameObject();
+	// auto ranger = new Ranger(rangerObj, 100, 100, 100, 100, 2, 1, 10, 10, 50);
+	// rangerObj->AddComponent(ranger);
+	// this->AddObject(rangerObj);
 
-	auto rangerHealthBarObj = new GameObject();
-	auto rangerHealthBar = new HealthBar(*rangerHealthBarObj, ranger);
-	rangerHealthBarObj->AddComponent(rangerHealthBar);
-	this->AddObject(rangerHealthBarObj);
+	// auto rangerHealthBarObj = new GameObject();
+	// auto rangerHealthBar = new HealthBar(rangerHealthBarObj, ranger);
+	// rangerHealthBarObj->AddComponent(rangerHealthBar);
+	// this->AddObject(rangerHealthBarObj);
 
-	auto rangerManaBarObj = new GameObject();
-	auto rangerManaBar = new ManaBar(*rangerManaBarObj, ranger);
-	rangerManaBarObj->AddComponent(rangerManaBar);
-	this->AddObject(rangerManaBarObj);
+	// auto rangerManaBarObj = new GameObject();
+	// auto rangerManaBar = new ManaBar(rangerManaBarObj, ranger);
+	// rangerManaBarObj->AddComponent(rangerManaBar);
+	// this->AddObject(rangerManaBarObj);
 
-	characters.push_back(ranger);
+	// characters.push_back(ranger);
 	//------------------------------------- RANGER -----------------------------------------------------
 
 	//------------------------------------- WARRIOR -----------------------------------------------------
 
 	auto warriorObj = new GameObject();
-	auto warrior = new Warrior(*warriorObj, 100, 100, 100, 100, 5, 1, 10, 10, 50);
+	warriorObj->setScale(Vec2(3, 3));
+	auto warriorSprite = new Sprite(warriorObj, "assets/img/Warrior/NewIdle.png", 10, 10);
+	warriorObj->AddComponent(warriorSprite);
+	auto warrior = new Warrior(warriorObj, 100, 100, 100, 100, 5, 1, 10, 10, 50, warriorSprite);
 	warriorObj->AddComponent(warrior);
 	this->AddObject(warriorObj);
 
 	auto warriorHealthBarObj = new GameObject();
-	auto warriorHealthBar = new HealthBar(*warriorHealthBarObj, warrior);
+	auto warriorHealthBar = new HealthBar(warriorHealthBarObj, warrior);
 	warriorHealthBarObj->AddComponent(warriorHealthBar);
 	this->AddObject(warriorHealthBarObj);
 
 	auto warriorManaBarObj = new GameObject();
-	auto warriorManaBar = new ManaBar(*warriorManaBarObj, warrior);
+	auto warriorManaBar = new ManaBar(warriorManaBarObj, warrior);
 	warriorManaBarObj->AddComponent(warriorManaBar);
 	this->AddObject(warriorManaBarObj);
 
@@ -133,7 +139,7 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	//------------------------------------- WARRIOR -----------------------------------------------------
 
 	auto indicatorObj = new GameObject();
-	auto indicator = new CharacterIndicator(*indicatorObj, ranger);
+	auto indicator = new CharacterIndicator(indicatorObj, warrior);
 	indicatorObj->AddComponent(indicator);
 	this->AddObject(indicatorObj);
 	this->indicator = indicator;
@@ -183,6 +189,8 @@ void BattleState::Update(float dt)
 				auto mushroom = this->getFirstObjectByComponent("Mushroom");
 				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
 				selectedCharacter->startPhysicalAttack(mushroomPtr);
+			} else if(selectedButton->getType() == "DefendButton"){
+				selectedCharacter->gainHp(10);
 			}
 		}
 	}

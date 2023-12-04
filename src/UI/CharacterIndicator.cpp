@@ -1,16 +1,16 @@
 #include "CharacterIndicator.hpp"
 #include "Sprite.hpp"
 
-CharacterIndicator::CharacterIndicator(GameObject &associated, EntityComponent *selected) : Component(associated, "CharacterIndicator"), attached(selected)
+CharacterIndicator::CharacterIndicator(GameObject *associated, EntityComponent *selected) : Component(associated, "CharacterIndicator"), attached(selected)
 {
 
     offset = 40;
     direction = UP;
     isCharacterLocked = false;
-    associated.setScale(Vec2(2, 2));
+    associated->setScale(Vec2(2, 2));
     auto ptrSprite = new Sprite(associated, "assets/img/UI/Indicator.png");
 
-    associated.AddComponent(ptrSprite);
+    associated->AddComponent(ptrSprite);
 }
 void CharacterIndicator::Update(float dt)
 {
@@ -35,8 +35,8 @@ void CharacterIndicator::Update(float dt)
         direction = UP;
         offset = 40;
     }
-    auto masterBox = attached->associated.getScaledBox();
-    associated.setBoxCenter(Vec2(masterBox.x + masterBox.w / 2, masterBox.y - offset));
+    auto masterBox = attached->associated->getScaledBox();
+    associated->setBoxCenter(Vec2(masterBox.x + masterBox.w / 2, masterBox.y - offset));
 }
 void CharacterIndicator::Render() {}
 void CharacterIndicator::Start() {}

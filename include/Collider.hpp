@@ -8,7 +8,7 @@ private:
     Vec2 offset;
 
 public:
-    Collider(GameObject &associated, Vec2 scale = {1, 1}, Vec2 offset = {0, 0});
+    Collider(GameObject *associated, Vec2 scale = {1, 1}, Vec2 offset = {0, 0});
 
     void SetOffset(Vec2 offset);
 

@@ -6,7 +6,7 @@ class OutlineBar : public Component
 private:
     /* data */
 public:
-    OutlineBar(GameObject & associated);
+    OutlineBar(GameObject *associated);
     void Update(float dt);
     void Render();
     void Shoot(Vec2 target);

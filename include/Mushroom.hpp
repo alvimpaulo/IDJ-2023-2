@@ -15,7 +15,7 @@ private:
     };
 
 public:
-    Mushroom(GameObject &associated, int currentHp,
+    Mushroom(GameObject *associated, int currentHp,
              int maxHp,
 
              int maxMp,
@@ -26,7 +26,7 @@ public:
              int dexterity,
              int agility,
 
-             int aggro);
+             int aggro, Sprite *idleSprite);
     ~Mushroom();
     void Start() override;
     void Update(float dt) override;

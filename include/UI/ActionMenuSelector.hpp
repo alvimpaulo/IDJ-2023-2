@@ -16,7 +16,7 @@ private:
     bool isActionLocked;
 
 public:
-    ActionMenuSelector(GameObject &associated, Component* button);
+    ActionMenuSelector(GameObject *associated, Component* button);
     void Update(float dt);
     void Render();
     void Start();

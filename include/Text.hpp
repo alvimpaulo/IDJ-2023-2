@@ -11,7 +11,7 @@ public:
         SHADED,
         BLENDED
     };
-    Text(GameObject &associated,
+    Text(GameObject *associated,
          std::string fontFile,
          int fontSize,
          TextStyle style,

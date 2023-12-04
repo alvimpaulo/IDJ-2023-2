@@ -1,16 +1,16 @@
 #include "ActionMenuSelector.hpp"
 #include "Sprite.hpp"
 
-ActionMenuSelector::ActionMenuSelector(GameObject &associated, Component *button) : Component(associated, "ActionMenuSelector")
+ActionMenuSelector::ActionMenuSelector(GameObject *associated, Component *button) : Component(associated, "ActionMenuSelector")
 {
 
     offset = 0;
     direction = animationDirection::OUTWARD;
     isActionLocked = false;
-    associated.setScale(Vec2(1, 1));
+    associated->setScale(Vec2(1, 1));
     auto ptrSprite = new Sprite(associated, "assets/img/UI/ActionMenuSelector.png");
 
-    associated.AddComponent(ptrSprite);
+    associated->AddComponent(ptrSprite);
 
     this->attached = button;
 }
@@ -21,9 +21,9 @@ void ActionMenuSelector::Render()
 {
     if (attached)
     {
-        auto masterBox = attached->associated.getScaledBox();
-        // associated.setBoxCenter(Vec2(masterBox.x + masterBox.w / 2, masterBox.y - offset));
-        associated.setBoxCenter(Vec2(masterBox.GetCenter()));
+        auto masterBox = attached->associated->getScaledBox();
+        // associated->setBoxCenter(Vec2(masterBox.x + masterBox.w / 2, masterBox.y - offset));
+        associated->setBoxCenter(Vec2(masterBox.GetCenter()));
     }
 }
 void ActionMenuSelector::Start() {}

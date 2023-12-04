@@ -26,8 +26,8 @@ private:
     std::string file;
 
 public:
-    Sprite(GameObject &associated);
-    Sprite(GameObject &associated, std::string file, int frameCount = 1,
+    Sprite(GameObject *associated);
+    Sprite(GameObject *associated, std::string file, int frameCount = 1,
            float frameTime = 1, float secondsToSelfDestruct = 0, int opacity = 255, bool flipHorizontal = false, bool flipVertical = false);
     ~Sprite();
 
@@ -46,4 +46,11 @@ public:
     int getWidth();
     void setScale(Vec2 newScale);
     Vec2 getScale();
+    int getCurrentFrame() const;
+    void setCurrentFrame(int currentFrame_);
+
+    int getFrameCount() const;
+    void setFrameCount(int frameCount_);
+
+    void setTimeElapsed(float timeElapsed_);
 };

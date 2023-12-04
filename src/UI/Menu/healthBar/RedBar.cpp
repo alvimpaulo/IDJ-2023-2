@@ -1,10 +1,10 @@
 #include "RedBar.hpp"
 #include "Sprite.hpp"
 
-RedBar::RedBar(GameObject &associated) : Component(associated, "RedBar")
+RedBar::RedBar(GameObject *associated) : Component(associated, "RedBar")
 {
     auto redSprite = new Sprite(associated, "assets/img/Menu/bars/red.png");
-    associated.AddComponent(redSprite);
+    associated->AddComponent(redSprite);
 }
 void RedBar::Update(float dt)
 {

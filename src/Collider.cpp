@@ -4,10 +4,10 @@
 #include "Camera.hpp"
 #include "Game.hpp"
 
-Collider::Collider(GameObject &associated, Vec2 scale, Vec2 offset) : Component(associated, "Collider")
+Collider::Collider(GameObject *associated, Vec2 scale, Vec2 offset) : Component(associated, "Collider")
 {
     this->offset = offset;
-    this->box = associated.getBox();
+    this->box = associated->getBox();
 }
 void Collider::SetOffset(Vec2 offset)
 {
@@ -20,17 +20,17 @@ void Collider::Render()
     Vec2 center(box.GetCenter());
     SDL_Point points[5];
 
-    Vec2 point = (Vec2(box.x, box.y) - center).GetRotatedRad(associated.angleDeg / (180 / PI)) + center - Camera::pos;
+    Vec2 point = (Vec2(box.x, box.y) - center).GetRotatedRad(associated->angleDeg / (180 / PI)) + center - Camera::pos;
     points[0] = {(int)point.x, (int)point.y};
     points[4] = {(int)point.x, (int)point.y};
 
-    point = (Vec2(box.x + box.w, box.y) - center).GetRotatedRad(associated.angleDeg / (180 / PI)) + center - Camera::pos;
+    point = (Vec2(box.x + box.w, box.y) - center).GetRotatedRad(associated->angleDeg / (180 / PI)) + center - Camera::pos;
     points[1] = {(int)point.x, (int)point.y};
 
-    point = (Vec2(box.x + box.w, box.y + box.h) - center).GetRotatedRad(associated.angleDeg / (180 / PI)) + center - Camera::pos;
+    point = (Vec2(box.x + box.w, box.y + box.h) - center).GetRotatedRad(associated->angleDeg / (180 / PI)) + center - Camera::pos;
     points[2] = {(int)point.x, (int)point.y};
 
-    point = (Vec2(box.x, box.y + box.h) - center).GetRotatedRad(associated.angleDeg / (180 / PI)) + center - Camera::pos;
+    point = (Vec2(box.x, box.y + box.h) - center).GetRotatedRad(associated->angleDeg / (180 / PI)) + center - Camera::pos;
     points[3] = {(int)point.x, (int)point.y};
 
     SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 0, 0, SDL_ALPHA_OPAQUE);
@@ -40,11 +40,11 @@ void Collider::Render()
 
 void Collider::Update(float dt)
 {
-    box = associated.getBox();
-    box.w = box.w * associated.getScale().x;
-    box.h = box.h * associated.getScale().y;
+    box = associated->getBox();
+    box.w = box.w * associated->getScale().x;
+    box.h = box.h * associated->getScale().y;
 
-    auto center = associated.getBox().GetCenter();
+    auto center = associated->getBox().GetCenter();
     center += offset;
 
     // box.SetCenter(center);

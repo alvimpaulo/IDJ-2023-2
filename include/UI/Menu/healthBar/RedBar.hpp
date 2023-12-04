@@ -6,7 +6,7 @@ class RedBar : public Component
 private:
     /* data */
 public:
-    RedBar(GameObject & associated);
+    RedBar(GameObject *associated);
     void Update(float dt);
     void Render();
     void Shoot(Vec2 target);

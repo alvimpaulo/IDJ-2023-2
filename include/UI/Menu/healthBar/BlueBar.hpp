@@ -6,7 +6,7 @@ class BlueBar : public Component
 private:
     /* data */
 public:
-    BlueBar(GameObject & associated);
+    BlueBar(GameObject *associated);
     void Update(float dt);
     void Render();
     void Shoot(Vec2 target);

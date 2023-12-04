@@ -3,12 +3,12 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 
-DefendButton::DefendButton(GameObject &associated, ActionMenu* menu) : Component(associated, "DefendButton")
+DefendButton::DefendButton(GameObject *associated, ActionMenu* menu) : Component(associated, "DefendButton")
 {
     Sprite *ptrSprite;
     ptrSprite = new Sprite(associated, "assets/img/Menu/buttons/shieldButton.png");
-    associated.setBoxCenter(Vec2(512, 16 + 8));
-    associated.AddComponent(ptrSprite);
+    associated->setBoxCenter(Vec2(512, 16 + 8));
+    associated->AddComponent(ptrSprite);
 
     isHovered = false;
     this->menu = menu;
@@ -21,13 +21,13 @@ void DefendButton::Render()
 {
     if (getIsVisible())
     {
-        auto menuBox = menu->associated.getScaledBox();
-        auto myBox = associated.getScaledBox();
-        associated.setBoxCenter(Vec2(menuBox.x + menuBox.w/2, myBox.h / 2 + 10));
+        auto menuBox = menu->associated->getScaledBox();
+        auto myBox = associated->getScaledBox();
+        associated->setBoxCenter(Vec2(menuBox.x + menuBox.w/2, myBox.h / 2 + 10));
     }
     else
     {
-        associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
+        associated->setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
     }
 }
 void DefendButton::Start()

@@ -17,7 +17,7 @@ private:
     bool isCharacterLocked;
 
 public:
-    CharacterIndicator(GameObject &associated, EntityComponent *selected);
+    CharacterIndicator(GameObject *associated, EntityComponent *selected);
     void Update(float dt);
     void Render();
     void Start();

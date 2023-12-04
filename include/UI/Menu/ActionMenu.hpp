@@ -7,7 +7,7 @@ class ActionMenu : public Component
 {
 
 public:
-    ActionMenu(GameObject &associated);
+    ActionMenu(GameObject *associated);
 
     void Update(float dt);
     void Render();

@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.hpp"
+#include "Animation/Animation.hpp"
 
 class EntityComponent : public Component
 {
@@ -18,10 +19,8 @@ protected:
     int aggro;
     bool isIndicated;
 
-    EntityComponent *target;
-
 public:
-    EntityComponent(GameObject &associated, std::string type, int currentHp,
+    EntityComponent(GameObject *associated, std::string type, int currentHp,
                     int maxHp,
 
                     int maxMp,
@@ -32,8 +31,9 @@ public:
                     int dexterity,
                     int agility,
 
-                    int aggro, bool isIndicated, Vec2 IdlePosition);
-    void virtual Update(float dt) = 0;
+                    int aggro, bool isSelected, Vec2 IdlePosition, Sprite *idleSprite, Sprite *runSprite, Sprite *attackSprite, Sprite *criticalSprite);
+    // void virtual ~EntityComponent() = 0;
+    void virtual Update(float dt);
     void virtual Render() = 0;
     void virtual Start() = 0;
     int getCurrentHp();
@@ -62,11 +62,8 @@ public:
     Vec2 IdlePosition;
 
     // Animations
-    int attackAnimationFrames;
-    int currentAnimationFrame;
-    bool isOnAnimation;
-    bool hasAttackFinished;
+    std::deque<Animation*> animations;
+    void goToNextAnimation();
 
-    // Attack
-    void setTarget(EntityComponent *newTarget);
+    bool hasAttackFinished;
 };

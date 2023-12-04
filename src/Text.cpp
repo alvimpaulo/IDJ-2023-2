@@ -3,7 +3,7 @@
 #include "Camera.hpp"
 #include "Resources.hpp"
 
-Text::Text(GameObject &associated, std::string fontFile, int fontSize, TextStyle style, std::string text, SDL_Color color) : Component(associated, "Text")
+Text::Text(GameObject *associated, std::string fontFile, int fontSize, TextStyle style, std::string text, SDL_Color color) : Component(associated, "Text")
 {
     this->fontFile = fontFile;
     this->fontSize = fontSize;
@@ -31,13 +31,13 @@ void Text::Update(float dt)
 
 void Text::Render()
 {
-    auto dstPos = associated.getBox().GetCenter() - Camera::pos;
+    auto dstPos = associated->getBox().GetCenter() - Camera::pos;
 
-    SDL_Rect clipRect{0, 0, (int)associated.getBox().w, (int)associated.getBox().h};
-    SDL_Rect dstRect{(int)dstPos.x, (int)dstPos.y, (int)associated.getBox().w, (int)associated.getBox().h};
+    SDL_Rect clipRect{0, 0, (int)associated->getBox().w, (int)associated->getBox().h};
+    SDL_Rect dstRect{(int)dstPos.x, (int)dstPos.y, (int)associated->getBox().w, (int)associated->getBox().h};
 
     int error = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(),
-                                 texture, &clipRect, &dstRect, associated.angleDeg, nullptr, SDL_FLIP_NONE);
+                                 texture, &clipRect, &dstRect, associated->angleDeg, nullptr, SDL_FLIP_NONE);
     if (error)
     {
         std::cerr << "Erro renderizando Text " << SDL_GetError() << std::endl;
@@ -100,8 +100,8 @@ void Text::RemakeTexture()
         return;
     }
 
-    associated.setBoxW((float)surface->w);
-    associated.setBoxH((float)surface->h);
+    associated->setBoxW((float)surface->w);
+    associated->setBoxH((float)surface->h);
 
     SDL_FreeSurface(surface);
 }

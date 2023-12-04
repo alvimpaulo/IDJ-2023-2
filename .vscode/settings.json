@@ -99,5 +99,8 @@
         "stacktrace": "cpp",
         "syncstream": "cpp"
     },
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "DevChat.DevChatPath": "/home/paulo/.chat/mamba/envs/devchat/bin/devchat",
+    "devchat.defaultModel": "gpt-3.5-turbo",
+    "DevChat.PythonVirtualEnv": "/home/paulo/.chat/mamba/envs/devchat-ask/bin/python"
 }

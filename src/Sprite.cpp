@@ -4,7 +4,7 @@
 #include "Resources.hpp"
 #include "Camera.hpp"
 
-Sprite::Sprite(GameObject &associated) : Component(associated, "Sprite")
+Sprite::Sprite(GameObject *associated) : Component(associated, "Sprite")
 {
     texture = nullptr;
     this->currentFrame = 0;
@@ -18,7 +18,7 @@ Sprite::Sprite(GameObject &associated) : Component(associated, "Sprite")
     this->scale = Vec2(1, 1);
 }
 
-Sprite::Sprite(GameObject &associated, std::string file, int frameCount,
+Sprite::Sprite(GameObject *associated, std::string file, int frameCount,
                float frameTime, float secondsToSelfDestruct, int opacity, bool flipHorizontal, bool flipVertical) : Component(associated, "Sprite")
 {
     this->file = file;
@@ -48,21 +48,14 @@ void Sprite::Update(float dt)
         this->selfDesctructCount.Update(dt);
         if (selfDesctructCount.Get() > secondsToSelfDestruct)
         {
-            associated.RequestDelete();
+            associated->RequestDelete();
             return;
         }
     }
 
-    timeElapsed += dt;
-    if (frameTime < timeElapsed)
+    if (associated->IsDead())
     {
-        SetFrame((currentFrame + 1) % frameCount);
-        timeElapsed = 0.0f;
-    }
-
-    if (associated.IsDead())
-    {
-        associated.RemoveComponent(this);
+        associated->RemoveComponent(this);
     }
 }
 
@@ -76,15 +69,15 @@ void Sprite::Open(std::string file)
 
     // std::cerr << "width: " << width << " Height: " << height << std::endl;
 
-    associated.setBoxX(0);
-    associated.setBoxY(0);
+    associated->setBoxX(0);
+    associated->setBoxY(0);
 
     width = width / frameCount;
 
     this->SetClip(0, 0, width, height);
 
-    this->associated.setBoxW(float(width));
-    this->associated.setBoxH(float(height));
+    this->associated->setBoxW(float(width));
+    this->associated->setBoxH(float(height));
 }
 
 void Sprite::SetClip(int x, int y, int w, int h)
@@ -98,10 +91,10 @@ void Sprite::SetClip(int x, int y, int w, int h)
 void Sprite::Render()
 {
 
-    float renderX = associated.getBox().x;
-    float renderY = associated.getBox().y;
+    float renderX = associated->getBox().x;
+    float renderY = associated->getBox().y;
 
-    Render(renderX, renderY, associated.getScaledBox().w, associated.getScaledBox().h);
+    Render(renderX, renderY, associated->getScaledBox().w, associated->getScaledBox().h);
 }
 
 void Sprite::Render(float x, float y, float w, float h)
@@ -109,7 +102,7 @@ void Sprite::Render(float x, float y, float w, float h)
     if (this->texture == NULL)
         return;
 
-    auto boxCenter = associated.getBox().GetCenter();
+    auto boxCenter = associated->getBox().GetCenter();
 
     SDL_Rect dstRect = SDL_Rect();
     dstRect.x = (int)(round(x));
@@ -125,7 +118,7 @@ void Sprite::Render(float x, float y, float w, float h)
     if (this->flipVertical)
         flips = SDL_FLIP_VERTICAL;
 
-    result = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstRect, associated.angleDeg, nullptr, flips);
+    result = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstRect, associated->angleDeg, nullptr, flips);
     if (result != 0)
     {
         std::cerr << "Erro no SDL_RenderCopy " << result << std::endl;
@@ -157,8 +150,8 @@ void Sprite::SetFrameCount(int frameCount)
     this->frameCount = frameCount;
     SetFrame(0);
 
-    this->associated.setBoxW(float(width));
-    this->associated.setBoxH(float(height));
+    this->associated->setBoxW(float(width));
+    this->associated->setBoxH(float(height));
 }
 void Sprite::SetFrameTime(float frameTime)
 {
@@ -177,7 +170,7 @@ int Sprite::getFrameCount()
 
 int Sprite::getSingleFrameWidth()
 {
-    return associated.getBox().w / frameCount;
+    return associated->getBox().w / frameCount;
 }
 
 int Sprite::getWidth()
@@ -194,3 +187,23 @@ void Sprite::setScale(Vec2 newScale)
 {
     this->scale = newScale;
 }
+
+int Sprite::getCurrentFrame() const
+{
+    return currentFrame;
+}
+void Sprite::setCurrentFrame(int currentFrame_)
+{
+    currentFrame = currentFrame_;
+}
+
+int Sprite::getFrameCount() const
+{
+    return frameCount;
+}
+void Sprite::setFrameCount(int frameCount_)
+{
+    frameCount = frameCount_;
+}
+
+void Sprite::setTimeElapsed(float timeElapsed_) { timeElapsed = timeElapsed_; }

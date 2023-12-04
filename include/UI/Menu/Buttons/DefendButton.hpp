@@ -8,7 +8,7 @@ private:
     ActionMenu *menu;
 
 public:
-    DefendButton(GameObject &associated, ActionMenu* menu);
+    DefendButton(GameObject *associated, ActionMenu* menu);
     void Update(float dt);
     void Render();
     void Start();

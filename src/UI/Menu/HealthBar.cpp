@@ -6,24 +6,24 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 
-HealthBar::HealthBar(GameObject &associated, EntityComponent *baseEntity) : Component(associated, "HealthBar"), masterEntity(baseEntity)
+HealthBar::HealthBar(GameObject *associated, EntityComponent *baseEntity) : Component(associated, "HealthBar"), masterEntity(baseEntity)
 {
     auto outlineSprite = new Sprite(associated, "assets/img/Menu/bars/outline.png");
     auto spriteWidth = outlineSprite->getWidth();
     delete (outlineSprite);
-    this->associated.setScale(Vec2((float)masterEntity->associated.getScaledBox().w / spriteWidth, (float)masterEntity->associated.getScaledBox().w / spriteWidth));
+    this->associated->setScale(Vec2((float)masterEntity->associated->getScaledBox().w / spriteWidth, (float)masterEntity->associated->getScaledBox().w / spriteWidth));
 
     auto redBar = new RedBar(associated);
-    associated.AddComponent(redBar);
+    associated->AddComponent(redBar);
 
     auto greenBar = new GreenBar(associated);
-    associated.AddComponent(greenBar);
+    associated->AddComponent(greenBar);
 
     auto outlineBar = new OutlineBar(associated);
-    associated.AddComponent(outlineBar);
+    associated->AddComponent(outlineBar);
 
     // auto collider = new Collider(associated);
-    // associated.AddComponent(collider);
+    // associated->AddComponent(collider);
 }
 void HealthBar::Update(float dt)
 {
@@ -36,17 +36,17 @@ void HealthBar::Render()
 {
     if (!getIsVisible())
     {
-        associated.setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
+        associated->setBoxCenter(Vec2(-SCREEN_WIDTH, -SCREEN_HEIGHT));
     }
     else
     {
         double greenScale = (double)masterEntity->getCurrentHp() / masterEntity->getMaxHp();
-        auto greenBar = (GreenBar *)associated.GetComponent("GreenBar");
+        auto greenBar = (GreenBar *)associated->GetComponent("GreenBar");
         greenBar->setScale(greenScale);
-        auto barHeight = greenBar->associated.getScaledBox().h;
-        auto masterBox = masterEntity->associated.getScaledBox();
-        associated.setBoxX(masterBox.x);
-        associated.setBoxY(masterBox.y - barHeight * 2 - 10);
+        auto barHeight = greenBar->associated->getScaledBox().h;
+        auto masterBox = masterEntity->associated->getScaledBox();
+        associated->setBoxX(masterBox.x);
+        associated->setBoxY(masterBox.y - barHeight * 2 - 10);
     }
 }
 void HealthBar::Shoot(Vec2 target)

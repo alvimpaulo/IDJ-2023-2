@@ -3,11 +3,11 @@
 #include <SDL2/SDL.h>
 #include "Resources.hpp"
 
-Sound::Sound(GameObject &associated) : Component(associated, "Sound")
+Sound::Sound(GameObject *associated) : Component(associated, "Sound")
 {
     IsPlaying = false;
 }
-Sound::Sound(GameObject &associated,std::string file) : Sound(associated)
+Sound::Sound(GameObject *associated,std::string file) : Sound(associated)
 {
     Open(file);
 }

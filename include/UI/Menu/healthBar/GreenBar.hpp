@@ -6,7 +6,7 @@ class GreenBar : public Component
 private:
     /* data */
 public:
-    GreenBar(GameObject & associated);
+    GreenBar(GameObject *associated);
     void Update(float dt);
     void Render();
     void Shoot(Vec2 target);

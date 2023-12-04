@@ -1,10 +1,10 @@
 #include "OutlineBar.hpp"
 #include "Sprite.hpp"
 
-OutlineBar::OutlineBar(GameObject &associated) : Component(associated, "OutlineBar")
+OutlineBar::OutlineBar(GameObject *associated) : Component(associated, "OutlineBar")
 {
     auto outlineSprite = new Sprite(associated, "assets/img/Menu/bars/outline.png");
-    associated.AddComponent(outlineSprite);
+    associated->AddComponent(outlineSprite);
 }
 void OutlineBar::Update(float dt)
 {
