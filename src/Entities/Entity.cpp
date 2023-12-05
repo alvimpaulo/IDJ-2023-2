@@ -1,6 +1,7 @@
 #include "Entities/Entity.hpp"
 #include "algorithm"
 #include "Entity.hpp"
+#include "BattleState.hpp"
 
 EntityComponent::EntityComponent(GameObject *associated, std::string type, int currentHp,
                                  int maxHp,
@@ -13,30 +14,54 @@ EntityComponent::EntityComponent(GameObject *associated, std::string type, int c
                                  int dexterity,
                                  int agility,
 
-                                 int aggro, bool isSelected, Vec2 IdlePosition, Sprite *idleSprite, Sprite *runSprite, Sprite *attackSprite, Sprite *criticalSprite) : Component(associated, type), currentHp(currentHp),
-                                                                                                                                                                       maxHp(maxHp), maxMp(maxMp), currentMp(currentMp), strength(strength), wisdom(wisdom), dexterity(dexterity), agility(agility), isIndicated(isSelected)
+                                 int aggro, bool isSelected, Vec2 IdlePosition, Sprite *idleSprite, Sprite *runSprite, Sprite *runBackSprite, Sprite *attackSprite, Sprite *criticalSprite) : Component(associated, type), currentHp(currentHp),
+                                                                                                                                                                                              maxHp(maxHp), maxMp(maxMp), currentMp(currentMp), strength(strength), wisdom(wisdom), dexterity(dexterity), agility(agility), isIndicated(isSelected)
 {
-    hasAttackFinished = true;
     isIdle = true;
 
     this->IdlePosition = IdlePosition;
-
+    this->idleSprite = idleSprite;
+    this->runSprite = runSprite;
+    this->runBackSprite = runBackSprite;
+    this->attackSprite = attackSprite;
+    this->criticalSprite = criticalSprite;
 
     this->animations = {new Animation(
-        30, IdlePosition, IdlePosition, idleSprite, true, nullptr,
+        30, IdlePosition, IdlePosition, idleSprite, true, nullptr, nullptr,
         AnimationPhase::Phase::Idle, associated)};
-    this->animations.front()->startAnimation();
     this->associated->AddComponent(this->animations.front());
 }
-void EntityComponent::startPhysicalAttack(EntityComponent *target)
+
+void physicalAttackEnd(EntityComponent *comp, EntityComponent *target)
 {
-    hasAttackFinished = false;
+    std::cout << "Physical attack " << comp->getType() << " acabou" << std::endl;
+    target->loseHp(comp->getStrength());
+    comp->animations.push_front(new Animation(
+        60, target->associated->getScaledBox().GetCenter(), comp->IdlePosition, comp->runBackSprite, false, [comp]
+        { std::cout << "Volta do ataque começou" << std::endl; },
+        [comp]()
+        {
+            std::cout << "Volta do ataque acabou" << std::endl;
+            comp->isIdle = true;
+            comp->animations.pop_front();
+            BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
+        },
+        AnimationPhase::Phase::RunBack, comp->associated));
+}
+
+void EntityComponent::physicalAttack(EntityComponent *target)
+{
     isIdle = false;
+    auto targetPosition = target->associated->getScaledBox().GetCenter();
+
     this->animations.push_front(new Animation(
-        120, IdlePosition, target->associated->getBox().GetCenter(), nullptr, false, [this]()
-        { std::cout << "Physical attack " << this->getType() << " acabou" << std::endl; },
+        30, IdlePosition, targetPosition, this->runSprite, false,
+        [this]()
+        { std::cout << "Começou o physical attack da entity " << this->getType() << std::endl; },
+        [this, target]()
+        { this->animations.pop_front();
+        physicalAttackEnd(this, target); },
         AnimationPhase::Phase::Run, associated));
-    this->animations.front()->startAnimation();
 }
 void EntityComponent::useSkill(EntityComponent *target)
 {
@@ -138,7 +163,39 @@ void EntityComponent::Update(float dt)
         {
             // new animation
             associated->RemoveComponent(currentAnimation);
+            auto currentSprite = (Sprite *)associated->GetComponent("Sprite");
+            if (currentSprite)
+            {
+                associated->RemoveComponent(currentSprite);
+            }
             associated->AddComponent(animations.front());
+            if (animations.front()->sprite)
+            {
+                associated->AddComponent(animations.front()->sprite);
+            }
+            animations.front()->StartAnimation();
+        }
+        else
+        {
+            auto currentSprite = (Sprite *)associated->GetComponent("Sprite");
+            if (currentSprite == nullptr)
+            {
+                if (animations.front()->sprite)
+                    associated->AddComponent(animations.front()->sprite);
+            }
+        }
+    }
+    else
+    {
+        if (animations.empty() == false)
+        {
+            associated->AddComponent(animations.front());
+            auto currentSprite = (Sprite *)associated->GetComponent("Sprite");
+            if (currentSprite == nullptr)
+            {
+                associated->AddComponent(animations.front()->sprite);
+            }
+            animations.front()->StartAnimation();
         }
     }
 }

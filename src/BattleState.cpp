@@ -119,9 +119,14 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 
 	auto warriorObj = new GameObject();
 	warriorObj->setScale(Vec2(3, 3));
-	auto warriorSprite = new Sprite(warriorObj, "assets/img/Warrior/NewIdle.png", 10, 10);
-	warriorObj->AddComponent(warriorSprite);
-	auto warrior = new Warrior(warriorObj, 100, 100, 100, 100, 5, 1, 10, 10, 50, warriorSprite);
+	auto warriorRunSprite = new Sprite(warriorObj, "assets/img/Warrior/newRun.png", 6, 10);
+	auto warriorRunBackSprite = new Sprite(warriorObj, "assets/img/Warrior/RunBack.png", 6, 10);
+
+	auto warriorIdleSprite = new Sprite(warriorObj, "assets/img/Warrior/NewIdle.png", 10, 10);
+	// warriorObj->AddComponent(warriorIdleSprite);
+	// warriorObj->AddComponent(warriorRunSprite);
+
+	auto warrior = new Warrior(warriorObj, 100, 100, 100, 100, 5, 1, 10, 10, 50, warriorIdleSprite, warriorRunSprite, warriorRunBackSprite);
 	warriorObj->AddComponent(warrior);
 	this->AddObject(warriorObj);
 
@@ -188,8 +193,10 @@ void BattleState::Update(float dt)
 			{
 				auto mushroom = this->getFirstObjectByComponent("Mushroom");
 				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
-				selectedCharacter->startPhysicalAttack(mushroomPtr);
-			} else if(selectedButton->getType() == "DefendButton"){
+				selectedCharacter->physicalAttack(mushroomPtr);
+			}
+			else if (selectedButton->getType() == "DefendButton")
+			{
 				selectedCharacter->gainHp(10);
 			}
 		}
@@ -200,7 +207,7 @@ void BattleState::Update(float dt)
 		auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
 		if (mushroomPtr->isIdle == true)
 		{
-			mushroomPtr->startPhysicalAttack(selectedCharacter);
+			mushroomPtr->physicalAttack(selectedCharacter);
 		}
 	}
 	else if (getRound() == Round::PlayerCharacterSelect)
@@ -359,25 +366,25 @@ void BattleState::Update(float dt)
 
 	UpdateArray(dt);
 
-	for (size_t i = 0; i < this->objectArray.size(); i++)
-	{
-		if (auto colliderPtr = (Collider *)objectArray[i]->GetComponent("Collider"))
-		{
-			colliders.push_back({objectArray[i], colliderPtr});
-		}
-	}
+	// for (size_t i = 0; i < this->objectArray.size(); i++)
+	// {
+	// 	if (auto colliderPtr = (Collider *)objectArray[i]->GetComponent("Collider"))
+	// 	{
+	// 		colliders.push_back({objectArray[i], colliderPtr});
+	// 	}
+	// }
 
-	for (size_t i = 0; i < colliders.size(); i++)
-	{
-		for (size_t j = i + 1; j < colliders.size(); j++)
-		{
-			if (Collider::IsColliding(colliders[i].second->box, colliders[j].second->box, colliders[i].first->angleDeg, colliders[j].first->angleDeg))
-			{
-				colliders[i].first->NotifyCollision(*colliders[j].first);
-				colliders[j].first->NotifyCollision(*colliders[i].first);
-			}
-		}
-	}
+	// for (size_t i = 0; i < colliders.size(); i++)
+	// {
+	// 	for (size_t j = i + 1; j < colliders.size(); j++)
+	// 	{
+	// 		if (Collider::IsColliding(colliders[i].second->box, colliders[j].second->box, colliders[i].first->angleDeg, colliders[j].first->angleDeg))
+	// 		{
+	// 			colliders[i].first->NotifyCollision(*colliders[j].first);
+	// 			colliders[j].first->NotifyCollision(*colliders[i].first);
+	// 		}
+	// 	}
+	// }
 
 	for (size_t i = 0; i < this->objectArray.size(); i++)
 	{

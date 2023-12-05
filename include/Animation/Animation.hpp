@@ -6,18 +6,23 @@
 
 class Animation : public Component
 {
+private:
+    std::function<void()> startAnimationFunction;
+    std::function<void()> endAnimationFunction;
+
 public:
-    Animation(int numFrames, Vec2 startPosition, Vec2 endPosition, Sprite *sprite, bool loop, std::function<void()> endAnimation, AnimationPhase::Phase phase, GameObject *masterObject);
+    Animation(int numFrames, Vec2 startPosition, Vec2 endPosition, Sprite *sprite, bool loop, std::function<void()> startAnimationFunction, std::function<void()> endAnimationFunction,
+              AnimationPhase::Phase phase, GameObject *masterObject);
     int numFrames;
     Vec2 startPosition;
     Vec2 endPosition;
     int currentFrame;
     void Update(float dt) override;
     void Render() override;
-    void startAnimation();
-    std::function<void()> endAnimation;
+    void StartAnimation();
+    void EndAnimation();
+
     AnimationPhase::Phase phase;
-    std::string spriteFile;
     Sprite *sprite;
     bool loop;
     bool hasEnded;

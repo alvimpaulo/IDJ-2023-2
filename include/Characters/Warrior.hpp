@@ -15,7 +15,7 @@ public:
             int dexterity,
             int agility,
 
-            int aggro, Sprite* idleSprite);
+            int aggro, Sprite* idleSprite, Sprite* runSprite, Sprite *runBackSprite);
     ~Warrior();
     void Start();
     void Update(float dt);

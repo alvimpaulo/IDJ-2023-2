@@ -6,7 +6,7 @@
 
 ActionMenu::ActionMenu(GameObject *associated) : Component(associated, "ActionMenu")
 {
-    auto bgSprite = new Sprite(associated, "/home/paulo/unb/IDJ-2/trab1/assets/img/Menu/actionMenu.png", 1, 1, 0, 255 / 3 * 2);
+    auto bgSprite = new Sprite(associated, "assets/img/Menu/actionMenu.png", 1, 1, 0, 255 / 3 * 2);
     bgSprite->setOpacity(255);
     associated->AddComponent(bgSprite);
 

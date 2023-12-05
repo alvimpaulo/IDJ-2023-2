@@ -1,6 +1,6 @@
 #include "Animation.hpp"
 
-Animation::Animation(int numFrames, Vec2 startPosition, Vec2 endPosition, Sprite *sprite, bool loop, std::function<void()> endAnimation, AnimationPhase::Phase phase, GameObject *masterObject) : Component(masterObject, "Animation")
+Animation::Animation(int numFrames, Vec2 startPosition, Vec2 endPosition, Sprite *sprite, bool loop, std::function<void()> startAnimation, std::function<void()> endAnimation, AnimationPhase::Phase phase, GameObject *masterObject) : Component(masterObject, "Animation")
 {
     this->masterObject = masterObject;
     this->currentFrame = 0;
@@ -12,11 +12,13 @@ Animation::Animation(int numFrames, Vec2 startPosition, Vec2 endPosition, Sprite
     this->loop = loop;
 
     this->phase = phase;
-    this->endAnimation = endAnimation;
+    this->endAnimationFunction = endAnimation;
+    this->startAnimationFunction = startAnimation;
 }
 
 void Animation::Update(float dt)
 {
+
     if (currentFrame > 0)
     {
         currentFrame++;
@@ -28,11 +30,15 @@ void Animation::Update(float dt)
 
         if (phase == AnimationPhase::Phase::Idle)
         {
+            if (currentFrame == numFrames)
+            {
+                this->EndAnimation();
+            }
         }
 
         else
         {
-            auto currentPosition = masterObject->getBox().GetCenter();
+            auto currentPosition = masterObject->getScaledBox().GetCenter();
 
             auto distanceX = endPosition.x - startPosition.x;
             auto distanceY = endPosition.y - startPosition.y;
@@ -40,26 +46,12 @@ void Animation::Update(float dt)
             auto animationMoveDistanceX = distanceX / numFrames;
             auto animationMoveDistanceY = distanceY / numFrames;
 
-            associated->setBoxX(associated->getBox().x + animationMoveDistanceX);
-            associated->setBoxY(associated->getBox().y + animationMoveDistanceY);
+            associated->setBoxCenter(Vec2(currentPosition.x + animationMoveDistanceX, currentPosition.y + animationMoveDistanceY));
         }
 
         if (currentFrame == numFrames)
         {
-            if (endAnimation)
-                endAnimation();
-            if (loop)
-            {
-                currentFrame = 1;
-                if (sprite)
-                {
-                    sprite->setCurrentFrame(0);
-                }
-            }
-            else
-            {
-                currentFrame = 0;
-            }
+            EndAnimation();
         }
     }
 }
@@ -68,7 +60,27 @@ void Animation::Render()
 {
 }
 
-void Animation::startAnimation()
+void Animation::StartAnimation()
 {
     currentFrame = 1;
+    if (startAnimationFunction)
+        this->startAnimationFunction();
+    if (sprite)
+    {
+        sprite->setCurrentFrame(0);
+    }
+}
+
+void Animation::EndAnimation()
+{
+    if (endAnimationFunction)
+        this->endAnimationFunction();
+    if (loop)
+    {
+        StartAnimation();
+    }
+    else
+    {
+        currentFrame = 0;
+    }
 }

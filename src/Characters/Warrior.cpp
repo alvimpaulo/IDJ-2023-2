@@ -16,15 +16,15 @@ Warrior::Warrior(GameObject *associated, int currentHp,
                  int dexterity,
                  int agility,
 
-                 int aggro, Sprite* idleSprite) : EntityComponent(associated, "Warrior", currentHp, maxHp,
-                                              maxMp, currentMp, strength, wisdom, dexterity, agility, aggro,
-                                              false, Vec2(0 + 50, SCREEN_HEIGHT - associated->getScaledBox().h - (SCREEN_HEIGHT / 10)), idleSprite, nullptr, nullptr, nullptr)
+                 int aggro, Sprite *idleSprite, Sprite *runSprite, Sprite *runBackSprite) : EntityComponent(associated, "Warrior", currentHp, maxHp,
+                                                                                                            maxMp, currentMp, strength, wisdom, dexterity, agility, aggro,
+                                                                                                            false,
+                                                                                                            Vec2(0 + associated->getScaledBox().x / 2 + 100, SCREEN_HEIGHT - associated->getScaledBox().h - (SCREEN_HEIGHT / 10)),
+                                                                                                            idleSprite, runSprite, runBackSprite, nullptr, nullptr)
 {
     speed = {0.0f, 0.0f};
 
     linearSpeed = 0.0f;
-    
-   
 
     // auto collider = new Collider(associated);
     // this->associated->AddComponent(collider);
@@ -45,12 +45,10 @@ void Warrior::Update(float dt)
     if (isIdle)
     {
 
-        associated->setBoxX(IdlePosition.x);
-        associated->setBoxY(IdlePosition.y);
+        associated->setBoxCenter(Vec2(IdlePosition.x, IdlePosition.y));
     }
     else
     {
-    
     }
     // if (currentHp <= 0)
     // {

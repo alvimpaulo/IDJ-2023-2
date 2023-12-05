@@ -17,7 +17,7 @@ Ranger::Ranger(GameObject *associated, int currentHp,
 
                int aggro, Sprite *idleSprite) : EntityComponent(associated, "Ranger", currentHp, maxHp,
                                                                 maxMp, currentMp, strength, wisdom, dexterity, agility, aggro, false,
-                                                                Vec2(0 + 50, SCREEN_HEIGHT - (associated->getScaledBox().h * 2) - (SCREEN_HEIGHT / 10)), idleSprite, nullptr, nullptr, nullptr)
+                                                                Vec2(0 + 50, SCREEN_HEIGHT - (associated->getScaledBox().h * 2) - (SCREEN_HEIGHT / 10)), idleSprite, nullptr, nullptr, nullptr, nullptr)
 {
     speed = {0.0f, 0.0f};
 

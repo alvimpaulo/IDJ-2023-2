@@ -31,7 +31,8 @@ public:
                     int dexterity,
                     int agility,
 
-                    int aggro, bool isSelected, Vec2 IdlePosition, Sprite *idleSprite, Sprite *runSprite, Sprite *attackSprite, Sprite *criticalSprite);
+                    int aggro, bool isSelected, Vec2 IdlePosition, Sprite *idleSprite,
+                    Sprite *runSprite,Sprite *runBackSprite, Sprite *attackSprite, Sprite *criticalSprite);
     // void virtual ~EntityComponent() = 0;
     void virtual Update(float dt);
     void virtual Render() = 0;
@@ -45,9 +46,9 @@ public:
     int getDexterity();
     int getAgility();
     int getAggro();
-    void startPhysicalAttack(EntityComponent *target);
     void useSkill(EntityComponent *target);
     void defend();
+    void physicalAttack(EntityComponent *target);
 
     void loseHp(int amount);
     void gainHp(int amount);
@@ -62,8 +63,13 @@ public:
     Vec2 IdlePosition;
 
     // Animations
-    std::deque<Animation*> animations;
+    std::deque<Animation *> animations;
     void goToNextAnimation();
 
-    bool hasAttackFinished;
+    Sprite* idleSprite;
+    Sprite* runSprite;
+    Sprite* runBackSprite;
+    Sprite* attackSprite;
+    Sprite* criticalSprite;
+    
 };

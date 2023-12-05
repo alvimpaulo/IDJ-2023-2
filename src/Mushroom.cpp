@@ -18,7 +18,7 @@ Mushroom::Mushroom(GameObject *associated, int currentHp,
 
                    int aggro, Sprite *idleSprite) : EntityComponent(associated, "Mushroom",
                                                                     currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility,
-                                                                    aggro, false, Vec2(SCREEN_WIDTH - associated->getScaledBox().w - 50, SCREEN_HEIGHT - associated->getScaledBox().h - (SCREEN_HEIGHT / 10)), idleSprite, nullptr, nullptr, nullptr)
+                                                                    aggro, false, Vec2(SCREEN_WIDTH - associated->getScaledBox().w, SCREEN_HEIGHT - associated->getScaledBox().h), idleSprite, nullptr, nullptr, nullptr, nullptr)
 {
     setIsVisible(true);
 
@@ -40,8 +40,7 @@ void Mushroom::Update(float dt)
     if (isIdle)
     {
 
-        associated->setBoxX(IdlePosition.x);
-        associated->setBoxY(IdlePosition.y);
+        associated->setBoxCenter(Vec2(IdlePosition.x, IdlePosition.y));
     }
 }
 
