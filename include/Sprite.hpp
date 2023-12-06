@@ -30,6 +30,7 @@ public:
     Sprite(GameObject *associated, std::string file, int frameCount = 1,
            float frameTime = 1, float secondsToSelfDestruct = 0, int opacity = 255, bool flipHorizontal = false, bool flipVertical = false);
     ~Sprite();
+    Sprite* CreateCopy();
 
     void Open(std::string file);
     void SetClip(int x, int y, int w, int h);

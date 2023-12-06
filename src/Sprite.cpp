@@ -41,6 +41,11 @@ Sprite::~Sprite()
 {
 }
 
+Sprite *Sprite::CreateCopy()
+{
+    return new Sprite(associated, file, frameCount, frameTime, secondsToSelfDestruct, opacity, flipHorizontal, flipVertical);
+}
+
 void Sprite::Update(float dt)
 {
     if (secondsToSelfDestruct > 0)
