@@ -13,6 +13,7 @@ public:
     enum class Round
     {
         NoTurn,
+        PlayerCharacterSelectInit,
         PlayerCharacterSelect,
         PlayerActionSelect,
         PlayerAction,
