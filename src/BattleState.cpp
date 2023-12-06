@@ -21,7 +21,6 @@
 #include "DefendButton.hpp"
 #include "SkillButton.hpp"
 #include "UI/CharacterIndicator.hpp"
-#include "Ranger.hpp"
 
 BattleState *BattleState::instance = nullptr;
 
@@ -78,8 +77,9 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 
 	auto mushroomObj = new GameObject();
 	mushroomObj->setScale(Vec2(5, 5));
-	auto mushroomSprite = new Sprite(mushroomObj, "assets/img/Monsters/Mushroom/NewIdle.png", 4, 0.1, 0, 255, true, false);
-	mushroomObj->AddComponent(mushroomSprite);
+
+	auto mushroomSprite = Mushroom::CreateIdleSprite(mushroomObj);
+	// mushroomObj->AddComponent(mushroomSprite);
 	auto mushroom = new Mushroom(mushroomObj, 100, 100, 100, 100, 5, 10, 5, 1, 50, mushroomSprite);
 	mushroomObj->AddComponent(mushroom);
 	this->AddObject(mushroomObj);
@@ -95,38 +95,14 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	this->AddObject(mushroomManaBarObj);
 	//------------------------------------- MUSHROOM -----------------------------------------------------
 
-	//------------------------------------- RANGER -----------------------------------------------------
-
-	// auto rangerObj = new GameObject();
-	// auto ranger = new Ranger(rangerObj, 100, 100, 100, 100, 2, 1, 10, 10, 50);
-	// rangerObj->AddComponent(ranger);
-	// this->AddObject(rangerObj);
-
-	// auto rangerHealthBarObj = new GameObject();
-	// auto rangerHealthBar = new HealthBar(rangerHealthBarObj, ranger);
-	// rangerHealthBarObj->AddComponent(rangerHealthBar);
-	// this->AddObject(rangerHealthBarObj);
-
-	// auto rangerManaBarObj = new GameObject();
-	// auto rangerManaBar = new ManaBar(rangerManaBarObj, ranger);
-	// rangerManaBarObj->AddComponent(rangerManaBar);
-	// this->AddObject(rangerManaBarObj);
-
-	// characters.push_back(ranger);
-	//------------------------------------- RANGER -----------------------------------------------------
-
 	//------------------------------------- WARRIOR -----------------------------------------------------
 
 	auto warriorObj = new GameObject();
 	warriorObj->setScale(Vec2(3, 3));
-	auto warriorRunSprite = new Sprite(warriorObj, "assets/img/Warrior/newRun.png", 6, 10);
-	auto warriorRunBackSprite = new Sprite(warriorObj, "assets/img/Warrior/RunBack.png", 6, 10);
 
-	auto warriorIdleSprite = new Sprite(warriorObj, "assets/img/Warrior/NewIdle.png", 10, 10);
-	// warriorObj->AddComponent(warriorIdleSprite);
-	// warriorObj->AddComponent(warriorRunSprite);
+	auto warriorIdleSprite = Warrior::CreateIdleSprite(warriorObj);
 
-	auto warrior = new Warrior(warriorObj, 100, 100, 100, 100, 5, 1, 10, 10, 50, warriorIdleSprite, warriorRunSprite, warriorRunBackSprite);
+	auto warrior = new Warrior(warriorObj, 100, 100, 100, 100, 5, 1, 10, 10, 50, warriorIdleSprite);
 	warriorObj->AddComponent(warrior);
 	this->AddObject(warriorObj);
 
@@ -197,7 +173,14 @@ void BattleState::Update(float dt)
 			}
 			else if (selectedButton->getType() == "DefendButton")
 			{
-				selectedCharacter->gainHp(10);
+				selectedCharacter->defend();
+				this->setRound(Round::EnemyActionSelect);
+			}
+			else if (selectedButton->getType() == "SkillButton")
+			{
+				auto mushroom = this->getFirstObjectByComponent("Mushroom");
+				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				selectedCharacter->useSkill(mushroomPtr);
 			}
 		}
 	}
@@ -210,12 +193,23 @@ void BattleState::Update(float dt)
 			mushroomPtr->physicalAttack(selectedCharacter);
 		}
 	}
+	else if (getRound() == Round::PlayerCharacterSelectInit)
+	{
+		auto actionMenuObj = this->getFirstObjectByComponent("ActionMenu");
+		auto actionMenuPtr = (ActionMenu *)actionMenuObj->GetComponent("ActionMenu");
+		actionMenuPtr->setIsVisible(false);
+		actionMenuPtr->selector->setAttached(actionMenuPtr->buttons[0]);
+		this->selectedCharacter = nullptr;
+		actionMenuPtr->selector->setIsActionLocked(false);
+		indicator->setIsCharacterLocked(false);
+		setRound(Round::PlayerCharacterSelect);
+	}
+
 	else if (getRound() == Round::PlayerCharacterSelect)
 	{
 		auto actionMenuObj = this->getFirstObjectByComponent("ActionMenu");
 		auto actionMenuPtr = (ActionMenu *)actionMenuObj->GetComponent("ActionMenu");
 		actionMenuPtr->setIsVisible(false);
-		actionMenuPtr->selectedActionIndex = 0;
 		actionMenuPtr->selector->setIsActionLocked(false);
 
 		if (InputManager::GetInstance().KeyPress(UP_ARROW_KEY))
@@ -260,8 +254,11 @@ void BattleState::Update(float dt)
 		}
 		if (InputManager::GetInstance().KeyPress(SDLK_RETURN))
 		{
+			indicatedCharacterIndex = std::max(indicatedCharacterIndex - 1, 0);
+			indicator->setAttached(characters[indicatedCharacterIndex]);
 			this->selectedCharacter = characters[indicatedCharacterIndex];
 			indicator->setIsCharacterLocked(true);
+
 			setRound(Round::PlayerActionSelect);
 		}
 
@@ -331,7 +328,7 @@ void BattleState::Update(float dt)
 			{
 				this->selectedCharacter = nullptr;
 				indicator->setIsCharacterLocked(false);
-				setRound(Round::PlayerCharacterSelect);
+				setRound(Round::PlayerCharacterSelectInit);
 			}
 		}
 

@@ -3,7 +3,7 @@
 Animation::Animation(int numFrames, Vec2 startPosition, Vec2 endPosition, Sprite *sprite, bool loop, std::function<void()> startAnimation, std::function<void()> endAnimation, AnimationPhase::Phase phase, GameObject *masterObject) : Component(masterObject, "Animation")
 {
     this->masterObject = masterObject;
-    this->currentFrame = 0;
+    this->currentFrame = 1;
     this->numFrames = numFrames;
     this->endPosition = endPosition;
     this->startPosition = startPosition;

@@ -74,12 +74,9 @@ void Sprite::Open(std::string file)
 
     // std::cerr << "width: " << width << " Height: " << height << std::endl;
 
-    associated->setBoxX(0);
-    associated->setBoxY(0);
-
     width = width / frameCount;
 
-    this->SetClip(0, 0, width, height);
+    this->SetClip(associated->getScaledBox().x, associated->getScaledBox().y, width, height);
 
     this->associated->setBoxW(float(width));
     this->associated->setBoxH(float(height));

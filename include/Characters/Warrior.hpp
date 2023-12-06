@@ -15,15 +15,25 @@ public:
             int dexterity,
             int agility,
 
-            int aggro, Sprite* idleSprite, Sprite* runSprite, Sprite *runBackSprite);
+            int aggro, Sprite *idleSprite);
     ~Warrior();
-    void Start();
-    void Update(float dt);
-    void Render();
-    void NotifyCollision(GameObject &other);
+    void Start() override;
+    void Update(float dt) override;
+    void Render() override;
+    void NotifyCollision(GameObject &other) override;
+    void useSkill(EntityComponent *target) override;
+    void defend() override;
+    void physicalAttack(EntityComponent *target) override;
+
+    static Sprite* CreateIdleSprite(GameObject* associated);
+    static Sprite* CreateRunSprite(GameObject* associated);
+    static Sprite* CreateRunBackSprite(GameObject* associated);
 
 private:
     Vec2 speed;
     float linearSpeed;
     float angle;
+
+    void physicalAttackStart(EntityComponent* target) override;
+    void physicalAttackEnd(EntityComponent* target) override;
 };

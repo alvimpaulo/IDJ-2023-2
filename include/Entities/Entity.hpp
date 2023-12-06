@@ -19,6 +19,10 @@ protected:
     int aggro;
     bool isIndicated;
 
+    virtual void physicalAttackStart(EntityComponent *target) = 0;
+    virtual void physicalAttackEnd(EntityComponent *target) = 0;
+    Animation *currentAnimation;
+
 public:
     EntityComponent(GameObject *associated, std::string type, int currentHp,
                     int maxHp,
@@ -31,8 +35,7 @@ public:
                     int dexterity,
                     int agility,
 
-                    int aggro, bool isSelected, Vec2 IdlePosition, Sprite *idleSprite,
-                    Sprite *runSprite,Sprite *runBackSprite, Sprite *attackSprite, Sprite *criticalSprite);
+                    int aggro, bool isSelected, Vec2 IdlePosition, Sprite *idleSprite);
     // void virtual ~EntityComponent() = 0;
     void virtual Update(float dt);
     void virtual Render() = 0;
@@ -46,9 +49,10 @@ public:
     int getDexterity();
     int getAgility();
     int getAggro();
-    void useSkill(EntityComponent *target);
-    void defend();
-    void physicalAttack(EntityComponent *target);
+    virtual void useSkill(EntityComponent *target) = 0;
+    virtual void defend() = 0;
+
+    virtual void physicalAttack(EntityComponent *target) = 0;
 
     void loseHp(int amount);
     void gainHp(int amount);
@@ -63,13 +67,9 @@ public:
     Vec2 IdlePosition;
 
     // Animations
-    std::deque<Animation *> animations;
-    void goToNextAnimation();
 
-    Sprite* idleSprite;
-    Sprite* runSprite;
-    Sprite* runBackSprite;
-    Sprite* attackSprite;
-    Sprite* criticalSprite;
-    
+    void setNewAnimation(Animation *newAnimation);
+    Animation *getCurrentAnimation() const { return currentAnimation; }
+
+
 };
