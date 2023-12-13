@@ -4,6 +4,7 @@
 #include "Game.hpp"
 #include "InputManager.hpp"
 #include "BattleState.hpp"
+#include "random"
 
 Warrior::Warrior(GameObject *associated, int currentHp,
                  int maxHp,
@@ -17,10 +18,10 @@ Warrior::Warrior(GameObject *associated, int currentHp,
                  int agility,
 
                  int aggro, Sprite *idleSprite) : EntityComponent(associated, "Warrior", currentHp, maxHp,
-                                                                                                            maxMp, currentMp, strength, wisdom, dexterity, agility, aggro,
-                                                                                                            false,
-                                                                                                            Vec2(0 + associated->getScaledBox().x / 2 + 100, SCREEN_HEIGHT - associated->getScaledBox().h - (SCREEN_HEIGHT / 10)),
-                                                                                                            idleSprite)
+                                                                  maxMp, currentMp, strength, wisdom, dexterity, agility, aggro,
+                                                                  false,
+                                                                  Vec2(0 + associated->getScaledBox().x / 2 + 100, SCREEN_HEIGHT - associated->getScaledBox().h - (SCREEN_HEIGHT / 10)),
+                                                                  idleSprite)
 {
     speed = {0.0f, 0.0f};
 
@@ -73,20 +74,7 @@ void Warrior::physicalAttackStart(EntityComponent *target)
 
 void Warrior::physicalAttackEnd(EntityComponent *target)
 {
-    std::cout << "Physical attack " << this->getType() << " acabou" << std::endl;
-    target->loseHp(this->getStrength());
-    this->setNewAnimation(new Animation(
-        60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Warrior::CreateRunBackSprite(associated), false, [this] {},
-        [this]()
-        {
-            auto newIdleSprite = Warrior::CreateIdleSprite(associated);
-            this->isIdle = true;
-            BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
-            this->setNewAnimation(new Animation(
-                30, IdlePosition, IdlePosition, newIdleSprite, true, nullptr, nullptr,
-                AnimationPhase::Phase::Idle, associated));
-        },
-        AnimationPhase::Phase::RunBack, this->associated));
+    rhythmAttackStart(target);
 }
 
 void Warrior::physicalAttack(EntityComponent *target)
@@ -102,8 +90,63 @@ void Warrior::physicalAttack(EntityComponent *target)
         { physicalAttackEnd(target); },
         AnimationPhase::Phase::Run, associated));
 }
+
+void Warrior::rhythmAttackStart(EntityComponent *target)
+{
+
+    auto targetPosition = target->associated->getScaledBox().GetCenter();
+    BattleState::GetInstance()->setRound(BattleState::Round::PlayerRhythm);
+
+    // Mostrar as bolas na tela e ver quantas a pessoa conseguiu clicar.
+    //  target->loseHp(this->getStrength() * numeroDebolasMostradoNaTela + 1);
+}
+
+void Warrior::rhythmAttackEnd(EntityComponent *target)
+{
+    // std::cout << "Physical attack " << this->getType() << " acabou" << std::endl;
+
+    this->setNewAnimation(new Animation(
+        60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Warrior::CreateRunBackSprite(associated), false, [] {},
+        [this]()
+        {
+            auto newIdleSprite = Warrior::CreateIdleSprite(associated);
+            this->isIdle = true;
+            BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
+            this->setNewAnimation(new Animation(
+                30, IdlePosition, IdlePosition, newIdleSprite, true, nullptr, nullptr,
+                AnimationPhase::Phase::Idle, associated));
+        },
+        AnimationPhase::Phase::RunBack, this->associated));
+
+    target->loseHp(this->getStrength());
+    this->setNewAnimation(new Animation(
+        60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Warrior::CreateRunBackSprite(associated), false, [] {},
+        [this]()
+        {
+            auto newIdleSprite = Warrior::CreateIdleSprite(associated);
+            this->isIdle = true;
+            BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
+            this->setNewAnimation(new Animation(
+                30, IdlePosition, IdlePosition, newIdleSprite, true, nullptr, nullptr,
+                AnimationPhase::Phase::Idle, associated));
+        },
+        AnimationPhase::Phase::RunBack, this->associated));
+}
+
+void Warrior::rhythmMechanic(EntityComponent *target)
+{
+
+    // this->setNewAnimation(new Animation(
+    //     30, targetPosition, targetPosition, Warrior::CreateAttackSprite(associated), false,
+    //     [this, target]()
+    //     { physicalAttackStart(target); },
+    //     [this, target]()
+    //     { physicalAttackEnd(target); },
+    //     AnimationPhase::Phase::Run, associated));
+}
 void Warrior::useSkill(EntityComponent *target)
 {
+    isIdle = false;
     target->loseHp(this->wisdom - target->getWisdom());
 }
 void Warrior::defend()
@@ -111,14 +154,27 @@ void Warrior::defend()
     this->strength += 1;
 }
 
-Sprite* Warrior::CreateIdleSprite(GameObject* associated){
+Sprite *Warrior::CreateIdleSprite(GameObject *associated)
+{
     return new Sprite(associated, "assets/img/Warrior/NewIdle.png", 10, 10);
 }
 
-Sprite* Warrior::CreateRunSprite(GameObject* associated){
+Sprite *Warrior::CreateRunSprite(GameObject *associated)
+{
     return new Sprite(associated, "assets/img/Warrior/newRun.png", 6, 10);
 }
 
-Sprite* Warrior::CreateRunBackSprite(GameObject* associated){
+Sprite *Warrior::CreateRunBackSprite(GameObject *associated)
+{
     return new Sprite(associated, "assets/img/Warrior/RunBack.png", 6, 10);
+}
+
+Sprite *Warrior::CreateAttackSprite(GameObject *associated)
+{
+    return new Sprite(associated, "assets/img/Warrior/NewAttack1.png", 4, 10);
+}
+
+Sprite *Warrior::CreateAttackBackSprite(GameObject *associated)
+{
+    return new Sprite(associated, "assets/img/Warrior/NewAttack1Volta.png", 4, 10);
 }

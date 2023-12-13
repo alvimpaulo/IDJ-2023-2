@@ -21,6 +21,8 @@ protected:
 
     virtual void physicalAttackStart(EntityComponent *target) = 0;
     virtual void physicalAttackEnd(EntityComponent *target) = 0;
+    virtual void rhythmAttackStart(EntityComponent* target) = 0;
+    virtual void rhythmAttackEnd(EntityComponent* target) = 0;
     Animation *currentAnimation;
 
 public:

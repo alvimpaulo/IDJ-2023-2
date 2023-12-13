@@ -14,8 +14,10 @@ private:
         RESTING
     };
 
-    void physicalAttackStart(EntityComponent* target) override;
-    void physicalAttackEnd(EntityComponent* target) override;
+    void physicalAttackStart(EntityComponent *target) override;
+    void physicalAttackEnd(EntityComponent *target) override;
+    void rhythmAttackStart(EntityComponent *target) override;
+    void rhythmAttackEnd(EntityComponent *target) override;
 
 public:
     Mushroom(GameObject *associated, int currentHp,
@@ -39,7 +41,7 @@ public:
     void defend() override;
     void physicalAttack(EntityComponent *target) override;
 
-    static Sprite* CreateIdleSprite(GameObject* associated);
-    static Sprite* CreateRunSprite(GameObject* associated);
-    static Sprite* CreateRunBackSprite(GameObject* associated);
+    static Sprite *CreateIdleSprite(GameObject *associated);
+    static Sprite *CreateRunSprite(GameObject *associated);
+    static Sprite *CreateRunBackSprite(GameObject *associated);
 };

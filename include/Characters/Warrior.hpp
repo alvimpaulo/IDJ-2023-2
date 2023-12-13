@@ -24,10 +24,13 @@ public:
     void useSkill(EntityComponent *target) override;
     void defend() override;
     void physicalAttack(EntityComponent *target) override;
+    void rhythmMechanic(EntityComponent* target);
 
     static Sprite* CreateIdleSprite(GameObject* associated);
     static Sprite* CreateRunSprite(GameObject* associated);
     static Sprite* CreateRunBackSprite(GameObject* associated);
+    static Sprite* CreateAttackSprite(GameObject* associated);
+    static Sprite* CreateAttackBackSprite(GameObject* associated);
 
 private:
     Vec2 speed;
@@ -36,4 +39,7 @@ private:
 
     void physicalAttackStart(EntityComponent* target) override;
     void physicalAttackEnd(EntityComponent* target) override;
+
+    void rhythmAttackStart(EntityComponent* target) override;
+    void rhythmAttackEnd(EntityComponent* target) override;
 };

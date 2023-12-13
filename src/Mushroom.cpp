@@ -90,6 +90,16 @@ void Mushroom::physicalAttack(EntityComponent *target)
         { physicalAttackEnd(target); },
         AnimationPhase::Phase::Run, associated));
 }
+
+void Mushroom::rhythmAttackStart(EntityComponent* target){
+
+}
+
+void Mushroom::rhythmAttackEnd(EntityComponent* target){
+
+}
+
+
 void Mushroom::useSkill(EntityComponent *target)
 {
     target->loseHp(target->getWisdom() - this->wisdom);

@@ -5,6 +5,8 @@
 #include "CharacterIndicator.hpp"
 #include "ManaBar.hpp"
 #include "HealthBar.hpp"
+#include "ClickBall.hpp"
+
 
 class BattleState : public State
 {
@@ -18,7 +20,9 @@ public:
         PlayerActionSelect,
         PlayerAction,
         EnemyActionSelect,
-        EnemyAction
+        EnemyAction,
+        PlayerRhythm,
+        EnemyRhythm,
     };
     static BattleState *GetInstance();
     static BattleState *instance;
@@ -37,6 +41,10 @@ public:
 
     void setRound(Round round);
     Round getRound();
+
+    std::deque<GameObject*> balls;
+
+    int clickedBalls;
 
 private:
     Sprite *bgSprite;

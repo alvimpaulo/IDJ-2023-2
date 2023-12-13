@@ -28,6 +28,8 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 {
 	this->quitRequested = false;
 	this->started = false;
+	this->balls = std::deque<GameObject *>(0);
+	this->clickedBalls = 0;
 
 	auto mapObject = new GameObject();
 
@@ -182,6 +184,78 @@ void BattleState::Update(float dt)
 				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
 				selectedCharacter->useSkill(mushroomPtr);
 			}
+		}
+	}
+
+	if (getRound() == Round::PlayerRhythm)
+	{
+		if (balls.size() == 0)
+		{
+
+			const int maxNumCircles = 10;
+			const int circleRadius = 100;
+
+			std::random_device os_seed;
+			const uint_least32_t seed = os_seed();
+			std::mt19937 generator(seed);
+
+			std::uniform_int_distribution<uint_least32_t> distributeY(circleRadius, SCREEN_HEIGHT - circleRadius);
+			std::uniform_int_distribution<uint_least32_t> distributeX(circleRadius, SCREEN_WIDTH- circleRadius);
+
+			for (size_t i = 0; i < maxNumCircles; i++)
+			{
+				auto newPosition = Vec2(distributeX(generator), distributeY(generator));
+				auto ballObj = new GameObject();
+				auto ballPtr = new ClickBall(ballObj, newPosition, 3, circleRadius);
+				ballObj->AddComponent(ballPtr);
+				balls.push_back(ballObj);
+			}
+		}
+
+		else
+		{
+			auto currentBallObj = balls.front();
+			auto currentBall = (ClickBall *)currentBallObj->GetComponent("ClickBall");
+			balls.pop_front();
+			
+
+			if (currentBall->getRemainingTime() <= 0)
+			{
+				//  a bola que está na tela morreu
+				currentBallObj->RequestDelete();
+
+				if (balls.empty())
+				{
+					setRound(Round::PlayerAction);
+					return;
+				}
+				else
+				{
+					currentBallObj = balls.front();
+					balls.pop_front();
+					this->AddObject(currentBallObj);
+				}
+			}
+			else if (currentBall->getHasRun() == false)
+			{
+				// Não tem nenhuma bola na tela
+				this->AddObject(currentBallObj);
+			}
+			else
+			{
+				// Tem uma bola na tela e ela ainda não morreu
+				if (InputManager::GetInstance().MousePress(SDL_BUTTON_LEFT))
+				{
+					if (currentBall->isPointInsideCircle(Vec2(mouseX, mouseY)))
+					{
+						clickedBalls++;
+					}
+
+					currentBallObj->RequestDelete();
+					return;
+				}
+			}
+			balls.push_front(currentBallObj);
 		}
 	}
 	else if (getRound() == Round::EnemyAction || getRound() == Round::EnemyActionSelect)
