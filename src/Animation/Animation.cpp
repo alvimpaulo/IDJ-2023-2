@@ -43,8 +43,9 @@ void Animation::Update(float dt)
             auto distanceX = endPosition.x - startPosition.x;
             auto distanceY = endPosition.y - startPosition.y;
 
-            auto animationMoveDistanceX = distanceX / numFrames;
-            auto animationMoveDistanceY = distanceY / numFrames;
+            // - 2 porque a animação começa de 2, já que pra ser iniciada precisa current frame == 1 e no primeiro frame ela é incializada.
+            auto animationMoveDistanceX = distanceX / (numFrames - 2); 
+            auto animationMoveDistanceY = distanceY / (numFrames - 2);
 
             associated->setBoxCenter(Vec2(currentPosition.x + animationMoveDistanceX, currentPosition.y + animationMoveDistanceY));
         }

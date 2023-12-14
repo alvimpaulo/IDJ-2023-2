@@ -18,12 +18,8 @@ protected:
 
     int aggro;
     bool isIndicated;
-
-    virtual void physicalAttackStart(EntityComponent *target) = 0;
-    virtual void physicalAttackEnd(EntityComponent *target) = 0;
-    virtual void rhythmAttackStart(EntityComponent* target) = 0;
-    virtual void rhythmAttackEnd(EntityComponent* target) = 0;
     Animation *currentAnimation;
+    int rhythmAttackCount;
 
 public:
     EntityComponent(GameObject *associated, std::string type, int currentHp,
@@ -55,6 +51,12 @@ public:
     virtual void defend() = 0;
 
     virtual void physicalAttack(EntityComponent *target) = 0;
+    virtual void rhythmAttack(EntityComponent *target) = 0;
+
+     virtual void physicalAttackStart(EntityComponent *target) = 0;
+    virtual void physicalAttackEnd(EntityComponent *target) = 0;
+    virtual void rhythmAttackStart(EntityComponent* target) = 0;
+    virtual void rhythmAttackEnd(EntityComponent* target) = 0;
 
     void loseHp(int amount);
     void gainHp(int amount);

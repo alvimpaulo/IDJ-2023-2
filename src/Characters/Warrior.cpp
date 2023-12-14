@@ -80,7 +80,7 @@ void Warrior::physicalAttackEnd(EntityComponent *target)
 void Warrior::physicalAttack(EntityComponent *target)
 {
     isIdle = false;
-    auto targetPosition = target->associated->getScaledBox().GetCenter();
+    auto targetPosition = target->associated->getScaledBox().GetCenter() - Vec2(target->associated->getScaledBox().w / 2 + this->associated->getScaledBox().w / 2, 0);
 
     this->setNewAnimation(new Animation(
         30, IdlePosition, targetPosition, Warrior::CreateRunSprite(associated), false,
@@ -94,7 +94,7 @@ void Warrior::physicalAttack(EntityComponent *target)
 void Warrior::rhythmAttackStart(EntityComponent *target)
 {
 
-    auto targetPosition = target->associated->getScaledBox().GetCenter();
+    auto targetPosition = target->associated->getScaledBox().GetCenter() - Vec2(target->associated->getScaledBox().w / 2 + this->associated->getScaledBox().w / 2, 0);
     BattleState::GetInstance()->setRound(BattleState::Round::PlayerRhythm);
 
     // Mostrar as bolas na tela e ver quantas a pessoa conseguiu clicar.
@@ -103,22 +103,7 @@ void Warrior::rhythmAttackStart(EntityComponent *target)
 
 void Warrior::rhythmAttackEnd(EntityComponent *target)
 {
-    // std::cout << "Physical attack " << this->getType() << " acabou" << std::endl;
-
-    this->setNewAnimation(new Animation(
-        60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Warrior::CreateRunBackSprite(associated), false, [] {},
-        [this]()
-        {
-            auto newIdleSprite = Warrior::CreateIdleSprite(associated);
-            this->isIdle = true;
-            BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
-            this->setNewAnimation(new Animation(
-                30, IdlePosition, IdlePosition, newIdleSprite, true, nullptr, nullptr,
-                AnimationPhase::Phase::Idle, associated));
-        },
-        AnimationPhase::Phase::RunBack, this->associated));
-
-    target->loseHp(this->getStrength());
+    rhythmAttackCount = 0;
     this->setNewAnimation(new Animation(
         60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Warrior::CreateRunBackSprite(associated), false, [] {},
         [this]()
@@ -133,16 +118,34 @@ void Warrior::rhythmAttackEnd(EntityComponent *target)
         AnimationPhase::Phase::RunBack, this->associated));
 }
 
-void Warrior::rhythmMechanic(EntityComponent *target)
+void Warrior::rhythmAttack(EntityComponent *target)
 {
+    if (rhythmAttackCount % 2 == 0)
+    {
+        //forward animation
+        this->setNewAnimation(new Animation(
+            30, associated->getScaledBox().GetCenter(), associated->getScaledBox().GetCenter(), Warrior::CreateAttackSprite(associated), false,
+            [this, target]() {},
+            [this, target]()
+            {
+                target->loseHp(std::max(1, this->getStrength() - target->getStrength()));
+            },
+            AnimationPhase::Phase::Run, associated));
+    }
+    else
+    {
+        //backwards animation
+        this->setNewAnimation(new Animation(
+            30, associated->getScaledBox().GetCenter(), associated->getScaledBox().GetCenter(), Warrior::CreateAttackBackSprite(associated), false,
+            [this, target]() {},
+            [this, target]()
+            {
+                target->loseHp(std::max(1, this->getStrength() - target->getStrength()));
+            },
+            AnimationPhase::Phase::Run, associated));
+    }
 
-    // this->setNewAnimation(new Animation(
-    //     30, targetPosition, targetPosition, Warrior::CreateAttackSprite(associated), false,
-    //     [this, target]()
-    //     { physicalAttackStart(target); },
-    //     [this, target]()
-    //     { physicalAttackEnd(target); },
-    //     AnimationPhase::Phase::Run, associated));
+    rhythmAttackCount++;
 }
 void Warrior::useSkill(EntityComponent *target)
 {

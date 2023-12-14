@@ -24,7 +24,7 @@ public:
     void useSkill(EntityComponent *target) override;
     void defend() override;
     void physicalAttack(EntityComponent *target) override;
-    void rhythmMechanic(EntityComponent* target);
+    void rhythmAttack(EntityComponent* target) override;
 
     static Sprite* CreateIdleSprite(GameObject* associated);
     static Sprite* CreateRunSprite(GameObject* associated);

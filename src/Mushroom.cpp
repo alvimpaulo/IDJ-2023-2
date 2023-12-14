@@ -80,7 +80,7 @@ void Mushroom::physicalAttackEnd(EntityComponent *target)
 void Mushroom::physicalAttack(EntityComponent *target)
 {
     isIdle = false;
-    auto targetPosition = target->associated->getScaledBox().GetCenter();
+    auto targetPosition = target->associated->getScaledBox().GetCenter() + Vec2(target->associated->getScaledBox().w / 2 + this->associated->getScaledBox().w / 2, 0);
 
     this->setNewAnimation(new Animation(
         30, IdlePosition, targetPosition, Mushroom::CreateRunSprite(associated), false,
@@ -97,6 +97,9 @@ void Mushroom::rhythmAttackStart(EntityComponent* target){
 
 void Mushroom::rhythmAttackEnd(EntityComponent* target){
 
+}
+
+void Mushroom::rhythmAttack(EntityComponent* target){
 }
 
 

@@ -194,13 +194,14 @@ void BattleState::Update(float dt)
 
 			const int maxNumCircles = 10;
 			const int circleRadius = 100;
+			clickedBalls = 0;
 
 			std::random_device os_seed;
 			const uint_least32_t seed = os_seed();
 			std::mt19937 generator(seed);
 
 			std::uniform_int_distribution<uint_least32_t> distributeY(circleRadius, SCREEN_HEIGHT - circleRadius);
-			std::uniform_int_distribution<uint_least32_t> distributeX(circleRadius, SCREEN_WIDTH- circleRadius);
+			std::uniform_int_distribution<uint_least32_t> distributeX(circleRadius, SCREEN_WIDTH - circleRadius);
 
 			for (size_t i = 0; i < maxNumCircles; i++)
 			{
@@ -217,13 +218,18 @@ void BattleState::Update(float dt)
 			auto currentBallObj = balls.front();
 			auto currentBall = (ClickBall *)currentBallObj->GetComponent("ClickBall");
 			balls.pop_front();
-			
 
 			if (currentBall->getRemainingTime() <= 0)
 			{
-				//  a bola que está na tela morreu
+				//  a bola que está na tela morreu sem ninguem clicar nela
 				currentBallObj->RequestDelete();
-
+				balls.clear();
+				auto mushroom = this->getFirstObjectByComponent("Mushroom");
+				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				setRound(Round::PlayerAction);
+				selectedCharacter->rhythmAttackEnd(mushroomPtr);
+				return;
+				
 				if (balls.empty())
 				{
 					setRound(Round::PlayerAction);
@@ -249,10 +255,22 @@ void BattleState::Update(float dt)
 					if (currentBall->isPointInsideCircle(Vec2(mouseX, mouseY)))
 					{
 						clickedBalls++;
+						auto mushroom = this->getFirstObjectByComponent("Mushroom");
+						auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+						selectedCharacter->rhythmAttack(mushroomPtr);
+						currentBallObj->RequestDelete();
+						return;
 					}
-
-					currentBallObj->RequestDelete();
-					return;
+					else
+					{
+						currentBallObj->RequestDelete();
+						balls.clear();
+						auto mushroom = this->getFirstObjectByComponent("Mushroom");
+						auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+						setRound(Round::PlayerAction);
+						selectedCharacter->rhythmAttackEnd(mushroomPtr);
+						return;
+					}
 				}
 			}
 			balls.push_front(currentBallObj);

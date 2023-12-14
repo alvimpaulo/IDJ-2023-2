@@ -27,6 +27,7 @@ EntityComponent::EntityComponent(GameObject *associated, std::string type, int c
     this->agility = agility;
     this->isIndicated = isSelected;
     this->IdlePosition = IdlePosition;
+    this->rhythmAttackCount = 0;
 
     this->setNewAnimation(new Animation(
         30, IdlePosition, IdlePosition, idleSprite, true, nullptr, nullptr,
