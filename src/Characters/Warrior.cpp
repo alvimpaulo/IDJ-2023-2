@@ -123,25 +123,29 @@ void Warrior::rhythmAttack(EntityComponent *target)
     const auto damage = this->getStrength() - (target->getStrength() / 2);
     if (rhythmAttackCount % 2 == 0)
     {
-        //forward animation
+        // forward animation
         this->setNewAnimation(new Animation(
             30, associated->getScaledBox().GetCenter(), associated->getScaledBox().GetCenter(), Warrior::CreateAttackSprite(associated), false,
-            [this, target]() {},
             [this, target, damage]()
             {
                 target->loseHp(damage);
+            },
+            [this, target]() {
+
             },
             AnimationPhase::Phase::Run, associated));
     }
     else
     {
-        //backwards animation
+        // backwards animation
         this->setNewAnimation(new Animation(
             30, associated->getScaledBox().GetCenter(), associated->getScaledBox().GetCenter(), Warrior::CreateAttackBackSprite(associated), false,
-            [this, target]() {},
             [this, target, damage]()
             {
                 target->loseHp(damage);
+            },
+            [this, target]() {
+
             },
             AnimationPhase::Phase::Run, associated));
     }
@@ -155,7 +159,8 @@ void Warrior::useSkill(EntityComponent *target)
 }
 void Warrior::defend()
 {
-    this->strength += 1;
+    std::uniform_int_distribution<uint_least32_t> distrib(1, 20);
+    this->gainHp(distrib(generator));
 }
 
 Sprite *Warrior::CreateIdleSprite(GameObject *associated)

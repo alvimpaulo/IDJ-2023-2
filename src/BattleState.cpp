@@ -29,7 +29,6 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	this->quitRequested = false;
 	this->started = false;
 	this->balls = std::deque<GameObject *>(0);
-	this->clickedBalls = 0;
 
 	auto mapObject = new GameObject();
 
@@ -192,9 +191,8 @@ void BattleState::Update(float dt)
 		if (balls.size() == 0)
 		{
 
-			const int maxNumCircles = 10;
-			const int circleRadius = 100;
-			clickedBalls = 0;
+			const int maxNumCircles = 5;
+			const int circleRadius = 200;
 
 			std::random_device os_seed;
 			const uint_least32_t seed = os_seed();
@@ -229,18 +227,6 @@ void BattleState::Update(float dt)
 				setRound(Round::PlayerAction);
 				selectedCharacter->rhythmAttackEnd(mushroomPtr);
 				return;
-				
-				if (balls.empty())
-				{
-					setRound(Round::PlayerAction);
-					return;
-				}
-				else
-				{
-					currentBallObj = balls.front();
-					balls.pop_front();
-					this->AddObject(currentBallObj);
-				}
 			}
 			else if (currentBall->getHasRun() == false)
 			{
@@ -254,11 +240,15 @@ void BattleState::Update(float dt)
 				{
 					if (currentBall->isPointInsideCircle(Vec2(mouseX, mouseY)))
 					{
-						clickedBalls++;
-						auto mushroom = this->getFirstObjectByComponent("Mushroom");
+						auto mushroom = this->getFirstObjectByComponent("Mushroom"); 	
 						auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
 						selectedCharacter->rhythmAttack(mushroomPtr);
 						currentBallObj->RequestDelete();
+						if (balls.size() == 0)
+						{
+							setRound(Round::PlayerAction);
+							selectedCharacter->rhythmAttackEnd(mushroomPtr);
+						}
 						return;
 					}
 					else

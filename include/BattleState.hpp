@@ -44,8 +44,6 @@ public:
 
     std::deque<GameObject*> balls;
 
-    int clickedBalls;
-
 private:
     Sprite *bgSprite;
     std::vector<EntityComponent *> characters;
