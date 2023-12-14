@@ -75,5 +75,7 @@ public:
     void setNewAnimation(Animation *newAnimation);
     Animation *getCurrentAnimation() const { return currentAnimation; }
 
+    std::mt19937 generator;
+
 
 };

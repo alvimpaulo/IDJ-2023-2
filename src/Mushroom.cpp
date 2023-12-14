@@ -59,8 +59,10 @@ void Mushroom::physicalAttackStart(EntityComponent *target)
 
 void Mushroom::physicalAttackEnd(EntityComponent *target)
 {
-    std::cout << "Physical attack " << this->getType() << " acabou" << std::endl;
-    target->loseHp(this->getStrength());
+    std::uniform_int_distribution<uint_least32_t> distributeDamage(1 + getStrength(), getStrength() * 4);
+    auto damage = distributeDamage(generator);
+
+    target->loseHp(damage - target->getStrength() / 2);
     this->setNewAnimation(new Animation(
         60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Mushroom::CreateRunBackSprite(associated), false, [this]
         { std::cout << "Volta do ataque começou" << std::endl; },
