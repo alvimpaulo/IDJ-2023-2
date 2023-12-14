@@ -31,10 +31,10 @@ void Text::Update(float dt)
 
 void Text::Render()
 {
-    auto dstPos = associated->getBox().GetCenter() - Camera::pos;
+    auto dstPos = associated->getScaledBox();
 
-    SDL_Rect clipRect{0, 0, (int)associated->getBox().w, (int)associated->getBox().h};
-    SDL_Rect dstRect{(int)dstPos.x, (int)dstPos.y, (int)associated->getBox().w, (int)associated->getBox().h};
+    SDL_Rect clipRect{0, 0, (int)associated->getScaledBox().w, (int)associated->getScaledBox().h};
+    SDL_Rect dstRect{(int)dstPos.x, (int)dstPos.y, (int)associated->getScaledBox().w, (int)associated->getScaledBox().h};
 
     int error = SDL_RenderCopyEx(Game::GetInstance().GetRenderer(),
                                  texture, &clipRect, &dstRect, associated->angleDeg, nullptr, SDL_FLIP_NONE);

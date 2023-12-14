@@ -2,6 +2,7 @@
 #include "algorithm"
 #include "Entity.hpp"
 #include "BattleState.hpp"
+#include "DamageText.hpp"
 
 EntityComponent::EntityComponent(GameObject *associated, std::string type, int currentHp,
                                  int maxHp,
@@ -36,13 +37,16 @@ EntityComponent::EntityComponent(GameObject *associated, std::string type, int c
 
 void EntityComponent::loseHp(int amount)
 {
-    if (amount > 0)
+    amount = std::max(1, amount);
+    auto damageTextObj = new GameObject();
+    auto damageTextPtr = new DamageText(damageTextObj, amount, this->associated->getScaledBox().GetCenter(), this->associated->getScaledBox().GetCenter() + Vec2(0, 100), 5);
+    damageTextObj->AddComponent(damageTextPtr);
+    BattleState::GetInstance()->AddObject(damageTextObj);
+
+    this->currentHp -= amount;
+    if (this->currentHp <= 0)
     {
-        this->currentHp -= amount;
-        if (this->currentHp <= 0)
-        {
-            currentHp = 0;
-        }
+        currentHp = 0;
     }
 }
 void EntityComponent::gainHp(int amount)

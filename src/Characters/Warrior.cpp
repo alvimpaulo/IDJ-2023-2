@@ -120,15 +120,16 @@ void Warrior::rhythmAttackEnd(EntityComponent *target)
 
 void Warrior::rhythmAttack(EntityComponent *target)
 {
+    const auto damage = this->getStrength() - (target->getStrength() / 2);
     if (rhythmAttackCount % 2 == 0)
     {
         //forward animation
         this->setNewAnimation(new Animation(
             30, associated->getScaledBox().GetCenter(), associated->getScaledBox().GetCenter(), Warrior::CreateAttackSprite(associated), false,
             [this, target]() {},
-            [this, target]()
+            [this, target, damage]()
             {
-                target->loseHp(std::max(1, this->getStrength() - target->getStrength()));
+                target->loseHp(damage);
             },
             AnimationPhase::Phase::Run, associated));
     }
@@ -138,9 +139,9 @@ void Warrior::rhythmAttack(EntityComponent *target)
         this->setNewAnimation(new Animation(
             30, associated->getScaledBox().GetCenter(), associated->getScaledBox().GetCenter(), Warrior::CreateAttackBackSprite(associated), false,
             [this, target]() {},
-            [this, target]()
+            [this, target, damage]()
             {
-                target->loseHp(std::max(1, this->getStrength() - target->getStrength()));
+                target->loseHp(damage);
             },
             AnimationPhase::Phase::Run, associated));
     }
