@@ -155,12 +155,19 @@ void Warrior::rhythmAttack(EntityComponent *target)
 void Warrior::useSkill(EntityComponent *target)
 {
     isIdle = false;
-    target->loseHp(this->wisdom - target->getWisdom());
+    std::uniform_int_distribution<uint_least32_t> distrib(1, 20);
+    this->gainHp(distrib(generator));
+    this->loseMp(5);
+    BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
+    isIdle = true;
 }
 void Warrior::defend()
 {
-    std::uniform_int_distribution<uint_least32_t> distrib(1, 20);
-    this->gainHp(distrib(generator));
+    isIdle = false;
+    std::uniform_int_distribution<uint_least32_t> distrib(5, 10);
+    this->gainMp(distrib(generator));
+    BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
+    isIdle = true;
 }
 
 Sprite *Warrior::CreateIdleSprite(GameObject *associated)

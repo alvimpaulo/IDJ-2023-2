@@ -3,6 +3,9 @@
 #include "Entity.hpp"
 #include "BattleState.hpp"
 #include "DamageText.hpp"
+#include "HealText.hpp"
+#include "MpLostText.hpp"
+#include "MpGainText.hpp"
 
 EntityComponent::EntityComponent(GameObject *associated, std::string type, int currentHp,
                                  int maxHp,
@@ -55,17 +58,36 @@ void EntityComponent::loseHp(int amount)
 }
 void EntityComponent::gainHp(int amount)
 {
+    amount = std::max(1, amount);
+    auto healTextObj = new GameObject();
+    auto healTextPtr = new HealText(healTextObj, amount, this->associated->getScaledBox().GetCenter(), this->associated->getScaledBox().GetCenter() + Vec2(0, 200), 2);
+    healTextObj->AddComponent(healTextPtr);
+    BattleState::GetInstance()->AddObject(healTextObj);
+
     this->currentHp += amount;
+    if (this->currentHp <= 0)
+    {
+        currentHp = 0;
+    }
     this->currentHp = std::min(currentHp, this->maxHp);
 }
 
 void EntityComponent::loseMp(int amount)
 {
-    this->currentMp -= amount;
+    amount = std::max(1, amount);
+    currentMp -= amount;
+    auto loseMpTextObj = new GameObject();
+    auto loseMpTextPtr = new MpLostText(loseMpTextObj, amount, this->associated->getScaledBox().GetCenter(), this->associated->getScaledBox().GetCenter() + Vec2(0, 200), 2);
+    loseMpTextObj->AddComponent(loseMpTextPtr);
+    BattleState::GetInstance()->AddObject(loseMpTextObj);
     this->currentMp = std::max(currentMp, 0);
 }
 void EntityComponent::gainMp(int amount)
 {
+    auto gainMpObj = new GameObject();
+    auto gainMpPtr = new MpGainText(gainMpObj, amount, this->associated->getScaledBox().GetCenter(), this->associated->getScaledBox().GetCenter() + Vec2(0, 200), 2);
+    gainMpObj->AddComponent(gainMpPtr);
+    BattleState::GetInstance()->AddObject(gainMpObj);
     this->currentMp += amount;
     this->currentMp = std::min(currentMp, this->maxMp);
 }

@@ -107,11 +107,16 @@ void Mushroom::rhythmAttack(EntityComponent* target){
 
 void Mushroom::useSkill(EntityComponent *target)
 {
-    target->loseHp(target->getWisdom() - this->wisdom);
+    std::uniform_int_distribution<uint_least32_t> distrib(1, 20);
+    this->gainHp(distrib(generator));
+    this->loseMp(5);
 }
 void Mushroom::defend()
 {
-    this->strength += 1;
+    std::uniform_int_distribution<uint_least32_t> distrib(1, 20);
+    this->gainHp(distrib(generator));
+    this->loseMp(5);
+
 }
 
 Sprite* Mushroom::CreateIdleSprite(GameObject* associated){

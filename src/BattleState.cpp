@@ -191,7 +191,7 @@ void BattleState::Update(float dt)
 		if (balls.size() == 0)
 		{
 
-			const int maxNumCircles = 5;
+			const int maxNumCircles = 10;
 			const int circleRadius = 200;
 
 			std::random_device os_seed;
@@ -240,14 +240,15 @@ void BattleState::Update(float dt)
 				{
 					if (currentBall->isPointInsideCircle(Vec2(mouseX, mouseY)))
 					{
-						auto mushroom = this->getFirstObjectByComponent("Mushroom"); 	
+						auto mushroom = this->getFirstObjectByComponent("Mushroom");
 						auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
 						selectedCharacter->rhythmAttack(mushroomPtr);
 						currentBallObj->RequestDelete();
 						if (balls.size() == 0)
 						{
-							setRound(Round::PlayerAction);
 							selectedCharacter->rhythmAttackEnd(mushroomPtr);
+
+							setRound(Round::PlayerAction);
 						}
 						return;
 					}

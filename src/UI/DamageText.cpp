@@ -13,7 +13,7 @@ DamageText::DamageText(GameObject *associated, int damage,
     this->timeElapsed = 0;
 
     // Text
-    SDL_Color textColor = {255,255,51, 0xff};
+    SDL_Color textColor = {196, 30, 58, 0xff};
     this->textObject = new Text(associated, "assets/font/Enchanted Land DEMO.otf", 56, Text::BLENDED, std::to_string(damage), textColor);
     associated->AddComponent(textObject);
 }
