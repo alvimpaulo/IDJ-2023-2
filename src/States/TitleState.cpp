@@ -39,7 +39,7 @@ TitleState::TitleState()
 	AddObject(bgObject);
 
 	auto blinkTextObj = new GameObject();
-	auto blinkTextPtr = new BlinkingText(blinkTextObj, Vec2(560, 540), 3, "Pressione qualquer tecla...");
+	auto blinkTextPtr = new BlinkingText(blinkTextObj, Vec2(200, 540), 3, "Pressione barra de espaco para continuar...");
 	blinkTextObj->AddComponent(blinkTextPtr);
 	AddObject(blinkTextObj);
 }
@@ -68,7 +68,7 @@ void TitleState::Update(float dt)
 		this->quitRequested = true;
 	}
 
-	if(InputManager::GetInstance().AnyKeyPress()){
+	if(InputManager::GetInstance().KeyPress(SDLK_SPACE)){
 		popRequested = true;
 		Game::GetInstance().Push(BattleState::GetInstance());
 	}

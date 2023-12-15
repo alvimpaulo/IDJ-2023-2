@@ -4,12 +4,13 @@
 #include <unordered_map>
 #include <States/BattleState.hpp>
 #include "TitleState.hpp"
+#include "DifficultyState.hpp"
 
 int main(int argc, char **argv)
 {
 
     Game game = Game::GetInstance();
-    auto initState = TitleState::GetInstance();
+    auto initState = DifficultyState::GetInstance();
     game.Push(initState);
     game.Run();
 

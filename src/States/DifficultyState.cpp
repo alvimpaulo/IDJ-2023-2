@@ -23,6 +23,7 @@
 #include "UI/CharacterIndicator.hpp"
 #include "BlinkingText.hpp"
 #include "BattleState.hpp"
+#include "TitleState.hpp"
 
 DifficultyState *DifficultyState::instance = nullptr;
 
@@ -30,6 +31,7 @@ DifficultyState::DifficultyState()
 {
 	this->quitRequested = false;
 	this->started = false;
+	this->selectedDifficulty = 0;
 
 	auto bgObject = new GameObject();
 	auto bgFollower = new CameraFollower(bgObject);
@@ -42,6 +44,11 @@ DifficultyState::DifficultyState()
 	// auto blinkTextPtr = new BlinkingText(blinkTextObj, Vec2(560, 540), 3, "Pressione qualquer tecla...");
 	// blinkTextObj->AddComponent(blinkTextPtr);
 	// AddObject(blinkTextObj);
+
+	diffSelector = new GameObject();
+	auto diffPtr = new Sprite(diffSelector, "assets/img/Menu/main-menu/Indicator.png");
+	diffSelector->AddComponent(diffPtr);
+	AddObject(diffSelector);
 }
 
 void DifficultyState::LoadAssets()
@@ -68,10 +75,40 @@ void DifficultyState::Update(float dt)
 		this->quitRequested = true;
 	}
 
-	if (InputManager::GetInstance().AnyKeyPress())
+	if (InputManager::GetInstance().KeyPress(SDLK_UP))
 	{
-		popRequested = true;
-		Game::GetInstance().Push(BattleState::GetInstance());
+		selectedDifficulty = std::max(0, selectedDifficulty - 1);
+	}
+
+	if (InputManager::GetInstance().KeyPress(SDLK_DOWN))
+	{
+		selectedDifficulty = std::min(2, selectedDifficulty + 1);
+	}
+
+	if (InputManager::GetInstance().KeyPress(SDLK_RETURN))
+	{
+		requestPop();
+		auto introState = TitleState::GetInstance();
+		Game::GetInstance().Push(introState);
+	}
+
+	if (diffSelector)
+	{
+		switch (selectedDifficulty)
+		{
+		case 0:
+			this->diffSelector->setBoxCenter(Vec2(427, 401));
+			break;
+		case 1:
+			this->diffSelector->setBoxCenter(Vec2(427, 461));
+			break;
+		case 2:
+			this->diffSelector->setBoxCenter(Vec2(427, 522));
+			break;
+		default:
+			this->diffSelector->setBoxCenter(Vec2(427, 401));
+			break;
+		}
 	}
 
 	UpdateArray(dt);

@@ -17,4 +17,7 @@ public:
 
 private:
     Sprite *bgSprite;
-    DifficultyState();};
+    DifficultyState();
+    int selectedDifficulty;
+    GameObject* diffSelector;
+};
