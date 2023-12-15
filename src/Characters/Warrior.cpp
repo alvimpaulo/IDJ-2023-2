@@ -120,7 +120,8 @@ void Warrior::rhythmAttackEnd(EntityComponent *target)
 
 void Warrior::rhythmAttack(EntityComponent *target)
 {
-    const auto damage = this->getStrength() - (target->getStrength() / 2);
+    std::uniform_int_distribution<uint_least32_t> distribute(this->getStrength(), this->getStrength() * 2);
+    const auto damage = distribute(generator) - (target->getStrength() / 2);
     if (rhythmAttackCount % 2 == 0)
     {
         // forward animation

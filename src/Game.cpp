@@ -4,7 +4,7 @@
 #include "State.hpp"
 #include <SDL_ttf.h>
 
-Game* Game::instance = nullptr;
+Game *Game::instance = nullptr;
 
 Game &Game::GetInstance()
 {
@@ -84,8 +84,6 @@ Game::Game(std::string title, int width, int height)
         exit(0);
     }
 
-    
-
     // Init window
     this->instance->window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     if (this->instance->window == nullptr)
@@ -134,7 +132,14 @@ Game::~Game()
 
 State *Game::GetCurrentState()
 {
-    return this->instance->stateStack.top();
+    if (instance->stateStack.empty())
+    {
+        return nullptr;
+    }
+    else
+    {
+        return this->instance->stateStack.top();
+    }
 }
 
 SDL_Renderer *Game::GetRenderer()
@@ -142,35 +147,43 @@ SDL_Renderer *Game::GetRenderer()
     return this->instance->renderer;
 }
 
-void Game::Push(State* state){
+void Game::Push(State *state)
+{
     this->instance->storedState = state;
-
 }
 
 void Game::Run()
 {
-    if(this->instance->storedState == nullptr){
+    if (this->instance->storedState == nullptr)
+    {
         return;
     }
     this->instance->stateStack.push(this->instance->storedState);
     this->instance->storedState = nullptr;
 
-    while (this->instance->GetCurrentState()->QuitRequested() == false &&  this->instance->stateStack.empty() == false)
+    while (this->instance->GetCurrentState()->QuitRequested() == false && this->instance->stateStack.empty() == false)
     {
 
-        if(!this->instance->GetCurrentState()->IsStarted()){
+        if (!this->instance->GetCurrentState()->IsStarted())
+        {
             this->instance->GetCurrentState()->Start();
         }
 
-        if(this->instance->GetCurrentState()->PopRequested()){
+        if (this->instance->GetCurrentState()->PopRequested())
+        {
             this->instance->stateStack.pop();
-            if(this->instance->GetCurrentState() != nullptr){
+            if (this->instance->GetCurrentState() != nullptr)
+            {
                 this->instance->GetCurrentState()->Resume();
             }
         }
 
-        if(this->instance->storedState != nullptr){
-            this->instance->stateStack.top()->Pause();
+        if (this->instance->storedState != nullptr)
+        {
+            if (instance->stateStack.empty() == false)
+            {
+                this->instance->stateStack.top()->Pause();
+            }
             this->instance->stateStack.push(this->instance->storedState);
             this->instance->storedState->Start();
             this->instance->storedState = nullptr;

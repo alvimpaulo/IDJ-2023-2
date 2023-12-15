@@ -61,6 +61,7 @@ void Mushroom::physicalAttackEnd(EntityComponent *target)
 {
     std::uniform_int_distribution<uint_least32_t> distributeDamage(1 + getStrength(), getStrength() * 4);
     auto damage = distributeDamage(generator);
+    // auto damage = 300;
 
     target->loseHp(damage - target->getStrength() / 2);
     this->setNewAnimation(new Animation(
