@@ -17,6 +17,7 @@ public:
     bool PopRequested();
     bool QuitRequested();
     bool IsStarted();
+    void requestPop();
 
 protected:
     State();

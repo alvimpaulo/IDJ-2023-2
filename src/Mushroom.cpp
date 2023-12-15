@@ -17,8 +17,8 @@ Mushroom::Mushroom(GameObject *associated, int currentHp,
                    int agility,
 
                    int aggro, Sprite *idleSprite) : EntityComponent(associated, "Mushroom",
-                                                                                                              currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility,
-                                                                                                              aggro, false, Vec2(SCREEN_WIDTH - associated->getScaledBox().w, SCREEN_HEIGHT - associated->getScaledBox().h), idleSprite)
+                                                                    currentHp, maxHp, maxMp, currentMp, strength, wisdom, dexterity, agility,
+                                                                    aggro, false, Vec2(SCREEN_WIDTH - associated->getScaledBox().w, SCREEN_HEIGHT - associated->getScaledBox().h), idleSprite)
 {
     setIsVisible(true);
 
@@ -65,8 +65,7 @@ void Mushroom::physicalAttackEnd(EntityComponent *target)
 
     target->loseHp(damage - target->getStrength() / 2);
     this->setNewAnimation(new Animation(
-        60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Mushroom::CreateRunBackSprite(associated), false, [this]
-        { std::cout << "Volta do ataque começou" << std::endl; },
+        60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Mushroom::CreateRunBackSprite(associated), false, [this] {},
         [this]()
         {
             auto newIdleSprite = new Sprite(associated, "assets/img/Monsters/Mushroom/NewIdle.png", 4, 0.1, 0, 255, true, false);
@@ -94,17 +93,17 @@ void Mushroom::physicalAttack(EntityComponent *target)
         AnimationPhase::Phase::Run, associated));
 }
 
-void Mushroom::rhythmAttackStart(EntityComponent* target){
-
+void Mushroom::rhythmAttackStart(EntityComponent *target)
+{
 }
 
-void Mushroom::rhythmAttackEnd(EntityComponent* target){
-
+void Mushroom::rhythmAttackEnd(EntityComponent *target)
+{
 }
 
-void Mushroom::rhythmAttack(EntityComponent* target){
+void Mushroom::rhythmAttack(EntityComponent *target)
+{
 }
-
 
 void Mushroom::useSkill(EntityComponent *target)
 {
@@ -117,17 +116,19 @@ void Mushroom::defend()
     std::uniform_int_distribution<uint_least32_t> distrib(1, 20);
     this->gainHp(distrib(generator));
     this->loseMp(5);
-
 }
 
-Sprite* Mushroom::CreateIdleSprite(GameObject* associated){
+Sprite *Mushroom::CreateIdleSprite(GameObject *associated)
+{
     return new Sprite(associated, "assets/img/Monsters/Mushroom/NewIdle.png", 4, 0.1, 0, 255, true, false);
 }
 
-Sprite* Mushroom::CreateRunSprite(GameObject* associated){
+Sprite *Mushroom::CreateRunSprite(GameObject *associated)
+{
     return new Sprite(associated, "assets/img/Monsters/Mushroom/NewIdle.png", 4, 0.1, 0, 255, true, false);
 }
 
-Sprite* Mushroom::CreateRunBackSprite(GameObject* associated){
+Sprite *Mushroom::CreateRunBackSprite(GameObject *associated)
+{
     return new Sprite(associated, "assets/img/Monsters/Mushroom/NewIdle.png", 4, 0.1, 0, 255, true, false);
 }

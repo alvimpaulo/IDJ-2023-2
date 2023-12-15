@@ -54,7 +54,7 @@ void EntityComponent::loseHp(int amount)
     if (this->currentHp <= 0)
     {
         currentHp = 0;
-        BattleState::GetInstance()->setRound(BattleState::Round::GameEnding);
+        
     }
 }
 void EntityComponent::gainHp(int amount)

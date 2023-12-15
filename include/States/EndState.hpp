@@ -6,7 +6,7 @@ class EndState : public State
 {
 
 public:
-    static EndState *GetInstance();
+    static EndState *GetInstance(bool hasWon);
     static EndState *instance;
     void LoadAssets();
     void Update(float dt);
@@ -17,4 +17,6 @@ public:
 
 private:
     Sprite *bgSprite;
-    EndState();};
+    EndState(bool hasWon);
+    bool hasWon;
+};

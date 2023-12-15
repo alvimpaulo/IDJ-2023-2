@@ -5,6 +5,7 @@
 #include "InputManager.hpp"
 #include "BattleState.hpp"
 #include "random"
+#include "EndState.hpp"
 
 Warrior::Warrior(GameObject *associated, int currentHp,
                  int maxHp,
@@ -20,7 +21,7 @@ Warrior::Warrior(GameObject *associated, int currentHp,
                  int aggro, Sprite *idleSprite) : EntityComponent(associated, "Warrior", currentHp, maxHp,
                                                                   maxMp, currentMp, strength, wisdom, dexterity, agility, aggro,
                                                                   false,
-                                                                  Vec2(0 + associated->getScaledBox().x / 2 + 100, SCREEN_HEIGHT - associated->getScaledBox().h - (SCREEN_HEIGHT / 10)),
+                                                                  Vec2(0 + associated->getScaledBox().x / 2 + 200, SCREEN_HEIGHT - associated->getScaledBox().h - (SCREEN_HEIGHT / 10 * 3)),
                                                                   idleSprite)
 {
     speed = {0.0f, 0.0f};
@@ -42,6 +43,11 @@ void Warrior::Start()
 void Warrior::Update(float dt)
 {
     EntityComponent::Update(dt);
+
+    if(this->getCurrentHp() == 0){
+        BattleState::GetInstance()->requestPop();
+        Game::GetInstance().Push(EndState::GetInstance(false));
+    }
 
     if (isIdle)
     {

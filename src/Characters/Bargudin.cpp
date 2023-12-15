@@ -20,7 +20,7 @@ Bargudin::Bargudin(GameObject *associated, int currentHp,
                  int aggro, Sprite *idleSprite) : EntityComponent(associated, "Bargudin", currentHp, maxHp,
                                                                   maxMp, currentMp, strength, wisdom, dexterity, agility, aggro,
                                                                   false,
-                                                                  Vec2(0 + associated->getScaledBox().x / 2 + 100, SCREEN_HEIGHT - associated->getScaledBox().h - (SCREEN_HEIGHT / 10)),
+                                                                  Vec2(0 + associated->getScaledBox().x / 2 + 100, SCREEN_HEIGHT - associated->getScaledBox().h ),
                                                                   idleSprite)
 {
     speed = {0.0f, 0.0f};
@@ -105,7 +105,7 @@ void Bargudin::rhythmAttackEnd(EntityComponent *target)
 {
     rhythmAttackCount = 0;
     this->setNewAnimation(new Animation(
-        60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Bargudin::CreateRunBackSprite(associated), false, [] {},
+        30, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Bargudin::CreateRunBackSprite(associated), false, [] {},
         [this]()
         {
             auto newIdleSprite = Bargudin::CreateIdleSprite(associated);
@@ -120,27 +120,33 @@ void Bargudin::rhythmAttackEnd(EntityComponent *target)
 
 void Bargudin::rhythmAttack(EntityComponent *target)
 {
+    std::uniform_int_distribution<uint_least32_t> distribute(this->getStrength(), this->getStrength() * 2);
+    const auto damage = distribute(generator) - (target->getStrength() / 2);
     if (rhythmAttackCount % 2 == 0)
     {
-        //forward animation
+        // forward animation
         this->setNewAnimation(new Animation(
             30, associated->getScaledBox().GetCenter(), associated->getScaledBox().GetCenter(), Bargudin::CreateAttackSprite(associated), false,
-            [this, target]() {},
-            [this, target]()
+            [this, target, damage]()
             {
-                target->loseHp(std::max(1, this->getStrength() - target->getStrength()));
+                target->loseHp(damage);
+            },
+            [this, target]() {
+
             },
             AnimationPhase::Phase::Run, associated));
     }
     else
     {
-        //backwards animation
+        // backwards animation
         this->setNewAnimation(new Animation(
             30, associated->getScaledBox().GetCenter(), associated->getScaledBox().GetCenter(), Bargudin::CreateAttackBackSprite(associated), false,
-            [this, target]() {},
-            [this, target]()
+            [this, target, damage]()
             {
-                target->loseHp(std::max(1, this->getStrength() - target->getStrength()));
+                target->loseHp(damage);
+            },
+            [this, target]() {
+
             },
             AnimationPhase::Phase::Run, associated));
     }
@@ -150,34 +156,42 @@ void Bargudin::rhythmAttack(EntityComponent *target)
 void Bargudin::useSkill(EntityComponent *target)
 {
     isIdle = false;
-    target->loseHp(this->wisdom - target->getWisdom());
+    std::uniform_int_distribution<uint_least32_t> distrib(1, 20);
+    this->gainHp(distrib(generator));
+    this->loseMp(5);
+    BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
+    isIdle = true;
 }
 void Bargudin::defend()
 {
-    this->strength += 1;
+    isIdle = false;
+    std::uniform_int_distribution<uint_least32_t> distrib(5, 10);
+    this->gainMp(distrib(generator));
+    BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
+    isIdle = true;
 }
 
 Sprite *Bargudin::CreateIdleSprite(GameObject *associated)
 {
-    return new Sprite(associated, "assets/img/Bargudin/NewIdle.png", 10, 10);
+    return new Sprite(associated, "assets/img/Bargudin/NewIdle.png", 8, 10);
 }
 
 Sprite *Bargudin::CreateRunSprite(GameObject *associated)
 {
-    return new Sprite(associated, "assets/img/Bargudin/newRun.png", 6, 10);
+    return new Sprite(associated, "assets/img/Bargudin/NewRun.png", 4, 10);
 }
 
 Sprite *Bargudin::CreateRunBackSprite(GameObject *associated)
 {
-    return new Sprite(associated, "assets/img/Bargudin/RunBack.png", 6, 10);
+    return new Sprite(associated, "assets/img/Bargudin/NewRunBack.png", 4, 10);
 }
 
 Sprite *Bargudin::CreateAttackSprite(GameObject *associated)
 {
-    return new Sprite(associated, "assets/img/Bargudin/NewAttack1.png", 4, 10);
+    return new Sprite(associated, "assets/img/Bargudin/NewAttack.png", 3, 10);
 }
 
 Sprite *Bargudin::CreateAttackBackSprite(GameObject *associated)
 {
-    return new Sprite(associated, "assets/img/Bargudin/NewAttack1Volta.png", 4, 10);
+    return new Sprite(associated, "assets/img/Bargudin/NewAttack.png", 3, 10);
 }

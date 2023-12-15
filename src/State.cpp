@@ -48,6 +48,11 @@ bool State::IsStarted(){
     return this->started;
 }
 
+void State::requestPop()
+{
+    this->popRequested = true;
+}
+
 void State::RenderArray(){
     for (size_t i = 0; i < objectArray.size(); i++)
     {

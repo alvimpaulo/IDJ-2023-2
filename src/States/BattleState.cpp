@@ -14,6 +14,7 @@
 #include "BattleState.hpp"
 #include "Mushroom.hpp"
 #include "Warrior.hpp"
+#include "Bargudin.hpp"
 #include "ActionMenu.hpp"
 #include "HealthBar.hpp"
 #include "ManaBar.hpp"
@@ -22,6 +23,7 @@
 #include "SkillButton.hpp"
 #include "UI/CharacterIndicator.hpp"
 #include "EndState.hpp"
+#include "Porco.hpp"
 
 BattleState *BattleState::instance = nullptr;
 
@@ -75,27 +77,49 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	actionMenuSelector->setAttached(attackButton);
 	// ----------------------------------- MENU ---------------------------------------------
 
-	//------------------------------------- MUSHROOM -----------------------------------------------------
+	// //------------------------------------- MUSHROOM -----------------------------------------------------
 
-	auto mushroomObj = new GameObject();
-	mushroomObj->setScale(Vec2(5, 5));
+	// auto mushroomObj = new GameObject();
+	// mushroomObj->setScale(Vec2(5, 5));
 
-	auto mushroomSprite = Mushroom::CreateIdleSprite(mushroomObj);
-	// mushroomObj->AddComponent(mushroomSprite);
-	auto mushroom = new Mushroom(mushroomObj, 100, 100, 100, 100, 5, 10, 5, 1, 50, mushroomSprite);
-	mushroomObj->AddComponent(mushroom);
-	this->AddObject(mushroomObj);
+	// auto mushroomSprite = Mushroom::CreateIdleSprite(mushroomObj);
+	// // mushroomObj->AddComponent(mushroomSprite);
+	// auto mushroom = new Mushroom(mushroomObj, 100, 100, 100, 100, 5, 10, 5, 1, 50, mushroomSprite);
+	// mushroomObj->AddComponent(mushroom);
+	// this->AddObject(mushroomObj);
 
-	auto mushroomHealthBarObj = new GameObject();
-	auto mushroomHealthBar = new HealthBar(mushroomHealthBarObj, mushroom);
-	mushroomHealthBarObj->AddComponent(mushroomHealthBar);
-	this->AddObject(mushroomHealthBarObj);
+	// auto mushroomHealthBarObj = new GameObject();
+	// auto mushroomHealthBar = new HealthBar(mushroomHealthBarObj, mushroom);
+	// mushroomHealthBarObj->AddComponent(mushroomHealthBar);
+	// this->AddObject(mushroomHealthBarObj);
 
-	auto mushroomManaBarObj = new GameObject();
-	auto mushroomManaBar = new ManaBar(mushroomManaBarObj, mushroom);
-	mushroomManaBarObj->AddComponent(mushroomManaBar);
-	this->AddObject(mushroomManaBarObj);
-	//------------------------------------- MUSHROOM -----------------------------------------------------
+	// auto mushroomManaBarObj = new GameObject();
+	// auto mushroomManaBar = new ManaBar(mushroomManaBarObj, mushroom);
+	// mushroomManaBarObj->AddComponent(mushroomManaBar);
+	// this->AddObject(mushroomManaBarObj);
+	// //------------------------------------- MUSHROOM -----------------------------------------------------
+
+	//------------------------------------- PORCO -----------------------------------------------------
+
+	auto porcoObj = new GameObject();
+	porcoObj->setScale(Vec2(3,3));
+
+	auto porcoSprite = Porco::CreateIdleSprite(porcoObj);
+	// porcoObj->AddComponent(porcoSprite);
+	auto porco = new Porco(porcoObj, 100, 100, 100, 100, 5, 10, 5, 1, 50, porcoSprite);
+	porcoObj->AddComponent(porco);
+	this->AddObject(porcoObj);
+
+	auto porcoHealthBarObj = new GameObject();
+	auto porcoHealthBar = new HealthBar(porcoHealthBarObj, porco);
+	porcoHealthBarObj->AddComponent(porcoHealthBar);
+	this->AddObject(porcoHealthBarObj);
+
+	auto porcoManaBarObj = new GameObject();
+	auto porcoManaBar = new ManaBar(porcoManaBarObj, porco);
+	porcoManaBarObj->AddComponent(porcoManaBar);
+	this->AddObject(porcoManaBarObj);
+	//------------------------------------- PORCO -----------------------------------------------------
 
 	//------------------------------------- WARRIOR -----------------------------------------------------
 
@@ -121,6 +145,30 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	characters.push_back(warrior);
 	//------------------------------------- WARRIOR -----------------------------------------------------
 
+	//------------------------------------- Bargudin -----------------------------------------------------
+
+	auto bargudinObj = new GameObject();
+	bargudinObj->setScale(Vec2(3, 3));
+
+	auto bargudinIdleSprite = Bargudin::CreateIdleSprite(bargudinObj);
+
+	auto bargudin = new Bargudin(bargudinObj, 100, 100, 100, 100, 5, 1, 10, 10, 50, bargudinIdleSprite);
+	bargudinObj->AddComponent(bargudin);
+	this->AddObject(bargudinObj);
+
+	auto bargudinHealthBarObj = new GameObject();
+	auto bargudinHealthBar = new HealthBar(bargudinHealthBarObj, bargudin);
+	bargudinHealthBarObj->AddComponent(bargudinHealthBar);
+	this->AddObject(bargudinHealthBarObj);
+
+	auto bargudinManaBarObj = new GameObject();
+	auto bargudinManaBar = new ManaBar(bargudinManaBarObj, bargudin);
+	bargudinManaBarObj->AddComponent(bargudinManaBar);
+	this->AddObject(bargudinManaBarObj);
+
+	characters.push_back(bargudin);
+	//------------------------------------- Bargudin -----------------------------------------------------
+
 	auto indicatorObj = new GameObject();
 	auto indicator = new CharacterIndicator(indicatorObj, warrior);
 	indicatorObj->AddComponent(indicator);
@@ -134,7 +182,7 @@ void BattleState::LoadAssets()
 {
 	if (bgSprite)
 	{
-		bgSprite->Open("assets/img/background.png");
+		bgSprite->Open("assets/img/battle.png");
 	}
 }
 
@@ -162,7 +210,6 @@ void BattleState::Update(float dt)
 
 	if (getRound() == Round::GameEnding)
 	{
-		Game::GetInstance().Push(EndState::GetInstance());
 
 		this->popRequested = true;
 
@@ -178,8 +225,8 @@ void BattleState::Update(float dt)
 			auto selectedButton = selectedActionMenu->selector->getAttached();
 			if (selectedButton->getType() == "AttackButton")
 			{
-				auto mushroom = this->getFirstObjectByComponent("Mushroom");
-				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				auto mushroom = this->getFirstObjectByComponent("Porco");
+				auto mushroomPtr = (Porco *)mushroom->GetComponent("Porco");
 				selectedCharacter->physicalAttack(mushroomPtr);
 			}
 			else if (selectedButton->getType() == "DefendButton")
@@ -189,8 +236,8 @@ void BattleState::Update(float dt)
 			}
 			else if (selectedButton->getType() == "SkillButton")
 			{
-				auto mushroom = this->getFirstObjectByComponent("Mushroom");
-				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				auto mushroom = this->getFirstObjectByComponent("Porco");
+				auto mushroomPtr = (Porco *)mushroom->GetComponent("Porco");
 				selectedCharacter->useSkill(mushroomPtr);
 			}
 		}
@@ -232,8 +279,8 @@ void BattleState::Update(float dt)
 				//  a bola que está na tela morreu sem ninguem clicar nela
 				currentBallObj->RequestDelete();
 				balls.clear();
-				auto mushroom = this->getFirstObjectByComponent("Mushroom");
-				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				auto mushroom = this->getFirstObjectByComponent("Porco");
+				auto mushroomPtr = (Porco *)mushroom->GetComponent("Porco");
 				setRound(Round::PlayerAction);
 				selectedCharacter->rhythmAttackEnd(mushroomPtr);
 				return;
@@ -250,8 +297,8 @@ void BattleState::Update(float dt)
 				{
 					if (currentBall->isPointInsideCircle(Vec2(mouseX, mouseY)))
 					{
-						auto mushroom = this->getFirstObjectByComponent("Mushroom");
-						auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+						auto mushroom = this->getFirstObjectByComponent("Porco");
+						auto mushroomPtr = (Porco *)mushroom->GetComponent("Porco");
 						selectedCharacter->rhythmAttack(mushroomPtr);
 						currentBallObj->RequestDelete();
 						if (balls.size() == 0)
@@ -266,8 +313,8 @@ void BattleState::Update(float dt)
 					{
 						currentBallObj->RequestDelete();
 						balls.clear();
-						auto mushroom = this->getFirstObjectByComponent("Mushroom");
-						auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+						auto mushroom = this->getFirstObjectByComponent("Porco");
+						auto mushroomPtr = (Porco *)mushroom->GetComponent("Porco");
 						setRound(Round::PlayerAction);
 						selectedCharacter->rhythmAttackEnd(mushroomPtr);
 						return;
@@ -279,8 +326,8 @@ void BattleState::Update(float dt)
 	}
 	else if (getRound() == Round::EnemyAction || getRound() == Round::EnemyActionSelect)
 	{
-		auto mushroom = this->getFirstObjectByComponent("Mushroom");
-		auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+		auto mushroom = this->getFirstObjectByComponent("Porco");
+		auto mushroomPtr = (Porco *)mushroom->GetComponent("Porco");
 		if (mushroomPtr->isIdle == true)
 		{
 			mushroomPtr->physicalAttack(selectedCharacter);
@@ -347,7 +394,7 @@ void BattleState::Update(float dt)
 		}
 		if (InputManager::GetInstance().KeyPress(SDLK_RETURN))
 		{
-			indicatedCharacterIndex = std::max(indicatedCharacterIndex - 1, 0);
+			indicatedCharacterIndex = std::max(indicatedCharacterIndex, 0);
 			indicator->setAttached(characters[indicatedCharacterIndex]);
 			this->selectedCharacter = characters[indicatedCharacterIndex];
 			indicator->setIsCharacterLocked(true);
@@ -358,12 +405,12 @@ void BattleState::Update(float dt)
 		if (InputManager::GetInstance().KeyPress(SDLK_F1))
 		{
 
-			auto mushroomHealthBar = getFirstHealthBarOfEntityType("Mushroom");
+			auto mushroomHealthBar = getFirstHealthBarOfEntityType("Porco");
 
 			if (mushroomHealthBar)
 				mushroomHealthBar->toggleVisibility();
 
-			auto mushroomManaBar = getFirstManaBarOfEntityType("Mushroom");
+			auto mushroomManaBar = getFirstManaBarOfEntityType("Porco");
 
 			if (mushroomManaBar)
 				mushroomManaBar->toggleVisibility();
@@ -371,10 +418,10 @@ void BattleState::Update(float dt)
 
 		if (InputManager::GetInstance().KeyPress(SDLK_KP_1))
 		{
-			auto mushroom = this->getFirstObjectByComponent("Mushroom");
+			auto mushroom = this->getFirstObjectByComponent("Porco");
 			if (mushroom)
 			{
-				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				auto mushroomPtr = (Porco *)mushroom->GetComponent("Porco");
 				mushroomPtr->loseHp(10);
 			}
 		}
@@ -391,10 +438,10 @@ void BattleState::Update(float dt)
 
 		if (InputManager::GetInstance().KeyPress(SDLK_KP_3))
 		{
-			auto mushroom = this->getFirstObjectByComponent("Mushroom");
+			auto mushroom = this->getFirstObjectByComponent("Porco");
 			if (mushroom)
 			{
-				auto mushroomPtr = (Mushroom *)mushroom->GetComponent("Mushroom");
+				auto mushroomPtr = (Porco *)mushroom->GetComponent("Porco");
 				mushroomPtr->loseMp(10);
 				;
 			}
@@ -430,9 +477,9 @@ void BattleState::Update(float dt)
 			auto attackButtonobj = this->getFirstObjectByComponent("AttackButton");
 			if (attackButtonobj->getBox().Contains({mouseX, mouseY}))
 			{
-				auto mushroomObj = this->getFirstObjectByComponent("Mushroom");
+				auto mushroomObj = this->getFirstObjectByComponent("Porco");
 				auto warriorObj = this->getFirstObjectByComponent("Warrior");
-				auto mushroomPtr = (Mushroom *)mushroomObj->GetComponent("Mushroom");
+				auto mushroomPtr = (Porco *)mushroomObj->GetComponent("Porco");
 				auto warriorPtr = (Warrior *)warriorObj->GetComponent("Warrior");
 				mushroomPtr->gainHp(100);
 				warriorPtr->gainHp(100);
@@ -441,9 +488,9 @@ void BattleState::Update(float dt)
 			auto defendButtonObj = this->getFirstObjectByComponent("DefendButton");
 			if (defendButtonObj->getBox().Contains({mouseX, mouseY}))
 			{
-				auto mushroomObj = this->getFirstObjectByComponent("Mushroom");
+				auto mushroomObj = this->getFirstObjectByComponent("Porco");
 				auto warriorObj = this->getFirstObjectByComponent("Warrior");
-				auto mushroomPtr = (Mushroom *)mushroomObj->GetComponent("Mushroom");
+				auto mushroomPtr = (Porco *)mushroomObj->GetComponent("Porco");
 				auto warriorPtr = (Warrior *)warriorObj->GetComponent("Warrior");
 				mushroomPtr->gainMp(100);
 				warriorPtr->gainMp(100);

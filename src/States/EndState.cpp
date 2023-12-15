@@ -24,10 +24,11 @@
 
 EndState *EndState::instance = nullptr;
 
-EndState::EndState()
+EndState::EndState(bool hasWon)
 {
 	this->quitRequested = false;
 	this->started = false;
+	this->hasWon = hasWon;
 
 	auto bgObject = new GameObject();
 	auto bgFollower = new CameraFollower(bgObject);
@@ -41,7 +42,14 @@ void EndState::LoadAssets()
 {
 	if (bgSprite)
 	{
-		bgSprite->Open("assets/img/background.png");
+		if (hasWon)
+		{
+			bgSprite->Open("assets/img/Menu/vitoria.png");
+		}
+		else
+		{
+			bgSprite->Open("assets/img/Menu/derrota.png");
+		}
 	}
 }
 
@@ -93,15 +101,16 @@ void EndState::Resume()
 {
 }
 
-EndState *EndState::GetInstance()
+EndState *EndState::GetInstance(bool hasWon)
 {
 	if (EndState::instance == nullptr)
 	{
-		EndState::instance = new EndState();
+		EndState::instance = new EndState(hasWon);
 		return EndState::instance;
 	}
 	else
 	{
+		EndState::instance->hasWon = hasWon;
 		return EndState::instance;
 	}
 }
