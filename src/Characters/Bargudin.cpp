@@ -5,6 +5,7 @@
 #include "InputManager.hpp"
 #include "BattleState.hpp"
 #include "random"
+#include "EndState.hpp"
 
 Bargudin::Bargudin(GameObject *associated, int currentHp,
                  int maxHp,
@@ -42,6 +43,11 @@ void Bargudin::Start()
 void Bargudin::Update(float dt)
 {
     EntityComponent::Update(dt);
+
+    if(this->getCurrentHp() == 0){
+        BattleState::GetInstance()->requestPop();
+        Game::GetInstance().Push(EndState::GetInstance(false));
+    }
 
     if (isIdle)
     {
