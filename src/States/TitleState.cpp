@@ -21,6 +21,8 @@
 #include "DefendButton.hpp"
 #include "SkillButton.hpp"
 #include "UI/CharacterIndicator.hpp"
+#include "BlinkingText.hpp"
+#include "BattleState.hpp"
 
 TitleState *TitleState::instance = nullptr;
 
@@ -35,13 +37,18 @@ TitleState::TitleState()
 	bgSprite = new Sprite(bgObject);
 	bgObject->AddComponent(bgSprite);
 	AddObject(bgObject);
+
+	auto blinkTextObj = new GameObject();
+	auto blinkTextPtr = new BlinkingText(blinkTextObj, Vec2(560, 540), 3, "Pressione qualquer tecla...");
+	blinkTextObj->AddComponent(blinkTextPtr);
+	AddObject(blinkTextObj);
 }
 
 void TitleState::LoadAssets()
 {
 	if (bgSprite)
 	{
-		bgSprite->Open("assets/img/background.png");
+		bgSprite->Open("assets/img/Menu/Introducao.png");
 	}
 }
 
@@ -59,6 +66,11 @@ void TitleState::Update(float dt)
 	if (InputManager::GetInstance().QuitRequested())
 	{
 		this->quitRequested = true;
+	}
+
+	if(InputManager::GetInstance().AnyKeyPress()){
+		popRequested = true;
+		Game::GetInstance().Push(BattleState::GetInstance());
 	}
 
 	UpdateArray(dt);

@@ -3,12 +3,13 @@
 #include "Camera.hpp"
 #include <unordered_map>
 #include <States/BattleState.hpp>
+#include "TitleState.hpp"
 
 int main(int argc, char **argv)
 {
 
     Game game = Game::GetInstance();
-    BattleState* initState = BattleState::GetInstance();
+    auto initState = TitleState::GetInstance();
     game.Push(initState);
     game.Run();
 

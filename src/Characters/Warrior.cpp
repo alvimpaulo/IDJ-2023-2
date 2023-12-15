@@ -105,7 +105,7 @@ void Warrior::rhythmAttackEnd(EntityComponent *target)
 {
     rhythmAttackCount = 0;
     this->setNewAnimation(new Animation(
-        60, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Warrior::CreateRunBackSprite(associated), false, [] {},
+        30, target->associated->getScaledBox().GetCenter(), this->IdlePosition, Warrior::CreateRunBackSprite(associated), false, [] {},
         [this]()
         {
             auto newIdleSprite = Warrior::CreateIdleSprite(associated);

@@ -14,6 +14,7 @@ public:
     void Update();
     bool KeyPress(int key);
     bool KeyRelease(int key);
+    bool AnyKeyPress();
     bool IsKeyDown(int key);
     bool MousePress(int button);
     bool MouseRelease(int button);

@@ -50,6 +50,12 @@ void Text::SetText(std::string text)
     RemakeTexture();
 }
 
+void Text::SetColor(SDL_Color color)
+{
+    this->color = color;
+    RemakeTexture();
+}
+
 void Text::SetStyle(TextStyle style)
 {
     this->style = style;
@@ -68,8 +74,14 @@ void Text::SetFontSize(int fontSize)
     RemakeTexture();
 }
 
+SDL_Color Text::getColor()
+{
+    return color;
+}
+
 void Text::RemakeTexture()
 {
+
     if (this->texture)
     {
         SDL_DestroyTexture(texture);

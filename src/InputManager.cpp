@@ -90,6 +90,16 @@ bool InputManager::KeyRelease(int key)
 		return false;
 }
 
+bool InputManager::AnyKeyPress()
+{
+    for(auto &it: keyState){
+		if(it.second){
+			return true;
+		}
+	}
+	return false;
+}
+
 bool InputManager::IsKeyDown(int key)
 {
 	auto isKey = keyState.find(key) != keyState.end();
