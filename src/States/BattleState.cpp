@@ -27,11 +27,14 @@
 
 BattleState *BattleState::instance = nullptr;
 
-BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullptr)
+BattleState::BattleState(int numBallsMax, int secEachBall, int radiusEachBall) : indicatedCharacterIndex(0), selectedCharacter(nullptr)
 {
 	this->quitRequested = false;
 	this->started = false;
 	this->balls = std::deque<GameObject *>(0);
+	this->numBallsMax = numBallsMax;
+	this->secEachBall = secEachBall;
+	this->radiusEachBall = radiusEachBall;
 
 	auto mapObject = new GameObject();
 
@@ -102,11 +105,11 @@ BattleState::BattleState() : indicatedCharacterIndex(0), selectedCharacter(nullp
 	//------------------------------------- PORCO -----------------------------------------------------
 
 	auto porcoObj = new GameObject();
-	porcoObj->setScale(Vec2(3,3));
+	porcoObj->setScale(Vec2(3, 3));
 
 	auto porcoSprite = Porco::CreateIdleSprite(porcoObj);
 	// porcoObj->AddComponent(porcoSprite);
-	auto porco = new Porco(porcoObj, 100, 100, 100, 100, 5, 10, 5, 1, 50, porcoSprite);
+	auto porco = new Porco(porcoObj, 100, 100, 100, 100, 50 / this->numBallsMax, 10, 5, 1, 50, porcoSprite);
 	porcoObj->AddComponent(porco);
 	this->AddObject(porcoObj);
 
@@ -247,22 +250,18 @@ void BattleState::Update(float dt)
 	{
 		if (balls.size() == 0)
 		{
-
-			const int maxNumCircles = 10;
-			const int circleRadius = 200;
-
 			std::random_device os_seed;
 			const uint_least32_t seed = os_seed();
 			std::mt19937 generator(seed);
 
-			std::uniform_int_distribution<uint_least32_t> distributeY(circleRadius, SCREEN_HEIGHT - circleRadius);
-			std::uniform_int_distribution<uint_least32_t> distributeX(circleRadius, SCREEN_WIDTH - circleRadius);
+			std::uniform_int_distribution<uint_least32_t> distributeY(radiusEachBall, SCREEN_HEIGHT - radiusEachBall);
+			std::uniform_int_distribution<uint_least32_t> distributeX(radiusEachBall, SCREEN_WIDTH - radiusEachBall);
 
-			for (size_t i = 0; i < maxNumCircles; i++)
+			for (size_t i = 0; i < numBallsMax; i++)
 			{
 				auto newPosition = Vec2(distributeX(generator), distributeY(generator));
 				auto ballObj = new GameObject();
-				auto ballPtr = new ClickBall(ballObj, newPosition, 3, circleRadius);
+				auto ballPtr = new ClickBall(ballObj, newPosition, 3, radiusEachBall);
 				ballObj->AddComponent(ballPtr);
 				balls.push_back(ballObj);
 			}
@@ -581,11 +580,11 @@ std::vector<std::shared_ptr<GameObject>> BattleState::getAllObjectsWithComponent
 	return returnVector;
 }
 
-BattleState *BattleState::GetInstance()
+BattleState *BattleState::GetInstance(int numBallsMax, int secEachBall, int radiusEachBall)
 {
 	if (BattleState::instance == nullptr)
 	{
-		BattleState::instance = new BattleState();
+		BattleState::instance = new BattleState(numBallsMax, secEachBall, radiusEachBall);
 		return BattleState::instance;
 	}
 	else

@@ -87,9 +87,26 @@ void DifficultyState::Update(float dt)
 
 	if (InputManager::GetInstance().KeyPress(SDLK_RETURN))
 	{
-		requestPop();
 		auto introState = TitleState::GetInstance();
+		BattleState *battleState;
+		switch (selectedDifficulty)
+		{
+		case 0:
+			battleState = BattleState::GetInstance(8, 5, 200);
+			break;
+		case 1:
+			battleState = BattleState::GetInstance(4, 3, 100);
+			break;
+		case 2:
+			battleState = BattleState::GetInstance(3, 1, 50);
+			break;
+		default:
+			break;
+		}
+		Game::GetInstance().Push(battleState);
+
 		Game::GetInstance().Push(introState);
+		requestPop();
 	}
 
 	if (diffSelector)

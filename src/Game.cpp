@@ -150,6 +150,7 @@ SDL_Renderer *Game::GetRenderer()
 void Game::Push(State *state)
 {
     this->instance->storedState = state;
+    stateStack.push(state);
 }
 
 void Game::Run()
@@ -161,7 +162,7 @@ void Game::Run()
     this->instance->stateStack.push(this->instance->storedState);
     this->instance->storedState = nullptr;
 
-    while (this->instance->GetCurrentState()->QuitRequested() == false && this->instance->stateStack.empty() == false)
+    while ( this->instance->GetCurrentState()->QuitRequested() == false && this->instance->stateStack.empty() == false)
     {
 
         if (!this->instance->GetCurrentState()->IsStarted())
@@ -192,10 +193,13 @@ void Game::Run()
         this->instance->CalculateDeltaTime();
         InputManager::GetInstance().Update();
 
-        this->instance->GetCurrentState()->Update(this->instance->dt);
-        this->instance->GetCurrentState()->Render();
+        if (this->instance->GetCurrentState())
+        {
+            this->instance->GetCurrentState()->Update(this->instance->dt);
+            this->instance->GetCurrentState()->Render();
 
-        SDL_RenderPresent(this->instance->renderer);
+            SDL_RenderPresent(this->instance->renderer);
+        }
 
         SDL_Delay(33);
     }

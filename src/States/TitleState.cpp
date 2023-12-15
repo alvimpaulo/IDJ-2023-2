@@ -70,7 +70,6 @@ void TitleState::Update(float dt)
 
 	if(InputManager::GetInstance().KeyPress(SDLK_SPACE)){
 		popRequested = true;
-		Game::GetInstance().Push(BattleState::GetInstance());
 	}
 
 	UpdateArray(dt);

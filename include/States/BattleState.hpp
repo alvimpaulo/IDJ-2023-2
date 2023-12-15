@@ -25,7 +25,7 @@ public:
         EnemyRhythm,
         GameEnding,
     };
-    static BattleState *GetInstance();
+    static BattleState *GetInstance(int numBallsMax = 10, int secEachBall = 2, int radiusEachBall = 200);
     static BattleState *instance;
     void LoadAssets();
     void Update(float dt);
@@ -44,6 +44,9 @@ public:
     Round getRound();
 
     std::deque<GameObject*> balls;
+    int numBallsMax;
+    float secEachBall;
+    int radiusEachBall;
 
 private:
     Sprite *bgSprite;
@@ -51,6 +54,8 @@ private:
     CharacterIndicator *indicator;
     int indicatedCharacterIndex;
     EntityComponent *selectedCharacter;
-    BattleState();
+    BattleState(int numBallsMax, int secEachBall, int radiusEachBall);
     Round currentRound;
+    
+
 };

@@ -127,7 +127,7 @@ void Bargudin::rhythmAttackEnd(EntityComponent *target)
 void Bargudin::rhythmAttack(EntityComponent *target)
 {
     std::uniform_int_distribution<uint_least32_t> distribute(this->getStrength(), this->getStrength() * 2);
-    const auto damage = distribute(generator) - (target->getStrength() / 2);
+    const auto damage = distribute(generator);
     if (rhythmAttackCount % 2 == 0)
     {
         // forward animation
@@ -165,7 +165,7 @@ void Bargudin::useSkill(EntityComponent *target)
     std::uniform_int_distribution<uint_least32_t> distrib(1, 20);
     this->gainHp(distrib(generator));
     this->loseMp(5);
-    BattleState::GetInstance()->setRound(BattleState::Round::EnemyActionSelect);
+    BattleState::GetInstance()->setRound(BattleState::Round::PlayerCharacterSelectInit);
     isIdle = true;
 }
 void Bargudin::defend()
