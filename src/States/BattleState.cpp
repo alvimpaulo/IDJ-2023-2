@@ -127,26 +127,26 @@ BattleState::BattleState(int numBallsMax, int secEachBall, int radiusEachBall) :
 
 	//------------------------------------- WARRIOR -----------------------------------------------------
 
-	auto warriorObj = new GameObject();
-	warriorObj->setScale(Vec2(3, 3));
+	// auto warriorObj = new GameObject();
+	// warriorObj->setScale(Vec2(3, 3));
 
-	auto warriorIdleSprite = Warrior::CreateIdleSprite(warriorObj);
+	// auto warriorIdleSprite = Warrior::CreateIdleSprite(warriorObj);
 
-	auto warrior = new Warrior(warriorObj, 100, 100, 100, 100, 5, 1, 10, 10, 50, warriorIdleSprite);
-	warriorObj->AddComponent(warrior);
-	this->AddObject(warriorObj);
+	// auto warrior = new Warrior(warriorObj, 100, 100, 100, 100, 5, 1, 10, 10, 50, warriorIdleSprite);
+	// warriorObj->AddComponent(warrior);
+	// this->AddObject(warriorObj);
 
-	auto warriorHealthBarObj = new GameObject();
-	auto warriorHealthBar = new HealthBar(warriorHealthBarObj, warrior);
-	warriorHealthBarObj->AddComponent(warriorHealthBar);
-	this->AddObject(warriorHealthBarObj);
+	// auto warriorHealthBarObj = new GameObject();
+	// auto warriorHealthBar = new HealthBar(warriorHealthBarObj, warrior);
+	// warriorHealthBarObj->AddComponent(warriorHealthBar);
+	// this->AddObject(warriorHealthBarObj);
 
-	auto warriorManaBarObj = new GameObject();
-	auto warriorManaBar = new ManaBar(warriorManaBarObj, warrior);
-	warriorManaBarObj->AddComponent(warriorManaBar);
-	this->AddObject(warriorManaBarObj);
+	// auto warriorManaBarObj = new GameObject();
+	// auto warriorManaBar = new ManaBar(warriorManaBarObj, warrior);
+	// warriorManaBarObj->AddComponent(warriorManaBar);
+	// this->AddObject(warriorManaBarObj);
 
-	characters.push_back(warrior);
+	// characters.push_back(warrior);
 	//------------------------------------- WARRIOR -----------------------------------------------------
 
 	//------------------------------------- Alex -----------------------------------------------------
@@ -200,7 +200,7 @@ BattleState::BattleState(int numBallsMax, int secEachBall, int radiusEachBall) :
 
 
 	auto indicatorObj = new GameObject();
-	auto indicator = new CharacterIndicator(indicatorObj, warrior);
+	auto indicator = new CharacterIndicator(indicatorObj, alex);
 	indicatorObj->AddComponent(indicator);
 	this->AddObject(indicatorObj);
 	this->indicator = indicator;
