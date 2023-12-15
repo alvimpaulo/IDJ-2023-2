@@ -24,6 +24,7 @@
 #include "UI/CharacterIndicator.hpp"
 #include "EndState.hpp"
 #include "Porco.hpp"
+#include "Alex.hpp"
 
 BattleState *BattleState::instance = nullptr;
 
@@ -148,6 +149,30 @@ BattleState::BattleState(int numBallsMax, int secEachBall, int radiusEachBall) :
 	characters.push_back(warrior);
 	//------------------------------------- WARRIOR -----------------------------------------------------
 
+	//------------------------------------- Alex -----------------------------------------------------
+
+	auto alexObj = new GameObject();
+	alexObj->setScale(Vec2(3, 3));
+
+	auto alexIdle = Alex::CreateIdleSprite(alexObj);
+
+	auto alex = new Alex(alexObj, 100, 100, 100, 100, 5, 1, 10, 10, 50, alexIdle);
+	alexObj->AddComponent(alex);
+	this->AddObject(alexObj);
+
+	auto alexHealthBarObj = new GameObject();
+	auto alexHealthBar = new HealthBar(alexHealthBarObj, alex);
+	alexHealthBarObj->AddComponent(alexHealthBar);
+	this->AddObject(alexHealthBarObj);
+
+	auto alexManaBarObj = new GameObject();
+	auto alexManaBar = new ManaBar(alexManaBarObj, alex);
+	alexManaBarObj->AddComponent(alexManaBar);
+	this->AddObject(alexManaBarObj);
+
+	characters.push_back(alex);
+	//------------------------------------- Alex -----------------------------------------------------
+
 	//------------------------------------- Bargudin -----------------------------------------------------
 
 	auto bargudinObj = new GameObject();
@@ -171,6 +196,8 @@ BattleState::BattleState(int numBallsMax, int secEachBall, int radiusEachBall) :
 
 	characters.push_back(bargudin);
 	//------------------------------------- Bargudin -----------------------------------------------------
+	
+
 
 	auto indicatorObj = new GameObject();
 	auto indicator = new CharacterIndicator(indicatorObj, warrior);
